@@ -1,0 +1,10 @@
+#ifdef __OBJC__
+#import <Cocoa/Cocoa.h>
+#endif
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
+#include <CoreAudio/CoreAudio.h>
+#include <CoreFoundation/CoreFoundation.h>
+#include <CoreAudio/AudioHardware.h>
+#include <CoreServices/CoreServices.h>
+#include <AudioUnit/AudioUnit.h>
