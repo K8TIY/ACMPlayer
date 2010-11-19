@@ -98,7 +98,7 @@ static void _drawKnobInRect(NSRect r)
   r.origin.x += (int)((float)(r.size.width - 7)/2.0);
   r.origin.y += (int)((float)(r.size.height - 7)/2.0);
   // Draw diamond
-  NSRectFillUsingOperation(NSMakeRect(r.origin.x + 3.0, r.origin.y + 6.0, 1.0, 1.0), NSCompositeSourceOver);
+  NSRectFillUsingOperation(NSMakeRect(r.origin.x + 3.0f, r.origin.y + 6.0f, 1.0f, 1.0f), NSCompositeSourceOver);
   NSRectFillUsingOperation(NSMakeRect(r.origin.x + 2, r.origin.y + 5, 3, 1), NSCompositeSourceOver);
   NSRectFillUsingOperation(NSMakeRect(r.origin.x + 1, r.origin.y + 4, 5, 1), NSCompositeSourceOver);
   NSRectFillUsingOperation(NSMakeRect(r.origin.x + 0, r.origin.y + 3, 7, 1), NSCompositeSourceOver);
@@ -139,7 +139,7 @@ static void _drawFrameInRect(NSRect r)
     {
       NSRect loopRect = rect;
       loopRect.size.width *= _loopPosition;
-      [[[NSColor blackColor] colorWithAlphaComponent:0.1] set];
+      [[[NSColor blackColor] colorWithAlphaComponent:0.1f] set];
       NSRectFillUsingOperation(loopRect, NSCompositeSourceOver);
     }
   }
@@ -149,7 +149,7 @@ static void _drawFrameInRect(NSRect r)
   // And I can't find Apple's documentation on the Kernel realtime APIs/KPIs :-(((
   // (every time I save this file in XCode with ACMPlayer er... playing... it drops
   // briefly.)
-  [[[NSColor blackColor] colorWithAlphaComponent:0.1] set];
+  [[[NSColor blackColor] colorWithAlphaComponent:0.1f] set];
   rect.origin.x++;
   rect.origin.y++;
   knobRect.origin.x++;
@@ -170,7 +170,7 @@ static void _drawFrameInRect(NSRect r)
       [[cv window] makeFirstResponder:cv];
     }*/
     NSRect r = [controlView bounds];
-    float val = (startPoint.x - r.origin.x)/r.size.width;
+    double val = (startPoint.x - r.origin.x)/r.size.width;
     _tracking = YES;
     [self setTrackingValue:val];
     //NSLog(@"startTrackingAt: setTrackingValue %f", _trackingValue);
@@ -187,7 +187,7 @@ static void _drawFrameInRect(NSRect r)
   {
     ret = YES;
     NSRect r = [controlView bounds];
-    float val = (currentPoint.x - r.origin.x)/r.size.width;
+    double val = (currentPoint.x - r.origin.x)/r.size.width;
     [self setTrackingValue:val];
     //NSLog(@"continueTracking: setTrackingValue %f", _trackingValue);
   }
@@ -202,7 +202,7 @@ static void _drawFrameInRect(NSRect r)
   if (!_progressing)
   {
     NSRect r = [controlView bounds];
-    float val = (stopPoint.x - r.origin.x)/r.size.width;
+    double val = (stopPoint.x - r.origin.x)/r.size.width;
     [self setTrackingValue:val];
     if (flag)
     {
@@ -266,9 +266,9 @@ static void _drawFrameInRect(NSRect r)
 @implementation OldYaller
 -(void)drawRect:(NSRect)rect
 {
-  rect = NSInsetRect([self bounds], 1.0, 1.0);
+  rect = NSInsetRect([self bounds], 1.0f, 1.0f);
   [[NSColor colorWithCalibratedRed:0.90f green:0.91f blue:0.65f alpha:1.0f] set];
-  NSBezierPath* path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:4.0 yRadius:4.0];
+  NSBezierPath* path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:4.0f yRadius:4.0f];
   [path fill];
   [[NSColor colorWithCalibratedRed:0.2f green:0.2f blue:0.2f alpha:1.0f] set];
   [path stroke];
