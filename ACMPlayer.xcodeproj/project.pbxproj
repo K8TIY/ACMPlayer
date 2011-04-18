@@ -3,20 +3,24 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 44;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		321BE638124D122200109958 /* Phones.icns in Resources */ = {isa = PBXBuildFile; fileRef = 321BE637124D122200109958 /* Phones.icns */; };
+		322FD211135CBFBE00A10278 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 322FD208135CBFBE00A10278 /* Credits.rtf */; };
+		322FD212135CBFBE00A10278 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 322FD20A135CBFBE00A10278 /* InfoPlist.strings */; };
+		322FD213135CBFBE00A10278 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 322FD20C135CBFBE00A10278 /* Localizable.strings */; };
 		32504E5E124BD9F8004B7654 /* decode.c in Sources */ = {isa = PBXBuildFile; fileRef = 32504E5D124BD9F8004B7654 /* decode.c */; };
 		32504E63124BDBE3004B7654 /* util.c in Sources */ = {isa = PBXBuildFile; fileRef = 32504E62124BDBE3004B7654 /* util.c */; };
-		32815DBF1295BF3D00D4672E /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 32815DBD1295BF3D00D4672E /* MainMenu.xib */; };
-		32815DC31295BF6D00D4672E /* ACMDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 32815DC11295BF6D00D4672E /* ACMDocument.xib */; };
 		32815E051295C34400D4672E /* VolMute.png in Resources */ = {isa = PBXBuildFile; fileRef = 32815E031295C34400D4672E /* VolMute.png */; };
 		32815E061295C34400D4672E /* VolFull.png in Resources */ = {isa = PBXBuildFile; fileRef = 32815E041295C34400D4672E /* VolFull.png */; };
+		32CDFCB1135CB9D300B3AE32 /* Onizuka.strings in Resources */ = {isa = PBXBuildFile; fileRef = 32CDFCAE135CB9D300B3AE32 /* Onizuka.strings */; };
+		32CDFCCD135CBB3800B3AE32 /* ACMDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 32815DC21295BF6D00D4672E /* ACMDocument.xib */; };
+		32CDFD2A135CBBA900B3AE32 /* Onizuka.m in Sources */ = {isa = PBXBuildFile; fileRef = 32CDFD06135CBBA900B3AE32 /* Onizuka.m */; };
+		32CDFD35135CBBF100B3AE32 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 32CDFD34135CBBF100B3AE32 /* README.txt */; };
+		32CDFD38135CBC6500B3AE32 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 32815DBE1295BF3D00D4672E /* MainMenu.xib */; };
 		32E3D12F116BE7EC0078CCF7 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32E3D12E116BE7EC0078CCF7 /* AudioToolbox.framework */; };
-		8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
-		8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165FFE840EACC02AAC07 /* InfoPlist.strings */; };
 		8D15AC310486D014006FF6A4 /* ACMDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4ACFDCFA73011CA2CEA /* ACMDocument.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC320486D014006FF6A4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
@@ -33,26 +37,34 @@
 		A6C335B6090F00E50089BBE9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */; };
 		A6C335B7090F00E50089BBE9 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */; };
 		A6C335C3090F01F90089BBE9 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6C335C2090F01F90089BBE9 /* AudioUnit.framework */; };
-		A6CA80C90DFA24EE00533E10 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A6CA80C70DFA24EE00533E10 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		089C1660FE840EACC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		2A37F4ACFDCFA73011CA2CEA /* ACMDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACMDocument.m; sourceTree = "<group>"; };
 		2A37F4AEFDCFA73011CA2CEA /* ACMDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACMDocument.h; sourceTree = "<group>"; };
 		2A37F4B0FDCFA73011CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		2A37F4BAFDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = English; path = English.lproj/Credits.rtf; sourceTree = "<group>"; };
 		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		321BE637124D122200109958 /* Phones.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Phones.icns; sourceTree = "<group>"; };
+		322FD209135CBFBE00A10278 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		322FD20B135CBFBE00A10278 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		322FD20D135CBFBE00A10278 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		322FD20E135CBFBE00A10278 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = ja; path = ja.lproj/Credits.rtf; sourceTree = "<group>"; };
+		322FD20F135CBFBE00A10278 /* ja */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		322FD210135CBFBE00A10278 /* ja */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		32504E5D124BD9F8004B7654 /* decode.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = decode.c; sourceTree = "<group>"; };
 		32504E61124BDA8C004B7654 /* libacm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libacm.h; sourceTree = "<group>"; };
 		32504E62124BDBE3004B7654 /* util.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = util.c; sourceTree = "<group>"; };
-		32815DBE1295BF3D00D4672E /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		32815DC21295BF6D00D4672E /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ACMDocument.xib; sourceTree = "<group>"; };
+		32815DBE1295BF3D00D4672E /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
+		32815DC21295BF6D00D4672E /* ACMDocument.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ACMDocument.xib; sourceTree = "<group>"; };
 		32815E031295C34400D4672E /* VolMute.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VolMute.png; sourceTree = "<group>"; };
 		32815E041295C34400D4672E /* VolFull.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VolFull.png; sourceTree = "<group>"; };
+		32CDFCAF135CB9D300B3AE32 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Onizuka.strings; sourceTree = "<group>"; };
+		32CDFCB0135CB9D300B3AE32 /* ja */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Onizuka.strings; sourceTree = "<group>"; };
+		32CDFD05135CBBA900B3AE32 /* Onizuka.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Onizuka.h; sourceTree = "<group>"; };
+		32CDFD06135CBBA900B3AE32 /* Onizuka.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Onizuka.m; sourceTree = "<group>"; };
+		32CDFD34135CBBF100B3AE32 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		32DBCF750370BD2300C91783 /* ACMPlayer_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACMPlayer_Prefix.pch; sourceTree = "<group>"; };
 		32E3D12E116BE7EC0078CCF7 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -71,7 +83,6 @@
 		A6A820F10F87F8AB0063E4D9 /* repeat_embedded_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = repeat_embedded_blue.png; sourceTree = "<group>"; };
 		A6A820F20F87F8AB0063E4D9 /* repeat_embedded.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = repeat_embedded.png; sourceTree = "<group>"; };
 		A6C335C2090F01F90089BBE9 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
-		A6CA80C80DFA24EE00533E10 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,9 +141,12 @@
 				A6444DB308FAE2E700F239CA /* ACMProgressSlider.h */,
 				A6444DB408FAE2E700F239CA /* ACMProgressSlider.m */,
 				32504E53124BD99C004B7654 /* src */,
+				32CDFCCF135CBBA900B3AE32 /* Onizuka */,
 				A69E079D0E70EC710078AC19 /* mus.py */,
 				32DBCF750370BD2300C91783 /* ACMPlayer_Prefix.pch */,
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
+				322FD207135CBFBE00A10278 /* Localizations */,
+				32CDFD34135CBBF100B3AE32 /* README.txt */,
 				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
 			);
@@ -143,13 +157,10 @@
 			isa = PBXGroup;
 			children = (
 				A6494CE508F8713500BAE386 /* Graphics */,
-				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
-				32815DBD1295BF3D00D4672E /* MainMenu.xib */,
-				32815DC11295BF6D00D4672E /* ACMDocument.xib */,
+				32815DBE1295BF3D00D4672E /* MainMenu.xib */,
+				32815DC21295BF6D00D4672E /* ACMDocument.xib */,
 				321BE637124D122200109958 /* Phones.icns */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
-				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
-				A6CA80C70DFA24EE00533E10 /* Localizable.strings */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -163,6 +174,17 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		322FD207135CBFBE00A10278 /* Localizations */ = {
+			isa = PBXGroup;
+			children = (
+				322FD208135CBFBE00A10278 /* Credits.rtf */,
+				322FD20A135CBFBE00A10278 /* InfoPlist.strings */,
+				322FD20C135CBFBE00A10278 /* Localizable.strings */,
+				32CDFCAE135CB9D300B3AE32 /* Onizuka.strings */,
+			);
+			path = Localizations;
+			sourceTree = "<group>";
+		};
 		32504E53124BD99C004B7654 /* src */ = {
 			isa = PBXGroup;
 			children = (
@@ -172,6 +194,15 @@
 			);
 			name = src;
 			path = libacm/src;
+			sourceTree = "<group>";
+		};
+		32CDFCCF135CBBA900B3AE32 /* Onizuka */ = {
+			isa = PBXGroup;
+			children = (
+				32CDFD05135CBBA900B3AE32 /* Onizuka.h */,
+				32CDFD06135CBBA900B3AE32 /* Onizuka.m */,
+			);
+			path = Onizuka;
 			sourceTree = "<group>";
 		};
 		A6494CE508F8713500BAE386 /* Graphics */ = {
@@ -216,8 +247,16 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = A6C1726E090D537400E21D11 /* Build configuration list for PBXProject "ACMPlayer" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.0";
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+				en,
+				ja,
+			);
 			mainGroup = 2A37F4AAFDCFA73011CA2CEA /* ACMPlayer */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -232,21 +271,23 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */,
-				8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */,
 				A6494CEE08F8713500BAE386 /* pause.png in Resources */,
 				A6494CEF08F8713500BAE386 /* pause_blue.png in Resources */,
 				A6494CF008F8713500BAE386 /* play.png in Resources */,
 				A6494CF108F8713500BAE386 /* play_blue.png in Resources */,
-				A6CA80C90DFA24EE00533E10 /* Localizable.strings in Resources */,
 				A69E079E0E70EC710078AC19 /* mus.py in Resources */,
 				A6A820F30F87F8AB0063E4D9 /* repeat_embedded_blue.png in Resources */,
 				A6A820F40F87F8AB0063E4D9 /* repeat_embedded.png in Resources */,
 				321BE638124D122200109958 /* Phones.icns in Resources */,
-				32815DBF1295BF3D00D4672E /* MainMenu.xib in Resources */,
-				32815DC31295BF6D00D4672E /* ACMDocument.xib in Resources */,
+				32CDFD38135CBC6500B3AE32 /* MainMenu.xib in Resources */,
+				32CDFCCD135CBB3800B3AE32 /* ACMDocument.xib in Resources */,
 				32815E051295C34400D4672E /* VolMute.png in Resources */,
 				32815E061295C34400D4672E /* VolFull.png in Resources */,
+				32CDFCB1135CB9D300B3AE32 /* Onizuka.strings in Resources */,
+				32CDFD35135CBBF100B3AE32 /* README.txt in Resources */,
+				322FD211135CBFBE00A10278 /* Credits.rtf in Resources */,
+				322FD212135CBFBE00A10278 /* InfoPlist.strings in Resources */,
+				322FD213135CBFBE00A10278 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -264,50 +305,48 @@
 				A6444DB608FAE2E700F239CA /* ACMProgressSlider.m in Sources */,
 				32504E5E124BD9F8004B7654 /* decode.c in Sources */,
 				32504E63124BDBE3004B7654 /* util.c in Sources */,
+				32CDFD2A135CBBA900B3AE32 /* Onizuka.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		089C165FFE840EACC02AAC07 /* InfoPlist.strings */ = {
+		322FD208135CBFBE00A10278 /* Credits.rtf */ = {
 			isa = PBXVariantGroup;
 			children = (
-				089C1660FE840EACC02AAC07 /* English */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2A37F4BAFDCFA73011CA2CEA /* English */,
+				322FD209135CBFBE00A10278 /* en */,
+				322FD20E135CBFBE00A10278 /* ja */,
 			);
 			name = Credits.rtf;
 			sourceTree = "<group>";
 		};
-		32815DBD1295BF3D00D4672E /* MainMenu.xib */ = {
+		322FD20A135CBFBE00A10278 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				32815DBE1295BF3D00D4672E /* English */,
+				322FD20B135CBFBE00A10278 /* en */,
+				322FD20F135CBFBE00A10278 /* ja */,
 			);
-			name = MainMenu.xib;
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		32815DC11295BF6D00D4672E /* ACMDocument.xib */ = {
+		322FD20C135CBFBE00A10278 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				32815DC21295BF6D00D4672E /* English */,
-			);
-			name = ACMDocument.xib;
-			sourceTree = "<group>";
-		};
-		A6CA80C70DFA24EE00533E10 /* Localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A6CA80C80DFA24EE00533E10 /* English */,
+				322FD20D135CBFBE00A10278 /* en */,
+				322FD210135CBFBE00A10278 /* ja */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		32CDFCAE135CB9D300B3AE32 /* Onizuka.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				32CDFCAF135CB9D300B3AE32 /* en */,
+				32CDFCB0135CB9D300B3AE32 /* ja */,
+			);
+			name = Onizuka.strings;
+			path = ../Onizuka/StandardUI;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -347,7 +386,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				PRODUCT_NAME = ACMPlayer;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-16";
 				WRAPPER_EXTENSION = app;
 			};
@@ -385,7 +424,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				PRODUCT_NAME = ACMPlayer;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-16";
 				WRAPPER_EXTENSION = app;
 			};
@@ -394,8 +433,11 @@
 		A6C1726F090D537400E21D11 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = (
+					ppc,
+					i386,
+					x86_64,
+				);
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
@@ -407,8 +449,8 @@
 				GCC_WARN_SHADOW = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
-				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-16";
 				ZERO_LINK = NO;
 			};
 			name = Development;
@@ -416,8 +458,11 @@
 		A6C17270090D537400E21D11 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = (
+					ppc,
+					i386,
+					x86_64,
+				);
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_MODEL_TUNING = G3;
@@ -427,8 +472,8 @@
 				GCC_WARN_SHADOW = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
-				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-16";
 			};
 			name = Deployment;
 		};

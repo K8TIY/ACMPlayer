@@ -38,7 +38,7 @@
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{341, 408}, {320, 88}}</string>
 				<int key="NSWTFlags">1886912512</int>
-				<string key="NSWindowTitle">ACMPlayer</string>
+				<string key="NSWindowTitle">__APPNAME__</string>
 				<string key="NSWindowClass">NSWindow</string>
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
@@ -46,7 +46,7 @@
 				<string key="NSWindowContentMaxSize">{1320, 88}</string>
 				<string key="NSWindowContentMinSize">{320, 88}</string>
 				<object class="NSView" key="NSWindowView" id="154052789">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -55,7 +55,6 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{84, 18}, {69, 15}}</string>
 							<reference key="NSSuperview" ref="154052789"/>
-							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSSliderCell" key="NSCell" id="799128588">
 								<int key="NSCellFlags">67501824</int>
@@ -84,7 +83,6 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{11, 15}, {36, 22}}</string>
 							<reference key="NSSuperview" ref="154052789"/>
-							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="685062252">
 								<int key="NSCellFlags">67239424</int>
@@ -117,7 +115,6 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{58, 13}, {20, 24}}</string>
 							<reference key="NSSuperview" ref="154052789"/>
-							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="692311405">
 								<int key="NSCellFlags">67239424</int>
@@ -148,7 +145,6 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{159, 13}, {20, 24}}</string>
 							<reference key="NSSuperview" ref="154052789"/>
-							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="58687295">
 								<int key="NSCellFlags">67239424</int>
@@ -175,7 +171,6 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{9, 42}, {39, 39}}</string>
 							<reference key="NSSuperview" ref="154052789"/>
-							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="617368360">
 								<int key="NSCellFlags">67239424</int>
@@ -220,7 +215,6 @@
 							</object>
 							<string key="NSFrame">{{60, 43}, {238, 36}}</string>
 							<reference key="NSSuperview" ref="154052789"/>
-							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSImageCell" key="NSCell" id="224204375">
 								<int key="NSCellFlags">537001472</int>
@@ -237,7 +231,6 @@
 							<int key="NSvFlags">266</int>
 							<string key="NSFrame">{{68, 48}, {221, 10}}</string>
 							<reference key="NSSuperview" ref="154052789"/>
-							<reference key="NSWindow"/>
 							<string key="NSClassName">ACMProgressSlider</string>
 							<string key="NSExtension">NSControl</string>
 						</object>
@@ -246,7 +239,6 @@
 							<int key="NSvFlags">265</int>
 							<string key="NSFrame">{{216, 60}, {73, 16}}</string>
 							<reference key="NSSuperview" ref="154052789"/>
-							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="59672482">
 								<int key="NSCellFlags">67239424</int>
@@ -272,7 +264,7 @@
 												<object class="NSData" key="NSTIFFRepresentation">
 													<bytes key="NS.bytes">TU0AKgAAAA6AACBACAgADwEAAAMAAAABAAEAAAEBAAMAAAABAAEAAAECAAMAAAAEAAAAyAEDAAMAAAAB
 AAUAAAEGAAMAAAABAAIAAAERAAQAAAABAAAACAESAAMAAAABAAEAAAEVAAMAAAABAAQAAAEWAAMAAAAB
-gAAAAAEXAAQAAAABAAAABgEcAAMAAAABAAEAAAE9AAMAAAABAAIAAAFSAAMAAAABAAEAAAFTAAMAAAAE
+AAEAAAEXAAQAAAABAAAABgEcAAMAAAABAAEAAAE9AAMAAAABAAIAAAFSAAMAAAABAAEAAAFTAAMAAAAE
 AAAA0IdzAAcAAAM4AAAA2AAAAAAACAAIAAgACAABAAEAAQABAAADOGFwcGwCAAAAbW50clJHQiBYWVog
 B9oABAAXAA4AOAAlYWNzcEFQUEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPbWAAEAAAAA0y1hcHBs
 MXPBahwUUprZCwMDRYqqJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANclhZWgAAASAAAAAU
@@ -312,14 +304,13 @@ xgwd9QAAAAAAAAAAAAAAAAAAAAA</bytes>
 						<object class="NSButton" id="21972939">
 							<reference key="NSNextResponder" ref="154052789"/>
 							<int key="NSvFlags">289</int>
-							<string key="NSFrame">{{238, 16}, {60, 20}}</string>
+							<string key="NSFrame">{{211, 16}, {97, 20}}</string>
 							<reference key="NSSuperview" ref="154052789"/>
-							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="1058533969">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">134348800</int>
-								<string key="NSContents">Epilogue</string>
+								<string key="NSContents">__EPILOGUE__</string>
 								<reference key="NSSupport" ref="26"/>
 								<reference key="NSControlView" ref="21972939"/>
 								<int key="NSButtonFlags">-2038021889</int>
@@ -340,7 +331,6 @@ xgwd9QAAAAAAAAAAAAAAAAAAAAA</bytes>
 							<int key="NSvFlags">265</int>
 							<string key="NSFrame">{{68, 60}, {138, 16}}</string>
 							<reference key="NSSuperview" ref="154052789"/>
-							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="573130171">
 								<int key="NSCellFlags">67239424</int>
@@ -360,8 +350,6 @@ xgwd9QAAAAAAAAAAAAAAAAAAAAA</bytes>
 						</object>
 					</object>
 					<string key="NSFrameSize">{320, 88}</string>
-					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1024, 746}}</string>
 				<string key="NSMinSize">{320, 110}</string>
@@ -404,7 +392,7 @@ xgwd9QAAAAAAAAAAAAAAAAAAAAA</bytes>
 							<object class="NSTextFieldCell" key="NSCell" id="555449154">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">272629760</int>
-								<string key="NSContents">Exporting AIFF File</string>
+								<string key="NSContents">__EXPORTING__</string>
 								<reference key="NSSupport" ref="791415044"/>
 								<reference key="NSControlView" ref="77941461"/>
 								<object class="NSColor" key="NSBackgroundColor">
@@ -428,7 +416,7 @@ xgwd9QAAAAAAAAAAAAAAAAAAAAA</bytes>
 							</object>
 						</object>
 					</object>
-					<string key="NSFrame">{{1, 1}, {322, 80}}</string>
+					<string key="NSFrameSize">{322, 80}</string>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1024, 746}}</string>
 				<string key="NSMinSize">{213, 102}</string>
@@ -861,6 +849,8 @@ xgwd9QAAAAAAAAAAAAAAAAAAAAA</bytes>
 					<string>65.ImportedFromIB2</string>
 					<string>72.IBPluginDependency</string>
 					<string>72.ImportedFromIB2</string>
+					<string>77.IBEditorWindowLastContentRect</string>
+					<string>77.IBWindowTemplateEditedContentRect</string>
 					<string>77.ImportedFromIB2</string>
 					<string>77.windowTemplate.hasMinSize</string>
 					<string>77.windowTemplate.minSize</string>
@@ -916,6 +906,8 @@ xgwd9QAAAAAAAAAAAAAAAAAAAAA</bytes>
 					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="5"/>
+					<string>{{0, 1065}, {322, 80}}</string>
+					<string>{{0, 1065}, {322, 80}}</string>
 					<reference ref="5"/>
 					<reference ref="5"/>
 					<string>{213, 80}</string>
@@ -1060,7 +1052,7 @@ xgwd9QAAAAAAAAAAAAAAAAAAAAA</bytes>
 			</object>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
-		<string key="IBDocument.LastKnownRelativeProjectPath">../ACMPlayer.xcodeproj</string>
+		<string key="IBDocument.LastKnownRelativeProjectPath">ACMPlayer.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 	</data>
 </archive>

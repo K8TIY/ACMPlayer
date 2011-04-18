@@ -1,3 +1,5 @@
-"EPILOGUE" = "Will play Epilogue...";
-"EPILOGUE_PLAYING" = "Playing Epilogue...";
-"EXPORTING" = "Exporting AIFF...";
+"__EPILOGUE_WILL_PLAY__" = "Will play Epilogue…";
+"__EPILOGUE_PLAYING__" = "Playing Epilogue…";
+"__EXPORTING__" = "Exporting AIFF…";
+"__EPILOGUE__" = "Epilogue";
+"__EXPORT_AIFF__" = "Export as AIFF Audio…";

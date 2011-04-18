@@ -14,8 +14,14 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 #import "AppController.h"
+#import "Onizuka.h"
 
 @implementation AppController
+-(void)awakeFromNib
+{
+  [[Onizuka sharedOnizuka] localizeMenu:[NSApp mainMenu]];
+}
+
 -(BOOL)applicationShouldOpenUntitledFile:(NSApplication*)sender
 {
   #pragma unused (sender)

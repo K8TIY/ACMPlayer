@@ -14,6 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 #import "ACMDocument.h"
+#import "Onizuka.h"
 
 @interface ACMDocument (Private)
 -(void)updateTimeDisplay;
@@ -63,6 +64,7 @@
   }
   float ampVal = [_ampSlider floatValue];
   [_musicRenderer setAmp:ampVal];
+  [[Onizuka sharedOnizuka] localizeWindow:_playerWindow];
 }
 
 -(void)windowWillClose:(NSNotification*)note

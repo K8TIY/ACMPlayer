@@ -1,4 +1,4 @@
-"__EPILOGUE_WILL_PLAY__" = "Will play Epilogue...";
-"__EPILOGUE_PLAYING__" = "Playing Epilogue...";
-"__EXPORTING__" = "Exporting AIFF...";
-"__EPILOGUE__" = "Epilogue";
+"__EPILOGUE_WILL_PLAY__" = "跋を再生する…";
+"__EPILOGUE_PLAYING__" = "跋を再生中…";
+"__EPILOGUE__" = "跋";
+"__EXPORT_AIFF__" = "AIFFオーディオとして書き出す…";
