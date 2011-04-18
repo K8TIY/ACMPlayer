@@ -18,7 +18,7 @@
 @interface ACMDocument (Private)
 -(void)updateTimeDisplay;
 -(void)aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code contextInfo:(void*)contextInfo;
--(NSMutableString*)runScript:(NSString*)script onString:(NSString*)string;
+-(NSString*)runScript:(NSString*)script onString:(NSString*)string;
 @end
 
 @implementation ACMDocument
@@ -96,7 +96,7 @@
 -(BOOL)readFromFile:(NSString*)fileName ofType:(NSString*)type
 {
   BOOL loaded = NO;
-  int loopPoint = 0;
+  NSUInteger loopPoint = 0;
   NSArray* acms = nil;
   NSArray* eps = nil;
   if ([type isEqual:@"ACM Music File"])
@@ -105,13 +105,12 @@
   }
   else if ([type isEqual:@"ACM Music List"])
   {
-    NSMutableString* parsed = [self runScript:@"mus.py" onString:fileName];
+    NSString* parsed = [self runScript:@"mus.py" onString:fileName];
     NSDictionary* pl = [parsed propertyList];
     acms = [pl objectForKey:@"files"];
     eps = [pl objectForKey:@"epilogues"];
     loopPoint = [[pl objectForKey:@"loop"] intValue];
     if ([eps count]) _haveEpilogue = YES;
-    [parsed release];
   }
   else NSLog(@"Can't read file type '%@'.", type);
   if (acms)
@@ -147,23 +146,23 @@
 -(IBAction)setAmp:(id)sender
 {
   #pragma unused (sender)
-  double ampVal = [_ampSlider doubleValue];
+  float ampVal = [_ampSlider floatValue];
   [_musicRenderer setAmp:ampVal];
 }
 
 -(IBAction)setAmpLo:(id)sender
 {
   #pragma unused (sender)
-  double ampVal = 0.0;
-  [_ampSlider setDoubleValue:ampVal];
+  float ampVal = 0.0f;
+  [_ampSlider setFloatValue:ampVal];
   [_musicRenderer setAmp:ampVal];
 }
 
 -(IBAction)setAmpHi:(id)sender
 {
   #pragma unused (sender)
-  double ampVal = 1.0;
-  [_ampSlider setDoubleValue:ampVal];
+  float ampVal = 1.0f;
+  [_ampSlider setFloatValue:ampVal];
   [_musicRenderer setAmp:ampVal];
 }
 
@@ -278,8 +277,7 @@
 }
 
 // scriptPath is full or partial path to script file, including extension.
-// Caller disposes of output string
--(NSMutableString*)runScript:(NSString*)script onString:(NSString*)string
+-(NSString*)runScript:(NSString*)script onString:(NSString*)string
 {
   NSBundle* bundle = [NSBundle mainBundle];
   NSString* path = [bundle pathForResource:script ofType:nil];
@@ -287,18 +285,18 @@
   [task setLaunchPath:path];
   NSPipe* readPipe = [NSPipe pipe];
   NSFileHandle* readHandle = [readPipe fileHandleForReading];
-  NSPipe *writePipe = [NSPipe pipe];
-  NSFileHandle *writeHandle = [writePipe fileHandleForWriting];
+  NSPipe* writePipe = [NSPipe pipe];
+  NSFileHandle* writeHandle = [writePipe fileHandleForWriting];
   [task setStandardInput: writePipe];
   [task setStandardOutput: readPipe];
   [task launch];
-  [writeHandle writeData: [string dataUsingEncoding:NSUTF8StringEncoding]];
+  [writeHandle writeData:[string dataUsingEncoding:NSUTF8StringEncoding]];
   [writeHandle closeFile];
   NSMutableData* data = [[NSMutableData alloc] init];
   NSData* readData;
   while ((readData = [readHandle availableData]) && [readData length]) [data appendData:readData];
-  NSMutableString* outString = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
   [task release];
+  NSString* outString = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
   [data release];
   return outString;
 }
