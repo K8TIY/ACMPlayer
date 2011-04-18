@@ -20,7 +20,12 @@ static void _drawFrameInRect(NSRect frameRect);
 
 @implementation ACMProgressSlider
 +(Class)cellClass {return [ACMProgressSliderCell class];}
--(BOOL)acceptsFirstMouse:(NSEvent*)evt {return YES;}
+-(BOOL)acceptsFirstMouse:(NSEvent*)evt
+{
+  #pragma unused (evt)
+  return YES;
+}
+
 -(double)trackingValue
 {
   return [[self cell] trackingValue];
@@ -99,12 +104,12 @@ static void _drawKnobInRect(NSRect r)
   r.origin.y += (int)((float)(r.size.height - 7)/2.0);
   // Draw diamond
   NSRectFillUsingOperation(NSMakeRect(r.origin.x + 3.0f, r.origin.y + 6.0f, 1.0f, 1.0f), NSCompositeSourceOver);
-  NSRectFillUsingOperation(NSMakeRect(r.origin.x + 2, r.origin.y + 5, 3, 1), NSCompositeSourceOver);
-  NSRectFillUsingOperation(NSMakeRect(r.origin.x + 1, r.origin.y + 4, 5, 1), NSCompositeSourceOver);
-  NSRectFillUsingOperation(NSMakeRect(r.origin.x + 0, r.origin.y + 3, 7, 1), NSCompositeSourceOver);
-  NSRectFillUsingOperation(NSMakeRect(r.origin.x + 1, r.origin.y + 2, 5, 1), NSCompositeSourceOver);
-  NSRectFillUsingOperation(NSMakeRect(r.origin.x + 2, r.origin.y + 1, 3, 1), NSCompositeSourceOver);
-  NSRectFillUsingOperation(NSMakeRect(r.origin.x + 3, r.origin.y + 0, 1, 1), NSCompositeSourceOver);
+  NSRectFillUsingOperation(NSMakeRect(r.origin.x + 2.0, r.origin.y + 5.0f, 3.0, 1.0), NSCompositeSourceOver);
+  NSRectFillUsingOperation(NSMakeRect(r.origin.x + 1, r.origin.y + 4, 5.0, 1.0), NSCompositeSourceOver);
+  NSRectFillUsingOperation(NSMakeRect(r.origin.x + 0, r.origin.y + 3, 7.0, 1.0), NSCompositeSourceOver);
+  NSRectFillUsingOperation(NSMakeRect(r.origin.x + 1, r.origin.y + 2, 5.0, 1.0), NSCompositeSourceOver);
+  NSRectFillUsingOperation(NSMakeRect(r.origin.x + 2, r.origin.y + 1, 3.0, 1.0), NSCompositeSourceOver);
+  NSRectFillUsingOperation(NSMakeRect(r.origin.x + 3, r.origin.y + 0, 1.0, 1.0), NSCompositeSourceOver);
 }
 
 static void _drawFrameInRect(NSRect r)
