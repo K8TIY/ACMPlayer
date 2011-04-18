@@ -1,6 +1,4 @@
-#ifdef __OBJC__
 #import <Cocoa/Cocoa.h>
-#endif
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #include <CoreAudio/CoreAudio.h>
