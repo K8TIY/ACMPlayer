@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010, Brian "Moses" Hall
+ * Copyright © 2010-2011, Brian "Moses" Hall
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -144,11 +144,6 @@ static void _drawFrameInRect(NSRect r)
     }
   }
   // Draw shadow
-  // This may look sorta cool, but it is a horrible waste of processor cycles.
-  // I thought the idea was not to drop samples. I just have a G4 :-(
-  // And I can't find Apple's documentation on the Kernel realtime APIs/KPIs :-(((
-  // (every time I save this file in XCode with ACMPlayer er... playing... it drops
-  // briefly.)
   [[[NSColor blackColor] colorWithAlphaComponent:0.1f] set];
   rect.origin.x++;
   rect.origin.y++;
@@ -267,7 +262,7 @@ static void _drawFrameInRect(NSRect r)
 -(void)drawRect:(NSRect)rect
 {
   rect = NSInsetRect([self bounds], 1.0f, 1.0f);
-  [[NSColor colorWithCalibratedRed:0.90f green:0.91f blue:0.65f alpha:1.0f] set];
+  [[NSColor colorWithCalibratedRed:0.94f green:0.98f blue:0.79f alpha:1.0f] set];
   NSBezierPath* path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:4.0f yRadius:4.0f];
   [path fill];
   [[NSColor colorWithCalibratedRed:0.2f green:0.2f blue:0.2f alpha:1.0f] set];
