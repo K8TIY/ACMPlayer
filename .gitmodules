@@ -1,3 +1,6 @@
 [submodule "libacm"]
 	path = libacm
 	url = git://git.berlios.de/libacm
+[submodule "Onizuka"]
+	path = Onizuka
+	url = git@github.com:K8TIY/Onizuka.git
