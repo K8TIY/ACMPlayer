@@ -16,5 +16,9 @@
 #import "AppController.h"
 
 @implementation AppController
--(BOOL)applicationShouldOpenUntitledFile:(NSApplication*)sender{return NO;}
+-(BOOL)applicationShouldOpenUntitledFile:(NSApplication*)sender
+{
+  #pragma unused (sender)
+  return NO;
+}
 @end
