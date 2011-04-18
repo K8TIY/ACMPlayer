@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010, Brian "Moses" Hall
+ * Copyright © 2010-2011, Brian "Moses" Hall
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -13,6 +13,14 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
+#import <CoreAudio/CoreAudio.h>
+#import <CoreFoundation/CoreFoundation.h>
+#import <CoreAudio/AudioHardware.h>
+#import <CoreServices/CoreServices.h>
+#import <AudioToolbox/AudioToolbox.h>
 #import "libacm.h"
 
 @protocol ACM
@@ -36,7 +44,7 @@ enum
   NSMutableArray* _acms; // Array of NSValue of ACMStream*
   NSMutableArray* _epilogueNames; // Names, may be nil
   NSMutableDictionary* _epilogues; // Name -> NSValue -> ACMStream*, may be nil
-  AudioUnit _au;
+  AUGraph _ag;
   id _delegate;
   unsigned long _totalPCM;
   unsigned long _totalPCMPlayed;

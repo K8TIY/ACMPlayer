@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010, Brian "Moses" Hall
+ * Copyright © 2010-2011, Brian "Moses" Hall
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -18,18 +18,20 @@
 
 @interface ACMRenderer (Private)
 -(ACMStream*)_acmAtIndex:(NSUInteger)i;
--(OSStatus)_createAU:(double)rate;
+//-(OSStatus)_createAU:(double)rate;
+-(OSStatus)_initAUGraph:(double)rate;
 -(int16_t*)_bufferSamples:(UInt32)count;
 -(ACMStream*)_advACM;
 -(ACMStream*)_epilogueAtPosition:(NSUInteger)pos;
 -(void)_progress;
 @end
 
+#define ACMPLAYER_DEBUG 0
 
 static OSStatus	RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFlags, 
                          const AudioTimeStamp* inTimeStamp, UInt32 inBusNumber, 
                          UInt32 inNumberFrames, AudioBufferList* ioData);
-#if 0
+#if ACMPLAYER_DEBUG
 static void hexdump(void *data, int size);
 #endif
 
@@ -43,7 +45,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   short* acmBufferRead = NULL;
   float* lBuffer = ioData->mBuffers[0].mData;
   float* rBuffer = ioData->mBuffers[1].mData;
-  short* acmBuffer = [myself _bufferSamples:inNumberFrames * 2];
+  int16_t* acmBuffer = [myself _bufferSamples:inNumberFrames * 2];
   if (acmBuffer) acmBufferRead = acmBuffer;
   for (i = 0; i < inNumberFrames; i++)
   {
@@ -55,8 +57,8 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
       int16_t rSample = *acmBufferRead;
       acmBufferRead++;
       // Scale short int values to {-1,1}
-      waveL = (float)lSample/35526.0f;
-      if (rSample != lSample) waveR = (float)rSample/35526.0f;
+      waveL = (float)lSample/32767.0f;
+      if (rSample != lSample) waveR = (float)rSample/32767.0f;
       else waveR = waveL;
       // Only multiply by amp if we have to.
       float amp = [myself amp];
@@ -131,14 +133,20 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
       [_epilogues setObject:obj forKey:file];
     }
   }
-  OSErr err = [self _createAU:rate];
-  //NSLog(@"Total time: %f sec", _totalSeconds);
+  OSStatus err = [self _initAUGraph:rate];
+  if (err)
+  {
+    NSLog(@"_createAU:%f failed: %d", rate, err);
+    [self release];
+    self = nil;
+  }
   return self;
 }
 
 -(void)dealloc
 {
-  CloseComponent(_au);
+  if (_ag) DisposeAUGraph(_ag);
+  
   for (NSValue* val in _acms) acm_close([val pointerValue]);
   [_acms release];
   if (_epilogueNames) [_epilogueNames release];
@@ -156,7 +164,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 {
   if (!_nowPlaying)
   {
-    OSStatus err = AudioOutputUnitStart(_au);
+    OSStatus err = AUGraphStart(_ag);
     if (!err) _nowPlaying = YES;
   }
 }
@@ -165,7 +173,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 {
   if (_nowPlaying)
   {
-    OSStatus err = AudioOutputUnitStop(_au);
+    OSStatus err = AUGraphStop(_ag);
     if (err) NSLog(@"ERROR %ld from AudioOutputUnitStop", err);
     else _nowPlaying = NO;
   }
@@ -237,7 +245,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 -(float)amp {return _amp;}
 -(BOOL)isPlaying {return _nowPlaying;}
 
--(OSStatus)_createAU:(double)rate
+/*-(OSStatus)_createAU:(double)rate
 {
 	OSStatus err = noErr;
   AURenderCallbackStruct input;
@@ -277,6 +285,68 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 							kAudioUnitScope_Output, 0, &outSampleRate, &size);
 	if (err) { printf ("AudioUnitSetProperty-GF=%4.4s, %ld\n", (char*)&err, err);}
 	return err;
+}*/
+
+-(OSStatus)_initAUGraph:(double)rate
+{
+  OSStatus result = NewAUGraph(&_ag);
+  if (result) return result;
+  AUNode outputNode;
+  AudioUnit outputUnit;
+  //  output component
+  ComponentDescription output_desc;
+  output_desc.componentType = kAudioUnitType_Output;
+  output_desc.componentSubType = kAudioUnitSubType_DefaultOutput;
+  output_desc.componentFlags = 0;
+  output_desc.componentFlagsMask = 0;
+  output_desc.componentManufacturer = kAudioUnitManufacturer_Apple;
+  // Add nodes to the graph to hold our AudioUnits,
+  // You pass in a reference to the  AudioComponentDescription
+  // and get back an  AudioUnit
+  result = AUGraphAddNode(_ag, &output_desc, &outputNode);
+  if (result) return result;
+  // open the graph AudioUnits are open but not initialized (no resource allocation occurs here)
+  result = AUGraphOpen(_ag);
+  if (result) return result;
+  result = AUGraphNodeInfo(_ag, outputNode, NULL, &outputUnit);
+  if (result) return result;
+  AudioStreamBasicDescription desc;
+  desc.mSampleRate = rate;
+  desc.mFormatID = kAudioFormatLinearPCM;
+#if TARGET_RT_BIG_ENDIAN
+    desc.mFormatFlags = kAudioFormatFlagIsFloat | kAudioFormatFlagIsBigEndian | kAudioFormatFlagIsPacked | kAudioFormatFlagIsNonInterleaved;
+#else
+    desc.mFormatFlags = kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked | kAudioFormatFlagIsNonInterleaved;
+#endif
+  desc.mBytesPerPacket = 4;
+  desc.mFramesPerPacket = 1;
+  desc.mBytesPerFrame = 4;
+  desc.mChannelsPerFrame = 2;
+  desc.mBitsPerChannel = 32;
+  // Setup render callback struct
+  // This struct describes the function that will be called
+  // to provide a buffer of audio samples for the mixer unit.
+  AURenderCallbackStruct rcbs;
+  rcbs.inputProc = RenderCB;
+  rcbs.inputProcRefCon = self;
+  // Set a callback for the specified node's specified input
+  result = AudioUnitSetProperty(outputUnit, kAudioUnitProperty_SetRenderCallback,
+                                kAudioUnitScope_Input, 0, &rcbs,
+                                sizeof(AURenderCallbackStruct)); 
+  //result = AUGraphSetNodeInputCallback(_ag, mixerNode, i, &rcbs);
+  if (result) return result;
+  // Apply the modified CAStreamBasicDescription to the mixer input bus
+  result = AudioUnitSetProperty(outputUnit, kAudioUnitProperty_StreamFormat,
+                                kAudioUnitScope_Input, 0,
+                                &desc, sizeof(desc));
+  if (result) return result;
+  // Apply the Description to the mixer output bus
+  /*result = AudioUnitSetProperty(outputUnit, kAudioUnitProperty_StreamFormat,
+                                kAudioUnitScope_Output, 0,
+                                &desc, sizeof(desc));
+  if (result) return result;*/
+  // Once everything is set up call initialize to validate connections
+  return AUGraphInitialize(_ag);
 }
 
 -(int16_t*)_bufferSamples:(UInt32)count
@@ -285,7 +355,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   int16_t* acmBuffer = NULL;
   if (!_suspended && _epilogue != acmDidEpilogue)
   {
-    unsigned long bytesNeeded = count * 2 * sizeof(int16_t);
+    unsigned long bytesNeeded = count * sizeof(int16_t);
     unsigned long bytesBuffered = 0;
     while (bytesBuffered < bytesNeeded)
     {
@@ -308,7 +378,9 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
         if (!acmBuffer) acmBuffer = calloc(bytesNeeded, 1L);
         int before = acm_pcm_tell(acm);
         int res = acm_read_loop(acm, ((char*)acmBuffer) + bytesBuffered, needed, 0, 2, 1);
-        //hexdump(((char*)acmBuffer) + bytesBuffered, res);
+        #if ACMPLAYER_DEBUG
+        hexdump(((char*)acmBuffer) + bytesBuffered, res);
+        #endif
         int after = acm_pcm_tell(acm);
         //NSLog(@"  needed %d, read %d bytes, was %d, now %d", needed, res, before, after);
         bytesBuffered += res;
@@ -388,7 +460,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   if (!_suspended && _delegate && [_delegate respondsToSelector:@selector(acmProgress:)])
   {
     [_delegate performSelectorOnMainThread:@selector(acmProgress:)
-               withObject:self waitUntilDone: NO];
+               withObject:self waitUntilDone:NO];
   }
 }
 
@@ -428,7 +500,9 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 	    while (bytesDone < totalBytes)
       {
 		    int res = acm_read_loop(acm, buff, BUFF_SIZE, 1, 2, 1);
-        //hexdump(buff,res);
+        #if ACMPLAYER_DEBUG
+        hexdump(buff,res);
+        #endif
         if (!res)
         {
           //NSLog(@"WTF? Couldn't get acm reader to cough up any bits for the epilogue??\n%@", epiacm);
@@ -438,7 +512,6 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
         err = AudioFileWritePackets(fileID, false, res, NULL, packetidx, &ioNumPackets, buff);
         packetidx += ioNumPackets;
         //NSLog(@"AudioFileWritePackets %.4s", &err);
-        //double percent = (double)_totalPCMPlayed/(double)_totalPCM;
         //NSLog(@"Wrote %lu samples of %lu (%f\%)", _totalSamplesPlayed, _totalSamples, percent*100);
         if (_delegate && [_delegate respondsToSelector:@selector(acmExportProgress:)])
         {
@@ -477,59 +550,59 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 }
 @end
 
-#if 0
+#if ACMPLAYER_DEBUG
 static void hexdump(void *data, int size)
 {
-    /* dumps size bytes of *data to stdout. Looks like:
-     * [0000] 75 6E 6B 6E 6F 77 6E 20
-     *                  30 FF 00 00 00 00 39 00 unknown 0.....9.
-     * (in a single line of course)
-     */
-
-    unsigned char *p = data;
-    unsigned char c;
-    int n;
-    char bytestr[4] = {0};
-    char addrstr[10] = {0};
-    char hexstr[ 16*3 + 5] = {0};
-    char charstr[16*1 + 5] = {0};
-    for(n=1;n<=size;n++) {
-        if (n%16 == 1) {
-            /* store address for this line */
-            snprintf(addrstr, sizeof(addrstr), "%.4x",
-               ((unsigned int)p-(unsigned int)data) );
-        }
-            
-        c = *p;
-        if (isalnum(c) == 0) {
-            c = '.';
-        }
-
-        /* store hex str (for left side) */
-        snprintf(bytestr, sizeof(bytestr), "%02X ", *p);
-        strncat(hexstr, bytestr, sizeof(hexstr)-strlen(hexstr)-1);
-
-        /* store char str (for right side) */
-        snprintf(bytestr, sizeof(bytestr), "%c", c);
-        strncat(charstr, bytestr, sizeof(charstr)-strlen(charstr)-1);
-
-        if(n%16 == 0) { 
-            /* line completed */
-            printf("[%4.4s]   %-50.50s  %s\n", addrstr, hexstr, charstr);
-            hexstr[0] = 0;
-            charstr[0] = 0;
-        } else if(n%8 == 0) {
-            /* half line: add whitespaces */
-            strncat(hexstr, "  ", sizeof(hexstr)-strlen(hexstr)-1);
-            strncat(charstr, " ", sizeof(charstr)-strlen(charstr)-1);
-        }
-        p++; /* next byte */
+  /* dumps size bytes of *data to stdout. Looks like:
+   * [0000] 75 6E 6B 6E 6F 77 6E 20
+   *                  30 FF 00 00 00 00 39 00 unknown 0.....9.
+   * (in a single line of course)
+   */
+  unsigned char *p = data;
+  unsigned char c;
+  int n;
+  char bytestr[4] = {0};
+  char addrstr[10] = {0};
+  char hexstr[ 16*3 + 5] = {0};
+  char charstr[16*1 + 5] = {0};
+  for (n=1;n<=size;n++)
+  {
+    if (n%16 == 1)
+    {
+      /* store address for this line */
+      snprintf(addrstr, sizeof(addrstr), "%.4x", ((unsigned int)p-(unsigned int)data));
     }
-
-    if (strlen(hexstr) > 0) {
-        /* print rest of buffer if not empty */
-        printf("[%4.4s]   %-50.50s  %s\n", addrstr, hexstr, charstr);
+    c = *p;
+    if (isalnum(c) == 0)
+    {
+      c = '.';
     }
+    /* store hex str (for left side) */
+    snprintf(bytestr, sizeof(bytestr), "%02X ", *p);
+    strncat(hexstr, bytestr, sizeof(hexstr)-strlen(hexstr)-1);
+    /* store char str (for right side) */
+    snprintf(bytestr, sizeof(bytestr), "%c", c);
+    strncat(charstr, bytestr, sizeof(charstr)-strlen(charstr)-1);
+    if (n%16 == 0)
+    { 
+      /* line completed */
+      printf("[%4.4s]   %-50.50s  %s\n", addrstr, hexstr, charstr);
+      hexstr[0] = 0;
+      charstr[0] = 0;
+    }
+    else if (n%8 == 0)
+    {
+      /* half line: add whitespaces */
+      strncat(hexstr, "  ", sizeof(hexstr)-strlen(hexstr)-1);
+      strncat(charstr, " ", sizeof(charstr)-strlen(charstr)-1);
+    }
+    p++; /* next byte */
+  }
+  if (strlen(hexstr) > 0)
+  {
+    /* print rest of buffer if not empty */
+    printf("[%4.4s]   %-50.50s  %s\n", addrstr, hexstr, charstr);
+  }
 }
 #endif
 
