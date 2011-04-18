@@ -1,0 +1,3 @@
+[submodule "libacm"]
+	path = libacm
+	url = git://git.berlios.de/libacm
