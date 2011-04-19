@@ -220,7 +220,7 @@
     /*[NSApp beginSheet:_exportSheet modalForWindow:_playerWindow
            modalDelegate:self didEndSelector:NULL contextInfo:nil];*/
     [_progress setShowsProgress:YES];
-    [_epilogueStateButton setTitle:NSLocalizedString(@"EXPORTING",@"blah")];
+    [_epilogueStateButton setTitle:NSLocalizedString(@"__EXPORTING__",@"blah")];
     [_epilogueStateButton display];
     // Have to call [_epilogueStateButton display]; because we are hogging the main thread here
     // during the export. Should spawn a new thread but would have to probably start a new
@@ -248,9 +248,10 @@
     [_progress setDoubleValue:percent];
     [self updateTimeDisplay];
     int es = [_musicRenderer epilogueState];
-    if (es == acmWillDoEpilogue) [_epilogueStateButton setTitle:NSLocalizedString(@"EPILOGUE",@"blah")];
-    else if (es == acmDoingEpilogue) [_epilogueStateButton setTitle:NSLocalizedString(@"EPILOGUE_PLAYING",@"blah")];
-    else [_epilogueStateButton setTitle:@""];
+    NSString* esStr = @"";
+    if (es == acmWillDoEpilogue) esStr = NSLocalizedString(@"__EPILOGUE_WILL_PLAY__",@"blah");
+    else if (es == acmDoingEpilogue) esStr = NSLocalizedString(@"__EPILOGUE_PLAYING__",@"blah");
+    [_epilogueStateButton setTitle:esStr];
   }
 }
 
