@@ -224,14 +224,20 @@ static void _drawFrameInRect(NSRect r)
 
 -(void)setDoubleValue:(double)aDouble
 {
-  _value = aDouble;
-  if (!_tracking) [[self controlView] setNeedsDisplay:YES];
+  if (_value != aDouble)
+  {
+    _value = aDouble;
+    if (!_tracking) [[self controlView] setNeedsDisplay:YES];
+  }
 }
 
 -(void)setTrackingValue:(double)aDouble
 {
-  _trackingValue = aDouble;
-  if (_tracking) [[self controlView] setNeedsDisplay:YES];
+  if (_trackingValue != aDouble)
+  {
+    _trackingValue = aDouble;
+    if (_tracking) [[self controlView] setNeedsDisplay:YES];
+  }
 }
 
 -(void)setShowsProgress:(BOOL)flag
@@ -249,7 +255,7 @@ static void _drawFrameInRect(NSRect r)
   {
     _progressValue = aDouble;
     if (_progressing) [[self controlView] setNeedsDisplay:YES];
-    else NSLog(@"But I'm not progressive!");
+    //else NSLog(@"But I'm not progressive!");
   }
 }
 
