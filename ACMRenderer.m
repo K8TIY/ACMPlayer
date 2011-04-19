@@ -92,7 +92,8 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
     if (!err)
     {
       rate = acm_rate(acm);
-      unsigned int tpcm = acm_pcm_total(acm);
+      unsigned tpcm = acm_pcm_total(acm);
+      acm_seek_pcm(acm, tpcm-4);
       [_acms addObject:[NSValue valueWithPointer:acm]];
       _totalPCM += tpcm;
       _totalSeconds += tpcm/rate/2.0;
@@ -128,6 +129,8 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
       }
       else
       {
+        unsigned tpcm = acm_pcm_total(acm);
+        acm_seek_pcm(acm, tpcm-4);
         obj = [NSValue valueWithPointer:acm];
       }
       [_epilogues setObject:obj forKey:file];
