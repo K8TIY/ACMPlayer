@@ -2,3 +2,4 @@
 "__EPILOGUE_PLAYING__" = "跋を再生中…";
 "__EPILOGUE__" = "跋";
 "__EXPORT_AIFF__" = "AIFFオーディオとして書き出す…";
+"__EXPORTING__" = "AIFFとして書き出し中…";
