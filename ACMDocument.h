@@ -50,5 +50,6 @@
 -(IBAction)setLoop:(id)sender;
 -(IBAction)setProgress:(id)sender;
 -(IBAction)epilogueAction:(id)sender;
+-(IBAction)exportAIFF:(id)sender;
 @end
 
