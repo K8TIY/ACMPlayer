@@ -493,7 +493,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
     SInt64 packetidx = 0;
     AudioFileID fileID;
     OSStatus err = AudioFileCreateWithURL((CFURLRef)url, kAudioFileAIFFType, &streamFormat, kAudioFileFlags_EraseFile, &fileID);
-    NSLog(@"AudioFileCreateWithURL %.4s rate %f file %d", &err, streamFormat.mSampleRate, fileID);
+    //NSLog(@"AudioFileCreateWithURL %.4s rate %f file %d", &err, streamFormat.mSampleRate, fileID);
     for (_currentACM = 0; _currentACM < [_acms count]; _currentACM++)
     {
       unsigned bytesDone = 0;
