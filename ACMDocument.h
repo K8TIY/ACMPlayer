@@ -17,9 +17,12 @@
 #import "ACMRenderer.h"
 #import "ACMProgressSlider.h"
 
+@interface  ACMWindow : NSWindow
+@end
+
 @interface ACMDocument : NSDocument <ACM>
 {
-  IBOutlet NSWindow* _playerWindow;
+  IBOutlet ACMWindow* _playerWindow;
   //IBOutlet NSPanel* _exportSheet;
   //IBOutlet NSProgressIndicator* _exportSheetProgress;
   IBOutlet NSButton* _startStopButton;
@@ -51,5 +54,6 @@
 -(IBAction)setProgress:(id)sender;
 -(IBAction)epilogueAction:(id)sender;
 -(IBAction)exportAIFF:(id)sender;
+-(void)windowDidReceiveSpace:(id)sender;
 @end
 

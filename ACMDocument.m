@@ -16,6 +16,28 @@
 #import "ACMDocument.h"
 #import "Onizuka.h"
 
+// Subclass that can detect spacebar and send notification to its delegate.
+@implementation ACMWindow
+-(void)sendEvent:(NSEvent*)event
+{
+  BOOL handled = NO;
+  if ([event type] == NSKeyUp)
+  {
+    //NSLog(@"got '%@'", [event charactersIgnoringModifiers]);
+    if ([[event charactersIgnoringModifiers] isEqualToString:@" "])
+    {
+      id del = [self delegate];
+      if (del && [del respondsToSelector:@selector(windowDidReceiveSpace:)])
+      {
+        [del windowDidReceiveSpace:self];
+        handled = YES;
+      }
+    }
+  }
+  if (!handled) [super sendEvent:event];
+}
+@end
+
 @interface ACMDocument (Private)
 -(void)updateTimeDisplay;
 -(void)aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code contextInfo:(void*)contextInfo;
@@ -101,11 +123,11 @@
   NSUInteger loopPoint = 0;
   NSArray* acms = nil;
   NSArray* eps = nil;
-  if ([type isEqual:@"ACM Music File"])
+  if ([type isEqualToString:@"ACM Music File"])
   {
     acms = [NSArray arrayWithObjects:fileName, NULL];
   }
-  else if ([type isEqual:@"ACM Music List"])
+  else if ([type isEqualToString:@"ACM Music List"])
   {
     NSString* parsed = [self runScript:@"mus.py" onString:fileName];
     NSDictionary* pl = [parsed propertyList];
@@ -128,6 +150,7 @@
   return loaded;
 }
 
+#pragma mark Action
 -(IBAction)startStop:(id)sender
 {
   #pragma unused (sender)
@@ -201,14 +224,15 @@
 -(IBAction)exportAIFF:(id)sender
 {
   #pragma unused (sender)
-    NSSavePanel* panel = [NSSavePanel savePanel];
-    [panel setRequiredFileType:@"aiff"];
-    [panel beginSheetForDirectory:nil file:nil modalForWindow:_playerWindow
-           modalDelegate:self
-           didEndSelector:@selector(aiffExportDidEnd:returnCode:contextInfo:)
-           contextInfo:nil];
+  NSSavePanel* panel = [NSSavePanel savePanel];
+  [panel setRequiredFileType:@"aiff"];
+  [panel beginSheetForDirectory:nil file:nil modalForWindow:_playerWindow
+         modalDelegate:self
+         didEndSelector:@selector(aiffExportDidEnd:returnCode:contextInfo:)
+         contextInfo:nil];
 }
 
+#pragma mark Callback
 -(void)aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code contextInfo:(void*)contextInfo
 {
   #pragma unused (contextInfo)
@@ -279,6 +303,13 @@
   [_progress display];
 }
 
+#pragma mark Delegate
+-(void)windowDidReceiveSpace:(id)sender
+{
+  [self startStop:sender];
+}
+
+#pragma mark Internal
 // scriptPath is full or partial path to script file, including extension.
 -(NSString*)runScript:(NSString*)script onString:(NSString*)string
 {
