@@ -352,7 +352,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		A6C1726B090D537400E21D11 /* Development */ = {
+		A6C1726B090D537400E21D11 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -390,9 +390,9 @@
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-16";
 				WRAPPER_EXTENSION = app;
 			};
-			name = Development;
+			name = Debug;
 		};
-		A6C1726C090D537400E21D11 /* Deployment */ = {
+		A6C1726C090D537400E21D11 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -428,9 +428,9 @@
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-16";
 				WRAPPER_EXTENSION = app;
 			};
-			name = Deployment;
+			name = Release;
 		};
-		A6C1726F090D537400E21D11 /* Development */ = {
+		A6C1726F090D537400E21D11 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -453,9 +453,9 @@
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-16";
 				ZERO_LINK = NO;
 			};
-			name = Development;
+			name = Debug;
 		};
-		A6C17270090D537400E21D11 /* Deployment */ = {
+		A6C17270090D537400E21D11 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -475,7 +475,7 @@
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-16";
 			};
-			name = Deployment;
+			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
@@ -483,20 +483,20 @@
 		A6C1726A090D537400E21D11 /* Build configuration list for PBXNativeTarget "ACMPlayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A6C1726B090D537400E21D11 /* Development */,
-				A6C1726C090D537400E21D11 /* Deployment */,
+				A6C1726B090D537400E21D11 /* Debug */,
+				A6C1726C090D537400E21D11 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
+			defaultConfigurationName = Debug;
 		};
 		A6C1726E090D537400E21D11 /* Build configuration list for PBXProject "ACMPlayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A6C1726F090D537400E21D11 /* Development */,
-				A6C17270090D537400E21D11 /* Deployment */,
+				A6C1726F090D537400E21D11 /* Debug */,
+				A6C17270090D537400E21D11 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
