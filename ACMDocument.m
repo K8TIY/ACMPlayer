@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010, Brian "Moses" Hall
+ * Copyright © 2010-2011, Brian "Moses" Hall
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -21,17 +21,19 @@
 -(void)sendEvent:(NSEvent*)event
 {
   BOOL handled = NO;
-  if ([event type] == NSKeyUp)
+  //NSLog(@"sendEvent: %@", event);
+  if ([event type] == NSKeyUp || [event type] == NSKeyDown)
   {
     //NSLog(@"got '%@'", [event charactersIgnoringModifiers]);
     if ([[event charactersIgnoringModifiers] isEqualToString:@" "])
     {
-      id del = [self delegate];
-      if (del && [del respondsToSelector:@selector(windowDidReceiveSpace:)])
+      if ([event type] == NSKeyUp)
       {
-        [del windowDidReceiveSpace:self];
-        handled = YES;
+        id del = [self delegate];
+        if (del && [del respondsToSelector:@selector(windowDidReceiveSpace:)])
+          [del windowDidReceiveSpace:self];
       }
+      handled = YES;
     }
   }
   if (!handled) [super sendEvent:event];
@@ -279,6 +281,7 @@
   }
 }
 
+// FIXME: is it possible to localize this format?
 -(void)updateTimeDisplay
 {
   NSString* timeStr;
