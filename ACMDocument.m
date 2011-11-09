@@ -119,26 +119,37 @@
   if (_suspendedInBackground) [_musicRenderer resume];
 }
 
--(BOOL)readFromFile:(NSString*)fileName ofType:(NSString*)type
+-(BOOL)readFromURL:(NSURL*)url ofType:(NSString *)type error:(NSError**)oError
 {
   BOOL loaded = NO;
   NSUInteger loopPoint = 0;
   NSArray* acms = nil;
   NSArray* eps = nil;
-  if ([type isEqualToString:@"ACM Music File"])
+  NSString* path = [url path];
+  if ([type isEqualToString:@"__ACM__"])
   {
-    acms = [NSArray arrayWithObjects:fileName, NULL];
+    acms = [NSArray arrayWithObjects:path, NULL];
   }
-  else if ([type isEqualToString:@"ACM Music List"])
+  else if ([type isEqualToString:@"__MUS__"])
   {
-    NSString* parsed = [self runScript:@"mus.py" onString:fileName];
+    NSString* parsed = [self runScript:@"mus.py" onString:path];
     NSDictionary* pl = [parsed propertyList];
     acms = [pl objectForKey:@"files"];
     eps = [pl objectForKey:@"epilogues"];
     loopPoint = [[pl objectForKey:@"loop"] intValue];
     if ([eps count]) _haveEpilogue = YES;
   }
-  else NSLog(@"Can't read file type '%@'.", type);
+  else if (oError)
+  {
+    NSString* desc = [[NSString stringWithFormat:
+                       [[Onizuka sharedOnizuka]
+                         copyLocalizedTitle:@"__ILLEGAL_FILE_TYPE__"], type]
+                       autorelease];
+    NSDictionary* eDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                                        desc, NSLocalizedDescriptionKey,
+                                        path, NSFilePathErrorKey, NULL];
+    *oError = [NSError errorWithDomain:@"ACMPlayer" code:-1 userInfo:eDict];
+  }
   if (acms)
   {
     _musicRenderer = [[ACMRenderer alloc] initWithPlaylist:acms andEpilogues:eps];
@@ -274,10 +285,13 @@
     [_progress setDoubleValue:percent];
     [self updateTimeDisplay];
     int es = [_musicRenderer epilogueState];
-    NSString* esStr = @"";
-    if (es == acmWillDoEpilogue) esStr = NSLocalizedString(@"__EPILOGUE_WILL_PLAY__",@"blah");
-    else if (es == acmDoingEpilogue) esStr = NSLocalizedString(@"__EPILOGUE_PLAYING__",@"blah");
-    [_epilogueStateButton setTitle:esStr];
+    if (es == acmWillDoEpilogue)
+      [[Onizuka sharedOnizuka] localizeObject:_epilogueStateButton
+                               withTitle:@"__EPILOGUE_WILL_PLAY__"];
+    else if (es == acmDoingEpilogue)
+      [[Onizuka sharedOnizuka] localizeObject:_epilogueStateButton
+                               withTitle:@"__EPILOGUE_PLAYING__"];
+    else [_epilogueStateButton setTitle:@""];
   }
 }
 

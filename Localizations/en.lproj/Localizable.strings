@@ -3,3 +3,4 @@
 "__EPILOGUE__" = "Epilogue";
 "__EXPORT_AIFF__" = "Export as AIFF Audio…";
 "__EXPORTING__" = "Exporting AIFF…";
+"__ILLEGAL_FILE_TYPE__"="Illegal file type '%@'";

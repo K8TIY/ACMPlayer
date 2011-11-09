@@ -14,7 +14,7 @@
 			<key>CFBundleTypeIconFile</key>
 			<string></string>
 			<key>CFBundleTypeName</key>
-			<string>ACM Music File</string>
+			<string>__ACM__</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>????</string>
@@ -30,7 +30,7 @@
 				<string>mus</string>
 			</array>
 			<key>CFBundleTypeName</key>
-			<string>ACM Music List</string>
+			<string>__MUS__</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>????</string>
@@ -56,7 +56,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.1</string>
 	<key>CFBundleVersion</key>
-	<string>2011-04-29</string>
+	<string>2011.11.09</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

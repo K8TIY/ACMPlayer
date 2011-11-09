@@ -3,3 +3,6 @@
 "__EPILOGUE__" = "跋";
 "__EXPORT_AIFF__" = "AIFFオーディオとして書き出す…";
 "__EXPORTING__" = "AIFFとして書き出し中…";
+"__ILLEGAL_FILE_TYPE__"="ファイルのタイプ「%@」が不正です";
+"__ACM__" = "ACM audio";
+"__MUS__" = "MUS playlist";
