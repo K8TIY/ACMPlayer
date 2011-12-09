@@ -141,10 +141,10 @@
   }
   else if (oError)
   {
-    NSString* desc = [[NSString stringWithFormat:
-                       [[Onizuka sharedOnizuka]
-                         copyLocalizedTitle:@"__ILLEGAL_FILE_TYPE__"], type]
-                       autorelease];
+    NSString* localized = [[Onizuka sharedOnizuka]
+                            copyLocalizedTitle:@"__ILLEGAL_FILE_TYPE__"];
+    NSString* desc = [NSString stringWithFormat:localized, type];
+    [localized release];
     NSDictionary* eDict = [NSDictionary dictionaryWithObjectsAndKeys:
                                         desc, NSLocalizedDescriptionKey,
                                         path, NSFilePathErrorKey, NULL];
