@@ -470,8 +470,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 #define BUFF_SIZE 0x20000L
 -(void)exportAIFFToURL:(NSURL*)url
 {
-  unsigned char *buff = NULL;
-  buff = malloc(BUFF_SIZE);
+  unsigned char* buff = malloc(BUFF_SIZE);
   if (buff)
   {
     ACMStream* acm;
