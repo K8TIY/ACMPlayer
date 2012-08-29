@@ -40,6 +40,20 @@
 			<key>NSDocumentClass</key>
 			<string>ACMDocument</string>
 		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>aiff</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>AIFF File</string>
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
+		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>ACMPlayer</string>
@@ -51,10 +65,10 @@
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-	<key>CFBundleSignature</key>
-	<string>ACM!</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.1</string>
+	<key>CFBundleSignature</key>
+	<string>ACM!</string>
 	<key>CFBundleVersion</key>
 	<string>2011.11.09</string>
 	<key>NSMainNibFile</key>
