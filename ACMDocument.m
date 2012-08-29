@@ -40,6 +40,15 @@
 }
 @end
 
+@implementation ACMDocumentController
+-(NSInteger)runModalOpenPanel:(NSOpenPanel*)openPanel
+            forTypes:(NSArray*)extensions
+{
+  [openPanel setTreatsFilePackagesAsDirectories:YES];
+  return [super runModalOpenPanel:openPanel forTypes:extensions];
+}
+@end
+
 @interface ACMDocument (Private)
 -(void)updateTimeDisplay;
 -(void)aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code contextInfo:(void*)contextInfo;
