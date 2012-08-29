@@ -248,6 +248,7 @@
 			isa = PBXProject;
 			buildConfigurationList = A6C1726E090D537400E21D11 /* Build configuration list for PBXProject "ACMPlayer" */;
 			compatibilityVersion = "Xcode 3.0";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
