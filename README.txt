@@ -1,6 +1,11 @@
 ACMPlayer is a player for Baldur's Gate .acm music files and
 .mus playlist files.
 
+This version (1.2) adds support for navigating into .app packages in
+anticipation of Baldur's Gate Extended Edition due in November 2012.
+We don't know exactly how it will be packaged, but I suspect the music files
+will be embedded inside.
+
 In theory it should work for all games that use the Interplay formats.
 Originally I ported ABel's C++ code (from acm2wav.exe) to Objective-C.
 This version uses Marko Kreen's libacm, which is here as a git submodule.
