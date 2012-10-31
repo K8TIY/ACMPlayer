@@ -247,9 +247,11 @@
 {
   #pragma unused (sender)
   NSSavePanel* panel = [NSSavePanel savePanel];
-  [panel beginSheetForDirectory:nil file:nil modalForWindow:_playerWindow
-         modalDelegate:self
   [panel setAllowedFileTypes:[NSArray arrayWithObject:@"aiff"]];
+  NSString* aiffName = [[[[self fileURL] path] stringByDeletingPathExtension]
+                        stringByAppendingPathExtension:@"aiff"];
+  [panel beginSheetForDirectory:nil file:aiffName
+         modalForWindow:_playerWindow modalDelegate:self
          didEndSelector:@selector(aiffExportDidEnd:returnCode:contextInfo:)
          contextInfo:nil];
 }
