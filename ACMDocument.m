@@ -257,7 +257,8 @@
 }
 
 #pragma mark Callback
--(void)aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code contextInfo:(void*)contextInfo
+-(void)aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code
+       contextInfo:(void*)ctx
 {
   #pragma unused (contextInfo)
   if (code == NSOKButton)
@@ -270,9 +271,10 @@
     [_progress setShowsProgress:YES];
     [_epilogueStateButton setTitle:NSLocalizedString(@"__EXPORTING__",@"blah")];
     [_epilogueStateButton display];
-    // Have to call [_epilogueStateButton display]; because we are hogging the main thread here
-    // during the export. Should spawn a new thread but would have to probably start a new
-    // renderer or the current one might freak out doing 2 things at once.
+    // Have to call [_epilogueStateButton display]; because we are hogging the
+    // main thread here during the export. Should spawn a new thread but would
+    // have to probably start a new renderer or the current one might freak out
+    // doing 2 things at once.
     [_musicRenderer exportAIFFToURL:url];
     [_epilogueStateButton setTitle:@""];
     [_progress setShowsProgress:NO];
@@ -356,11 +358,12 @@
   [writeHandle closeFile];
   NSMutableData* data = [[NSMutableData alloc] init];
   NSData* readData;
-  while ((readData = [readHandle availableData]) && [readData length]) [data appendData:readData];
+  while ((readData = [readHandle availableData]) && [readData length])
+    [data appendData:readData];
   [task release];
-  NSString* outString = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+  NSString* outString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
   [data release];
-  return outString;
+  return [outString autorelease];
 }
 @end
 
