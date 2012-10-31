@@ -260,7 +260,7 @@
 -(void)aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code
        contextInfo:(void*)ctx
 {
-  #pragma unused (contextInfo)
+  #pragma unused (ctx)
   if (code == NSOKButton)
   {
     NSURL* url = [sheet URL];
