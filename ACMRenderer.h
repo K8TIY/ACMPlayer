@@ -53,10 +53,12 @@ enum
   BOOL _nowPlaying;
   BOOL _suspended;
   BOOL _loop;
+  BOOL _mono;
   // When we have epilogues, and we get done with an acm that has one,
   //   we will play the epilogue and stop playing (and clear these flags).
   int _epilogue;
 }
+@property (readonly) BOOL mono;
 
 -(ACMRenderer*)initWithPlaylist:(NSArray*)list andEpilogues:(NSArray*)epilogues;
 -(float)amp;

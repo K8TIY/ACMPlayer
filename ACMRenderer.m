@@ -45,7 +45,10 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   short* acmBufferRead = NULL;
   float* lBuffer = ioData->mBuffers[0].mData;
   float* rBuffer = ioData->mBuffers[1].mData;
-  int16_t* acmBuffer = [myself _bufferSamples:inNumberFrames * 2];
+  UInt32 samples = inNumberFrames;
+  BOOL mono = myself.mono;
+  if (!mono) samples *= 2;
+  int16_t* acmBuffer = [myself _bufferSamples:samples];
   if (acmBuffer) acmBufferRead = acmBuffer;
   for (i = 0; i < inNumberFrames; i++)
   {
@@ -54,8 +57,12 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
     {
       int16_t lSample = *acmBufferRead;
       acmBufferRead++;
-      int16_t rSample = *acmBufferRead;
-      acmBufferRead++;
+      int16_t rSample = lSample;
+      if (!mono)
+      {
+        rSample = *acmBufferRead;
+        acmBufferRead++;
+      }
       // Scale short int values to {-1,1}
       waveL = (float)lSample/32767.0f;
       if (rSample != lSample) waveR = (float)rSample/32767.0f;
@@ -77,6 +84,8 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 }
 
 @implementation ACMRenderer
+@synthesize mono = _mono;
+
 -(ACMRenderer*)initWithPlaylist:(NSArray*)list andEpilogues:(NSArray*)epilogues
 {
   self = [super init];
@@ -92,11 +101,13 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
     if (!err)
     {
       rate = acm_rate(acm);
+      if (1 == acm_channels(acm)) _mono = YES;
       unsigned tpcm = acm_pcm_total(acm);
       acm_seek_pcm(acm, tpcm-4);
       [_acms addObject:[NSValue valueWithPointer:acm]];
       _totalPCM += tpcm;
       _totalSeconds += tpcm/rate/2.0;
+      acm_seek_pcm(acm, 0);
     }
     // FIXME: this happens for BGII last entry in BM2.mus
     // Could try to repair???
