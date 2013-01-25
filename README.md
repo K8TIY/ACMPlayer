@@ -4,7 +4,7 @@ ACMPlayer is a player for Baldur's Gate .acm and .wav music/sound files and
 .mus playlist files.
 
 _Note: do not try to play "real" .wav files. Baldur's Gate .wavs are a different
-beast and will likely not work._
+beast and playing "real" .wavs with ACMPlayer will likely not work._
 
 Version 1.3 adds support for .wav (actually compressed wav; really actually
 just acm with an extra header) files used
