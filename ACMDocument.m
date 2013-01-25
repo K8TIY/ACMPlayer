@@ -248,8 +248,10 @@
   #pragma unused (sender)
   NSSavePanel* panel = [NSSavePanel savePanel];
   [panel setAllowedFileTypes:[NSArray arrayWithObject:@"aiff"]];
-  NSString* aiffName = [[[[self fileURL] path] stringByDeletingPathExtension]
-                        stringByAppendingPathExtension:@"aiff"];
+  [panel setCanSelectHiddenExtension:YES];
+  NSString* aiffName = [[[[[self fileURL] path] lastPathComponent]
+                         stringByDeletingPathExtension]
+                         stringByAppendingPathExtension:@"aiff"];
   [panel beginSheetForDirectory:nil file:aiffName
          modalForWindow:_playerWindow modalDelegate:self
          didEndSelector:@selector(aiffExportDidEnd:returnCode:contextInfo:)
