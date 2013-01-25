@@ -135,7 +135,7 @@
   NSArray* acms = nil;
   NSArray* eps = nil;
   NSString* path = [url path];
-  if ([type isEqualToString:@"__ACM__"])
+  if ([type isEqualToString:@"__ACM__"] || [type isEqualToString:@"__WAV__"])
   {
     acms = [NSArray arrayWithObjects:path, NULL];
   }
