@@ -229,7 +229,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   if (_nowPlaying)
   {
     OSStatus err = AUGraphStop(_ag);
-    if (err) NSLog(@"ERROR %ld from AudioOutputUnitStop", err);
+    if (err) NSLog(@"ERROR '%.4s' from AudioOutputUnitStop", (char*)&err);
     else _nowPlaying = NO;
   }
 }
@@ -497,7 +497,9 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
     SInt64 packetidx = 0;
     AudioFileID fileID;
     OSStatus err = AudioFileCreateWithURL((CFURLRef)url, kAudioFileAIFFType, &streamFormat, kAudioFileFlags_EraseFile, &fileID);
-    if (err) NSLog(@"AudioFileCreateWithURL: error '%.4s' URL %@ rate %f file %d", &err, url, streamFormat.mSampleRate, fileID);
+    if (err)
+      NSLog(@"AudioFileCreateWithURL: error '%.4s' URL %@ rate %f file %d",
+            (char*)&err, url, streamFormat.mSampleRate, (int)fileID);
     for (_currentACM = 0; _currentACM < [_acms count]; _currentACM++)
     {
       unsigned bytesDone = 0;
@@ -517,7 +519,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
         }
         UInt32 ioNumPackets = res/streamFormat.mBytesPerPacket;
         err = AudioFileWritePackets(fileID, false, res, NULL, packetidx, &ioNumPackets, buff);
-        if (err) NSLog(@"AudioFileWritePackets: error '%.4s'", &err);
+        if (err) NSLog(@"AudioFileWritePackets: error '%.4s'", (char*)&err);
         packetidx += ioNumPackets;
         //NSLog(@"Wrote %lu samples of %lu (%f\%)", _totalSamplesPlayed, _totalSamples, percent*100);
         if (_delegate && [_delegate respondsToSelector:@selector(acmExportProgress:)])
@@ -544,7 +546,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
         }
         UInt32 ioNumPackets = res/streamFormat.mBytesPerPacket;
         err = AudioFileWritePackets(fileID, false, res, NULL, packetidx, &ioNumPackets, buff);
-        if (err) NSLog(@"AudioFileWritePackets: error '%.4s'", &err);
+        if (err) NSLog(@"AudioFileWritePackets: error '%.4s'", (char*)&err);
         packetidx += ioNumPackets;
       }
     }
