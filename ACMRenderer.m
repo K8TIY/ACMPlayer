@@ -18,7 +18,6 @@
 
 @interface ACMRenderer (Private)
 -(ACMStream*)_acmAtIndex:(NSUInteger)i;
-//-(OSStatus)_createAU:(double)rate;
 -(OSStatus)_initAUGraph:(double)rate;
 -(int16_t*)_bufferSamples:(UInt32)count;
 -(ACMStream*)_advACM;
@@ -154,7 +153,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   OSStatus err = [self _initAUGraph:rate];
   if (err)
   {
-    NSLog(@"_createAU:%f failed: %d", rate, err);
+    NSLog(@"_initAUGraph: %f failed: '%.4s'", rate, (char*)&err);
     [self release];
     self = nil;
   }
@@ -203,7 +202,6 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 -(void)dealloc
 {
   if (_ag) DisposeAUGraph(_ag);
-  
   for (NSValue* val in _acms) acm_close([val pointerValue]);
   [_acms release];
   if (_epilogueNames) [_epilogueNames release];
@@ -308,48 +306,6 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 
 -(float)amp {return _amp;}
 -(BOOL)isPlaying {return _nowPlaying;}
-
-/*-(OSStatus)_createAU:(double)rate
-{
-	OSStatus err = noErr;
-  AURenderCallbackStruct input;
-	ComponentDescription desc;
-	desc.componentType = kAudioUnitType_Output;
-	desc.componentSubType = kAudioUnitSubType_DefaultOutput;
-	desc.componentManufacturer = kAudioUnitManufacturer_Apple;
-	desc.componentFlags = 0;
-	desc.componentFlagsMask = 0;
-	Component comp = FindNextComponent(NULL, &desc);
-	if (comp == NULL) { printf("FindNextComponent\n"); return err; }
-	err = OpenAComponent(comp, &_au);
-	if (err) { printf("OpenAComponent=%ld\n", err); return err; }
-	input.inputProc = RenderCB;
-	input.inputProcRefCon = self;
-	err = AudioUnitSetProperty(_au, kAudioUnitProperty_SetRenderCallback, 
-								             kAudioUnitScope_Input, 0, &input, sizeof(input));
-	if (err) { printf("AudioUnitSetProperty-CB=%ld\n", err); return err; }
-	AudioStreamBasicDescription streamFormat;
-  streamFormat.mSampleRate = rate;
-  streamFormat.mFormatID = kAudioFormatLinearPCM;
-  streamFormat.mFormatFlags = kLinearPCMFormatFlagIsFloat | kLinearPCMFormatFlagIsPacked | kAudioFormatFlagIsNonInterleaved;
-  streamFormat.mBytesPerPacket = 4;
-  streamFormat.mFramesPerPacket = 1;
-  streamFormat.mBytesPerFrame = 4;
-  streamFormat.mChannelsPerFrame = 2;
-  streamFormat.mBitsPerChannel = 32;
-	err = AudioUnitSetProperty(_au, kAudioUnitProperty_StreamFormat,
-							kAudioUnitScope_Input, 0, &streamFormat,
-							sizeof(AudioStreamBasicDescription));
-	if (err) { printf("AudioUnitSetProperty-SF=%4.4s, %ld\n", (char*)&err, err); return err; }
-	err = AudioUnitInitialize(_au);
-	if (err) { printf("AudioUnitInitialize=%ld\n", err); return err; }
-	Float64 outSampleRate;
-	UInt32 size = sizeof(Float64);
-	err = AudioUnitGetProperty(_au, kAudioUnitProperty_SampleRate,
-							kAudioUnitScope_Output, 0, &outSampleRate, &size);
-	if (err) { printf ("AudioUnitSetProperty-GF=%4.4s, %ld\n", (char*)&err, err);}
-	return err;
-}*/
 
 -(OSStatus)_initAUGraph:(double)rate
 {
