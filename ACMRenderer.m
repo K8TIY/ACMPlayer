@@ -102,7 +102,9 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
       acm_seek_pcm(acm, tpcm-4);
       [_acms addObject:[NSValue valueWithPointer:acm]];
       _totalPCM += tpcm;
-      _totalSeconds += tpcm/rate/2.0;
+      double secs = tpcm/rate;
+      if (!_mono) _totalSeconds /= 2.0;
+      _totalSeconds += secs;
       acm_seek_pcm(acm, 0);
     }
     // FIXME: this happens for BGII last entry in BM2.mus
