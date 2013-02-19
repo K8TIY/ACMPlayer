@@ -272,7 +272,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   }
 }
 
-// Returns a number between 0.0 and 1.0 inclusive that represents the loop point.
+// Returns number between 0.0 and 1.0 inclusive that represents the loop point.
 -(double)loopPosition
 {
   double pos = 0.0, samplesBeforeLoop = 0.0;
@@ -325,10 +325,10 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   AudioStreamBasicDescription desc;
   desc.mSampleRate = rate;
   desc.mFormatID = kAudioFormatLinearPCM;
+  desc.mFormatFlags = kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked |
+                      kAudioFormatFlagIsNonInterleaved;
 #if TARGET_RT_BIG_ENDIAN
-    desc.mFormatFlags = kAudioFormatFlagIsFloat | kAudioFormatFlagIsBigEndian | kAudioFormatFlagIsPacked | kAudioFormatFlagIsNonInterleaved;
-#else
-    desc.mFormatFlags = kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked | kAudioFormatFlagIsNonInterleaved;
+  desc.mFormatFlags |= kAudioFormatFlagIsBigEndian;
 #endif
   desc.mBytesPerPacket = 4;
   desc.mFramesPerPacket = 1;
@@ -374,13 +374,16 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
       ACMStream* acm = NULL;
       if (_epilogue == acmDoingEpilogue)
       {
-        if (_currentACM < [_epilogueNames count]) acm = [self _epilogueAtPosition:_currentACM];
+        if (_currentACM < [_epilogueNames count])
+          acm = [self _epilogueAtPosition:_currentACM];
       }
       else
       {
-        if (_currentACM < [_acms count]) acm = [self _acmAtIndex:_currentACM];
+        if (_currentACM < [_acms count])
+          acm = [self _acmAtIndex:_currentACM];
       }
-      if (!acm) NSLog(@"No acm at index %d of %d??", _currentACM, [_acms count]);
+      if (!acm) NSLog(@"No acm at index %u of %d??", (unsigned)_currentACM,
+                      [_acms count]);
       unsigned pcm1 = acm_pcm_tell(acm);
       unsigned pcmall = acm_pcm_total(acm);
       //NSLog(@" pcm1 %d pcmall %d", pcm1, pcmall);
@@ -389,7 +392,8 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
         unsigned long needed = bytesNeeded - bytesBuffered;
         if (!acmBuffer) acmBuffer = calloc(bytesNeeded, 1L);
         int before = acm_pcm_tell(acm);
-        int res = acm_read_loop(acm, ((char*)acmBuffer) + bytesBuffered, needed, 0, 2, 1);
+        int res = acm_read_loop(acm, ((char*)acmBuffer) + bytesBuffered,
+                                needed, 0, 2, 1);
         #if ACMPLAYER_DEBUG
         hexdump(((char*)acmBuffer) + bytesBuffered, res);
         #endif
@@ -400,13 +404,10 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
       else
       {
         acm = [self _advACM];
-        if (!acm)
+        if (!acm && _delegate)
         {
-          if (_delegate)
-          {
-            [_delegate performSelectorOnMainThread:@selector(acmDidFinishPlaying:)
-                       withObject:self waitUntilDone:NO];
-          }
+          [_delegate performSelectorOnMainThread:@selector(acmDidFinishPlaying:)
+                     withObject:self waitUntilDone:NO];
           break;
         }
       }
@@ -424,8 +425,8 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 -(int)epilogueState {return _epilogue;}
 
 // Normally will just report the ACM that is playing in sequence.
-// When we are in 'epilogue mode' then it reports the ACM that was identified in the .mus file
-// by the @tag directive.
+// When we are in 'epilogue mode' then it reports the ACM that was identified
+// in the .mus file by the @tag directive.
 // This upates the _currentACM index and returns the next reader to play.
 // If nil, we are done playing.
 -(ACMStream*)_advACM
@@ -433,7 +434,8 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   ACMStream* acm = NULL;
   if (_epilogue == acmDidEpilogue) {}
   else if (_epilogue == acmDoingEpilogue) _epilogue = acmDidEpilogue;
-  else if (_epilogue == acmWillDoEpilogue || (!_loop && _currentACM == [_acms count]-1))
+  else if (_epilogue == acmWillDoEpilogue ||
+           (!_loop && _currentACM == [_acms count]-1))
   {
     if (_epilogues)
     {
@@ -445,13 +447,12 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   {
     _currentACM++;
     if (_loop && _currentACM >= [_acms count])
-    {
       [self gotoPosition:[self loopPosition]];
-    }
-    if (_currentACM < [_acms count]) acm = [[_acms objectAtIndex:_currentACM] pointerValue];
+    if (_currentACM < [_acms count])
+      acm = [[_acms objectAtIndex:_currentACM] pointerValue];
   }
   if (acm) acm_seek_time(acm, 0);
-  if (!acm) _currentACM = 0;
+  else _currentACM = 0;
   return acm;
 }
 
@@ -465,7 +466,8 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 
 -(void)_progress
 {
-  if (!_suspended && _delegate && [_delegate respondsToSelector:@selector(acmProgress:)])
+  if (!_suspended && _delegate &&
+      [_delegate respondsToSelector:@selector(acmProgress:)])
   {
     [_delegate performSelectorOnMainThread:@selector(acmProgress:)
                withObject:self waitUntilDone:NO];
@@ -488,7 +490,8 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
     unsigned channels = acm_channels(acm);
     streamFormat.mSampleRate = acm_rate(acm);
     streamFormat.mFormatID = kAudioFormatLinearPCM;
-    streamFormat.mFormatFlags = kLinearPCMFormatFlagIsBigEndian | kLinearPCMFormatFlagIsPacked;
+    streamFormat.mFormatFlags = kLinearPCMFormatFlagIsBigEndian |
+                                kLinearPCMFormatFlagIsPacked;
     streamFormat.mChannelsPerFrame = channels;
     streamFormat.mFramesPerPacket = 1;
     streamFormat.mBitsPerChannel = 16;
@@ -496,7 +499,9 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
     streamFormat.mBytesPerPacket = 4;
     SInt64 packetidx = 0;
     AudioFileID fileID;
-    OSStatus err = AudioFileCreateWithURL((CFURLRef)url, kAudioFileAIFFType, &streamFormat, kAudioFileFlags_EraseFile, &fileID);
+    OSStatus err = AudioFileCreateWithURL((CFURLRef)url, kAudioFileAIFFType,
+                                          &streamFormat,
+                                          kAudioFileFlags_EraseFile, &fileID);
     if (err)
       NSLog(@"AudioFileCreateWithURL: error '%.4s' URL %@ rate %f file %d",
             (char*)&err, url, streamFormat.mSampleRate, (int)fileID);
@@ -522,7 +527,8 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
         if (err) NSLog(@"AudioFileWritePackets: error '%.4s'", (char*)&err);
         packetidx += ioNumPackets;
         //NSLog(@"Wrote %lu samples of %lu (%f\%)", _totalSamplesPlayed, _totalSamples, percent*100);
-        if (_delegate && [_delegate respondsToSelector:@selector(acmExportProgress:)])
+        if (_delegate &&
+            [_delegate respondsToSelector:@selector(acmExportProgress:)])
         {
           [_delegate acmExportProgress:self];
         }
@@ -545,7 +551,8 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
           break;
         }
         UInt32 ioNumPackets = res/streamFormat.mBytesPerPacket;
-        err = AudioFileWritePackets(fileID, false, res, NULL, packetidx, &ioNumPackets, buff);
+        err = AudioFileWritePackets(fileID, false, res, NULL, packetidx,
+                                    &ioNumPackets, buff);
         if (err) NSLog(@"AudioFileWritePackets: error '%.4s'", (char*)&err);
         packetidx += ioNumPackets;
       }
@@ -613,7 +620,8 @@ void hexdump(void *data, int size)
     if (n%16 == 1)
     {
       /* store address for this line */
-      snprintf(addrstr, sizeof(addrstr), "%.4x", ((unsigned int)p-(unsigned int)data));
+      snprintf(addrstr, sizeof(addrstr), "%.4x",
+               ((unsigned int)p-(unsigned int)data));
     }
     c = *p;
     if (isalnum(c) == 0)
