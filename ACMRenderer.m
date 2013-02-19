@@ -298,7 +298,14 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 
 -(double)seconds {return _totalSeconds;}
 
--(void)setAmp:(float)val {_amp = val;}
+-(void)setAmp:(float)val
+{
+  // The dial does not go up to 11 ;-)
+  if (val < 0.0) val = 0.0;
+  if (val > 1.0) val = 1.0;
+  _amp = val;
+}
+
 -(float)amp {return _amp;}
 -(BOOL)isPlaying {return _nowPlaying;}
 
