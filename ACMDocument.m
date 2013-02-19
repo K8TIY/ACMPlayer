@@ -51,7 +51,8 @@
 
 @interface ACMDocument (Private)
 -(void)updateTimeDisplay;
--(void)aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code contextInfo:(void*)contextInfo;
+-(void)aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code
+       contextInfo:(void*)contextInfo;
 -(NSString*)runScript:(NSString*)script onString:(NSString*)string;
 @end
 
@@ -63,16 +64,6 @@
   return self;
 }
 
--(void)dealloc
-{
-  [o_img_pause_pressed release];
-  [o_img_play_pressed release];
-  [o_img_pause release];
-  [o_img_play release];
-  if (_musicRenderer) [_musicRenderer release];
-  [super dealloc];
-}
-
 -(NSString*)windowNibName {return @"ACMDocument";}
 
 -(void)windowControllerDidLoadNib:(NSWindowController*)aController
@@ -80,15 +71,8 @@
   [super windowControllerDidLoadNib:aController];
   [self setAmp:nil];
   [_progress setDoubleValue:0.0];
-  double loopPosition = [_musicRenderer loopPosition];
+  double loopPosition = [_renderer loopPosition];
   if (loopPosition > 0.0) [_progress setLoopPosition:loopPosition];
-  NSBundle* mb = [NSBundle mainBundle];
-  o_img_play = [[NSImage alloc] initWithContentsOfFile:[mb pathForImageResource:@"play"]];
-  o_img_play_pressed = [[NSImage alloc] initWithContentsOfFile:[mb pathForImageResource:@"play_blue"]];
-  o_img_pause = [[NSImage alloc] initWithContentsOfFile:[mb pathForImageResource:@"pause"]];
-  o_img_pause_pressed = [[NSImage alloc] initWithContentsOfFile:[mb pathForImageResource:@"pause_blue"]];
-  [_startStopButton setImage:o_img_play];
-  [_startStopButton setAlternateImage:o_img_play_pressed];
   [_epilogueStateButton setTitle:@""];
   if (!_haveEpilogue)
   {
@@ -96,24 +80,24 @@
     _epilogueButton = nil;
   }
   float ampVal = [_ampSlider floatValue];
-  [_musicRenderer setAmp:ampVal];
-  [[Onizuka sharedOnizuka] localizeWindow:_playerWindow];
+  [_renderer setAmp:ampVal];
+  [_ampSlider setDoubleValue:[_renderer amp]];
 }
 
 -(void)windowWillClose:(NSNotification*)note
 {
   #pragma unused (note)
   _closing = YES;
-  [_musicRenderer setDelegate:nil];
-  [_musicRenderer stop];
+  [_renderer setDelegate:nil];
+  [_renderer stop];
 }
 
 //-(void)windowDidResignMain:(NSNotification*)note
 -(void)suspend
 {
-  if (![_musicRenderer isSuspended])
+  if (![_renderer isSuspended])
   {
-    [_musicRenderer suspend];
+    [_renderer suspend];
     _suspendedInBackground = YES;
   }
 }
@@ -123,9 +107,11 @@
   #pragma unused (note)
   NSArray* docs = [[NSDocumentController sharedDocumentController] documents];
   for (ACMDocument* doc in docs)
-    if (doc != self) [doc suspend];
+    if (doc != self)
+      if ([doc respondsToSelector:@selector(suspend)])
+        [doc suspend];
   //NSLog(@"windowDidBecomeMain:");
-  if (_suspendedInBackground) [_musicRenderer resume];
+  if (_suspendedInBackground) [_renderer resume];
 }
 
 -(BOOL)readFromURL:(NSURL*)url ofType:(NSString *)type error:(NSError**)oError
@@ -161,48 +147,24 @@
   }
   if (acms)
   {
-    _musicRenderer = [[ACMRenderer alloc] initWithPlaylist:acms andEpilogues:eps];
-    if (_musicRenderer)
+    _renderer = [[ACMRenderer alloc] initWithPlaylist:acms andEpilogues:eps];
+    if (_renderer)
     {
       loaded = YES;
-      [_musicRenderer setDelegate:self];
-      if (loopPoint != 0) [_musicRenderer setLoopPoint:loopPoint];
+      [_renderer setDelegate:self];
+      if (loopPoint != 0) [_renderer setLoopPoint:loopPoint];
     }
   }
   return loaded;
 }
 
 #pragma mark Action
--(IBAction)startStop:(id)sender
-{
-  #pragma unused (sender)
-  if ([_musicRenderer isPlaying])
-  {
-    [_musicRenderer stop];
-    [_startStopButton setImage:o_img_play];
-    [_startStopButton setAlternateImage:o_img_play_pressed];
-  }
-  else
-  {
-    [_musicRenderer start];
-    [_startStopButton setImage:o_img_pause];
-    [_startStopButton setAlternateImage:o_img_pause_pressed];
-  }
-}
-
--(IBAction)setAmp:(id)sender
-{
-  #pragma unused (sender)
-  float ampVal = [_ampSlider floatValue];
-  [_musicRenderer setAmp:ampVal];
-}
-
 -(IBAction)setAmpLo:(id)sender
 {
   #pragma unused (sender)
   float ampVal = 0.0f;
   [_ampSlider setFloatValue:ampVal];
-  [_musicRenderer setAmp:ampVal];
+  [_renderer setAmp:ampVal];
 }
 
 -(IBAction)setAmpHi:(id)sender
@@ -210,7 +172,7 @@
   #pragma unused (sender)
   float ampVal = 1.0f;
   [_ampSlider setFloatValue:ampVal];
-  [_musicRenderer setAmp:ampVal];
+  [_renderer setAmp:ampVal];
 }
 
 -(IBAction)toggleTimeDisplay:(id)sender
@@ -221,26 +183,20 @@
   [self updateTimeDisplay];
 }
 
--(IBAction)setLoop:(id)sender
-{
-  #pragma unused (sender)
-  [_musicRenderer setDoesLoop:([_loopButton state] == NSOnState)];
-}
-
 -(IBAction)setProgress:(id)sender
 {
   #pragma unused (sender)
-  [_musicRenderer suspend];
-  [_musicRenderer gotoPosition:[_progress trackingValue]];
-  [_musicRenderer resume];
+  [_renderer suspend];
+  [_renderer gotoPosition:[_progress trackingValue]];
+  [_renderer resume];
 }
 
 -(IBAction)epilogueAction:(id)sender
 {
   #pragma unused (sender)
-  [_musicRenderer doEpilogue:YES];
+  [_renderer doEpilogue:YES];
   [_loopButton setState:NSOffState];
-  [_musicRenderer setDoesLoop:NO];
+  [_renderer setDoesLoop:NO];
 }
 
 -(IBAction)exportAIFF:(id)sender
@@ -277,29 +233,20 @@
     // main thread here during the export. Should spawn a new thread but would
     // have to probably start a new renderer or the current one might freak out
     // doing 2 things at once.
-    [_musicRenderer exportAIFFToURL:url];
+    [_renderer exportAIFFToURL:url];
     [_epilogueStateButton setTitle:@""];
     [_progress setShowsProgress:NO];
   }
 }
 
--(void)acmDidFinishPlaying:(id)sender
-{
-  #pragma unused (sender)
-  [_musicRenderer stop];
-  [_musicRenderer gotoPosition:0.0];
-  [_startStopButton setImage:o_img_play];
-  [_startStopButton setAlternateImage:o_img_play_pressed];
-}
-
 -(void)acmProgress:(id)renderer
 {
-  if (renderer && _musicRenderer && _progress && !_closing)
+  if (renderer && _renderer && _progress && !_closing)
   {
-    double percent = [_musicRenderer position];
+    double percent = [_renderer position];
     [_progress setDoubleValue:percent];
     [self updateTimeDisplay];
-    int es = [_musicRenderer epilogueState];
+    int es = [_renderer epilogueState];
     if (es == acmWillDoEpilogue)
       [[Onizuka sharedOnizuka] localizeObject:_epilogueStateButton
                                withTitle:@"__EPILOGUE_WILL_PLAY__"];
@@ -314,8 +261,8 @@
 -(void)updateTimeDisplay
 {
   NSString* timeStr;
-  double percent = [_musicRenderer position];
-  double secs = [_musicRenderer seconds];
+  double percent = [_renderer position];
+  double secs = [_renderer seconds];
   if (_showTimeLeft) secs = secs * (1.0 - percent);
   else secs = secs * percent;
   timeStr = [[NSString alloc] initWithFormat:@"%s%d:%02d:%02d",
@@ -330,7 +277,7 @@
 -(void)acmExportProgress:(id)renderer
 {
   #pragma unused (renderer)
-  double percent = [_musicRenderer position];
+  double percent = [_renderer position];
   [_progress setProgressValue:percent];
   [_progress display];
 }
@@ -342,7 +289,7 @@
 }
 
 #pragma mark Internal
-// scriptPath is full or partial path to script file, including extension.
+// script is full or partial path to script file, including extension.
 -(NSString*)runScript:(NSString*)script onString:(NSString*)string
 {
   NSBundle* bundle = [NSBundle mainBundle];
@@ -363,7 +310,8 @@
   while ((readData = [readHandle availableData]) && [readData length])
     [data appendData:readData];
   [task release];
-  NSString* outString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+  NSString* outString = [[NSString alloc] initWithData:data
+                                          encoding:NSUTF8StringEncoding];
   [data release];
   return [outString autorelease];
 }

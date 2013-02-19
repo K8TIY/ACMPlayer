@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010-2011, Brian "Moses" Hall
+ * Copyright © 2010-2013, Brian "Moses" Hall
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,7 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 #import <Cocoa/Cocoa.h>
-#import "ACMRenderer.h"
+#import "ACMDocumentCommon.h"
 #import "ACMProgressSlider.h"
 
 @interface ACMWindow : NSWindow
@@ -23,37 +23,26 @@
 @interface ACMDocumentController : NSDocumentController
 @end
 
-@interface ACMDocument : NSDocument <ACM>
+@interface ACMDocument : ACMDocumentCommon <ACM>
 {
   IBOutlet ACMWindow* _playerWindow;
   //IBOutlet NSPanel* _exportSheet;
   //IBOutlet NSProgressIndicator* _exportSheetProgress;
-  IBOutlet NSButton* _startStopButton;
-  IBOutlet NSButton* _loopButton;
-  IBOutlet NSSlider* _ampSlider;
   IBOutlet NSButton* _ampLoButton;
   IBOutlet NSButton* _ampHiButton;
   IBOutlet NSButton* _timeButton;
   IBOutlet NSButton* _epilogueStateButton;
   IBOutlet NSButton* _epilogueButton;
   IBOutlet ACMProgressSlider* _progress;
-	ACMRenderer* _musicRenderer;
-  NSImage* o_img_play;
-  NSImage* o_img_pause;
-  NSImage* o_img_play_pressed;
-  NSImage* o_img_pause_pressed;
   BOOL _showTimeLeft;
   BOOL _closing;
   BOOL _suspendedInBackground; // Playing is suspended because the window was backgrounded.
   BOOL _haveEpilogue; // If reading a playlist w/ epilogue, enable "Epilogue" button
 }
 -(void)suspend;
--(IBAction)startStop:(id)sender;
--(IBAction)setAmp:(id)sender;
 -(IBAction)setAmpLo:(id)sender;
 -(IBAction)setAmpHi:(id)sender;
 -(IBAction)toggleTimeDisplay:(id)sender;
--(IBAction)setLoop:(id)sender;
 -(IBAction)setProgress:(id)sender;
 -(IBAction)epilogueAction:(id)sender;
 -(IBAction)exportAIFF:(id)sender;
