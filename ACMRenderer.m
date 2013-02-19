@@ -27,6 +27,12 @@
 @end
 
 
+
+static int read_func(void *ptr, int size, int n, void *datasrc);
+static int seek_func(void *datasrc, int offset, int whence);
+static int close_func(void *datasrc);
+static int get_length_func(void *datasrc);
+
 static OSStatus	RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFlags, 
                          const AudioTimeStamp* inTimeStamp, UInt32 inBusNumber, 
                          UInt32 inNumberFrames, AudioBufferList* ioData);
@@ -154,6 +160,45 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   }
   return self;
 }
+
+// FIXME: this needs a better way to report errors
+-(ACMRenderer*)initWithData:(NSData*)data
+{
+  self = [super init];
+  _ctx.data = [data copy];
+  _amp = 0.5f;
+  _totalSeconds = 0.0;
+  _loop = NO;
+  double rate = 0.0;
+  _acms = [[NSMutableArray alloc] init];
+  OSStatus err = 0;
+  ACMStream* acm;
+  acm_io_callbacks io = {read_func, seek_func, close_func, get_length_func};
+  int res = acm_open_decoder(&acm, &_ctx, io, 0);
+  if (res) NSLog(@"%s", acm_strerror(res));
+  else
+  {
+    rate = acm_rate(acm);
+    if (1 == acm_channels(acm)) _mono = YES;
+    unsigned tpcm = acm_pcm_total(acm);
+    acm_seek_pcm(acm, tpcm-4);
+    [_acms addObject:[NSValue valueWithPointer:acm]];
+    _totalPCM += tpcm;
+    double secs = tpcm/rate;
+    if (!_mono) _totalSeconds /= 2.0;
+    _totalSeconds += secs;
+    acm_seek_pcm(acm, 0);
+    err = [self _initAUGraph:rate];
+  }
+  if (res || err)
+  {
+    NSLog(@"_initAUGraph: %f failed: '%.4s'", rate, (char*)&err);
+    [self release];
+    self = nil;
+  }
+  return self;
+}
+
 
 -(void)dealloc
 {
@@ -560,6 +605,41 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   }
 }
 @end
+
+static int read_func(void *ptr, int size, int n, void *datasrc)
+{
+  ACMDataRendererContext* ctx = datasrc;
+  size_t bytes = n * size;
+  size_t avail = [ctx->data length] - ctx->off;
+  if (avail < bytes) bytes = avail;
+  [ctx->data getBytes:ptr range:NSMakeRange(ctx->off, bytes)];
+  ctx->off += bytes;
+  return bytes;
+}
+
+static int seek_func(void *datasrc, int offset, int whence)
+{
+  ACMDataRendererContext* ctx = datasrc;
+  if (whence == SEEK_SET) ctx->off = offset;
+  else if (whence == SEEK_CUR) ctx->off += offset;
+  else if (whence == SEEK_END) ctx->off = [ctx->data length] + offset;
+  return 0;
+}
+
+static int close_func(void *datasrc)
+{
+  ACMDataRendererContext* ctx = datasrc;
+  if (ctx->data) [ctx->data release];
+  ctx->data = nil;
+  return 0;
+}
+
+static int get_length_func(void *datasrc)
+{
+  ACMDataRendererContext* ctx = datasrc;
+  return [ctx->data length];
+}
+
 
 #if ACMPLAYER_DEBUG
 void hexdump(void *data, int size)

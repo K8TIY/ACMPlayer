@@ -37,6 +37,12 @@ enum
   acmDidEpilogue
 };
 
+typedef struct
+{
+  NSData* data;
+  size_t  off;
+} ACMDataRendererContext;
+
 @interface ACMRenderer : NSObject //<NSCopying> This would make AIFF rendering easier
 {
   float _amp;
@@ -57,10 +63,12 @@ enum
   // When we have epilogues, and we get done with an acm that has one,
   //   we will play the epilogue and stop playing (and clear these flags).
   int _epilogue;
+  ACMDataRendererContext _ctx;
 }
 @property (readonly) BOOL mono;
 
 -(ACMRenderer*)initWithPlaylist:(NSArray*)list andEpilogues:(NSArray*)epilogues;
+-(ACMRenderer*)initWithData:(NSData*)data;
 -(float)amp;
 -(void)setAmp:(float)val;
 -(void)start;
