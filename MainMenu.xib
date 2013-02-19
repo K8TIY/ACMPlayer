@@ -1120,7 +1120,7 @@
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
-					<string>{{453, 685}, {201, 153}}</string>
+					<string>{{453, 685}, {198, 153}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1135,7 +1135,7 @@
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
-					<string>{{530, 765}, {263, 73}}</string>
+					<string>{{530, 765}, {260, 73}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>{{252, 838}, {476, 20}}</string>
@@ -1162,7 +1162,7 @@
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
-					<string>{{380, 735}, {205, 103}}</string>
+					<string>{{380, 735}, {202, 103}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1187,34 +1187,28 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">1160</int>
+			<int key="maxID">1163</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<object class="IBPartialClassDescription">
 					<string key="className">ACMDocument</string>
-					<string key="superclassName">NSDocument</string>
+					<string key="superclassName">ACMDocumentCommon</string>
 					<object class="NSMutableDictionary" key="actions">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>epilogueAction:</string>
 							<string>exportAIFF:</string>
-							<string>setAmp:</string>
 							<string>setAmpHi:</string>
 							<string>setAmpLo:</string>
-							<string>setLoop:</string>
 							<string>setProgress:</string>
-							<string>startStop:</string>
 							<string>toggleTimeDisplay:</string>
 							<string>windowDidReceiveSpace:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -1230,12 +1224,9 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>epilogueAction:</string>
 							<string>exportAIFF:</string>
-							<string>setAmp:</string>
 							<string>setAmpHi:</string>
 							<string>setAmpLo:</string>
-							<string>setLoop:</string>
 							<string>setProgress:</string>
-							<string>startStop:</string>
 							<string>toggleTimeDisplay:</string>
 							<string>windowDidReceiveSpace:</string>
 						</object>
@@ -1250,10 +1241,6 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">setAmp:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
 								<string key="name">setAmpHi:</string>
 								<string key="candidateClassName">id</string>
 							</object>
@@ -1262,15 +1249,7 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">setLoop:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
 								<string key="name">setProgress:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">startStop:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -1289,26 +1268,20 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>_ampHiButton</string>
 							<string>_ampLoButton</string>
-							<string>_ampSlider</string>
 							<string>_epilogueButton</string>
 							<string>_epilogueStateButton</string>
-							<string>_loopButton</string>
 							<string>_playerWindow</string>
 							<string>_progress</string>
-							<string>_startStopButton</string>
 							<string>_timeButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSButton</string>
 							<string>NSButton</string>
-							<string>NSSlider</string>
-							<string>NSButton</string>
 							<string>NSButton</string>
 							<string>NSButton</string>
 							<string>ACMWindow</string>
 							<string>ACMProgressSlider</string>
-							<string>NSButton</string>
 							<string>NSButton</string>
 						</object>
 					</object>
@@ -1318,13 +1291,10 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>_ampHiButton</string>
 							<string>_ampLoButton</string>
-							<string>_ampSlider</string>
 							<string>_epilogueButton</string>
 							<string>_epilogueStateButton</string>
-							<string>_loopButton</string>
 							<string>_playerWindow</string>
 							<string>_progress</string>
-							<string>_startStopButton</string>
 							<string>_timeButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -1338,19 +1308,11 @@
 								<string key="candidateClassName">NSButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">_ampSlider</string>
-								<string key="candidateClassName">NSSlider</string>
-							</object>
-							<object class="IBToOneOutletInfo">
 								<string key="name">_epilogueButton</string>
 								<string key="candidateClassName">NSButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">_epilogueStateButton</string>
-								<string key="candidateClassName">NSButton</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">_loopButton</string>
 								<string key="candidateClassName">NSButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
@@ -1362,10 +1324,6 @@
 								<string key="candidateClassName">ACMProgressSlider</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">_startStopButton</string>
-								<string key="candidateClassName">NSButton</string>
-							</object>
-							<object class="IBToOneOutletInfo">
 								<string key="name">_timeButton</string>
 								<string key="candidateClassName">NSButton</string>
 							</object>
@@ -1374,6 +1332,99 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="463806687">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">ACMDocument.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">ACMDocumentCommon</string>
+					<string key="superclassName">NSDocument</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>acmDidFinishPlaying:</string>
+							<string>setAmp:</string>
+							<string>setLoop:</string>
+							<string>startStop:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>acmDidFinishPlaying:</string>
+							<string>setAmp:</string>
+							<string>setLoop:</string>
+							<string>startStop:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBActionInfo">
+								<string key="name">acmDidFinishPlaying:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">setAmp:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">setLoop:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">startStop:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>_ampSlider</string>
+							<string>_loopButton</string>
+							<string>_startStopButton</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSSlider</string>
+							<string>NSButton</string>
+							<string>NSButton</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>_ampSlider</string>
+							<string>_loopButton</string>
+							<string>_startStopButton</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBToOneOutletInfo">
+								<string key="name">_ampSlider</string>
+								<string key="candidateClassName">NSSlider</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">_loopButton</string>
+								<string key="candidateClassName">NSButton</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">_startStopButton</string>
+								<string key="candidateClassName">NSButton</string>
+							</object>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">ACMDocumentCommon.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
