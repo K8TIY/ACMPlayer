@@ -260,8 +260,6 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
     if (_totalPCMPlayed + acmPCM > posPCM)
     {
       unsigned long offset = posPCM - _totalPCMPlayed;
-      //NSLog(@"Renderer gotoPosition:%f, acm %d of %d posInACM(%f)/contribution(%f)=amt(%f)",
-      //  pos, i+1, [_acms count], posInACM, acmContribution, amt);
       acm_seek_pcm(acm, (unsigned)offset);
       _totalPCMPlayed += offset;
       _currentACM = i;
@@ -269,8 +267,6 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
     }
     else
     {
-      //NSLog(@"Renderer gotoPosition:%f, posInACM=%f passing acm %d of %d contribution=%f",
-      //  pos, posInACM, i+1, [_acms count], acmContribution);
       _totalPCMPlayed += acmPCM;
     }
   }
@@ -320,12 +316,8 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   output_desc.componentFlags = 0;
   output_desc.componentFlagsMask = 0;
   output_desc.componentManufacturer = kAudioUnitManufacturer_Apple;
-  // Add nodes to the graph to hold our AudioUnits,
-  // You pass in a reference to the  AudioComponentDescription
-  // and get back an  AudioUnit
   result = AUGraphAddNode(_ag, &output_desc, &outputNode);
   if (result) return result;
-  // open the graph AudioUnits are open but not initialized (no resource allocation occurs here)
   result = AUGraphOpen(_ag);
   if (result) return result;
   result = AUGraphNodeInfo(_ag, outputNode, NULL, &outputUnit);
@@ -402,7 +394,6 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
         hexdump(((char*)acmBuffer) + bytesBuffered, res);
         #endif
         int after = acm_pcm_tell(acm);
-        //NSLog(@"  needed %d, read %d bytes, was %d, now %d", needed, res, before, after);
         bytesBuffered += res;
         if (_epilogue != acmDoingEpilogue) _totalPCMPlayed += (after - before);
       }
@@ -439,7 +430,6 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 // If nil, we are done playing.
 -(ACMStream*)_advACM
 {
-  //NSLog(@"_advACM with epilogue state=%d; _epilogues=0x%X", _epilogue, _epilogues);
   ACMStream* acm = NULL;
   if (_epilogue == acmDidEpilogue) {}
   else if (_epilogue == acmDoingEpilogue) _epilogue = acmDidEpilogue;
@@ -461,8 +451,6 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
     if (_currentACM < [_acms count]) acm = [[_acms objectAtIndex:_currentACM] pointerValue];
   }
   if (acm) acm_seek_time(acm, 0);
-  //NSLog(@"_advACM (ep %d) returns %@ with _currentACM %d of %d", _epilogue, (acm)?[acm name]:@"nil", _currentACM, [_acms count]);
-  //NSLog(@"%@", acm);
   if (!acm) _currentACM = 0;
   return acm;
 }
@@ -549,7 +537,6 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
       while (bytesDone < totalBytes)
       {
 		    int res = acm_read_loop(acm, buff, BUFF_SIZE, 1, 2, 1);
-        //int acm_read_loop(ACMStream *acm, void *dst, unsigned bytes, int bigendianp, int wordlen, int sgned)
         if (!res)
         {
           //NSLog(@"WTF? Couldn't get acm reader to cough up any bits for the epilogue??\n%@", epiacm);
