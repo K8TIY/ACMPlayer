@@ -82,3 +82,11 @@ enum
 -(void)doEpilogue:(BOOL)flag;
 -(void)exportAIFFToURL:(NSURL*)url;
 @end
+
+#ifndef ACMPLAYER_DEBUG
+#define ACMPLAYER_DEBUG 0
+#endif
+
+#if ACMPLAYER_DEBUG
+void hexdump(void *data, int size);
+#endif

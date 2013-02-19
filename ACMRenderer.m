@@ -26,14 +26,10 @@
 -(void)_progress;
 @end
 
-#define ACMPLAYER_DEBUG 0
 
 static OSStatus	RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFlags, 
                          const AudioTimeStamp* inTimeStamp, UInt32 inBusNumber, 
                          UInt32 inNumberFrames, AudioBufferList* ioData);
-#if ACMPLAYER_DEBUG
-static void hexdump(void *data, int size);
-#endif
 
 static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFlags, 
                          const AudioTimeStamp* inTimeStamp, UInt32 inBusNumber, 
@@ -564,7 +560,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 @end
 
 #if ACMPLAYER_DEBUG
-static void hexdump(void *data, int size)
+void hexdump(void *data, int size)
 {
   /* dumps size bytes of *data to stdout. Looks like:
    * [0000] 75 6E 6B 6E 6F 77 6E 20
