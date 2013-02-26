@@ -166,19 +166,38 @@
 
 -(void)acmProgress:(id)renderer
 {
-  if (renderer && _renderer && _progress && !_closing)
+  #pragma unused (renderer)
+  if (_renderer && _progress && !_closing)
   {
     double percent = [_renderer position];
     [_progress setDoubleValue:percent];
-    [self updateTimeDisplay];
+    [self _updateTimeDisplay];
+  }
+}
+
+-(void)acmEpilogueStateChanged:(id)renderer
+{
+  #pragma unused (renderer)
+  if (_renderer && _progress && !_closing)
+  {
     int es = [_renderer epilogueState];
     if (es == acmWillDoEpilogue)
+    {
+      [_epilogueButton setEnabled:NO];
       [[Onizuka sharedOnizuka] localizeObject:_epilogueStateButton
                                withTitle:@"__EPILOGUE_WILL_PLAY__"];
+    }
     else if (es == acmDoingEpilogue)
+    {
+      [_epilogueButton setEnabled:NO];
       [[Onizuka sharedOnizuka] localizeObject:_epilogueStateButton
                                withTitle:@"__EPILOGUE_PLAYING__"];
-    else [_epilogueStateButton setTitle:@""];
+    }
+    else
+    {
+      [_epilogueButton setEnabled:YES];
+      [_epilogueStateButton setTitle:@""];
+    }
   }
 }
 
