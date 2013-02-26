@@ -26,8 +26,6 @@
 @interface ACMDocument : ACMDocumentCommon <ACM>
 {
   IBOutlet ACMWindow* _playerWindow;
-  //IBOutlet NSPanel* _exportSheet;
-  //IBOutlet NSProgressIndicator* _exportSheetProgress;
   IBOutlet NSButton* _ampLoButton;
   IBOutlet NSButton* _ampHiButton;
   IBOutlet NSButton* _timeButton;
