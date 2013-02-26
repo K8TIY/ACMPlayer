@@ -26,6 +26,7 @@
 @protocol ACM
 -(void)acmDidFinishPlaying:(id)renderer;
 -(void)acmProgress:(id)renderer;
+-(void)acmEpilogueStateChanged:(id)renderer;
 -(void)acmExportProgress:(id)renderer;
 @end
 

@@ -419,7 +419,8 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 
 -(void)doEpilogue:(BOOL)flag
 {
-  if (_epilogues) _epilogue = flag;
+  if (_epilogues)
+    [self _setEpilogueState:(flag)?acmWillDoEpilogue:acmNoEpilogue];
 }
 
 -(int)epilogueState {return _epilogue;}
@@ -433,14 +434,15 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 {
   ACMStream* acm = NULL;
   if (_epilogue == acmDidEpilogue) {}
-  else if (_epilogue == acmDoingEpilogue) _epilogue = acmDidEpilogue;
+  else if (_epilogue == acmDoingEpilogue)
+    [self _setEpilogueState:acmDidEpilogue];
   else if (_epilogue == acmWillDoEpilogue ||
            (!_loop && _currentACM == [_acms count]-1))
   {
     if (_epilogues)
     {
       acm = [self _epilogueAtPosition:_currentACM];
-      if (acm) _epilogue = acmDoingEpilogue;
+      if (acm) [self _setEpilogueState:acmDoingEpilogue];
     }
   }
   if (_epilogue != acmDidEpilogue && !acm)
@@ -471,6 +473,20 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   {
     [_delegate performSelectorOnMainThread:@selector(acmProgress:)
                withObject:self waitUntilDone:NO];
+  }
+}
+
+-(void)_setEpilogueState:(int)state
+{
+  int prev = _epilogue;
+  _epilogue = state;
+  if (prev != state)
+  {
+    if (_delegate && [_delegate respondsToSelector:@selector(acmEpilogueStateChanged:)])
+    {
+      [_delegate performSelectorOnMainThread:@selector(acmEpilogueStateChanged:)
+                 withObject:self waitUntilDone:NO];
+    }
   }
 }
 
