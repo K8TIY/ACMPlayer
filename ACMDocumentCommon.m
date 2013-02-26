@@ -16,7 +16,10 @@
 #import "ACMDocumentCommon.h"
 #import "Onizuka.h"
 
-@implementation ACMDocumentCommon
+@interface ACMDocumentCommon (Private)
+-(void)_updateTimeDisplay;
+@end
+
 // Subclass that can detect spacebar and send notification to its delegate.
 @implementation ACMWindow
 -(void)sendEvent:(NSEvent*)event
@@ -41,6 +44,7 @@
 }
 @end
 
+@implementation ACMDocumentCommon
 -(void)dealloc
 {
   [_img_pause_pressed release];
@@ -93,6 +97,37 @@
   }
 }
 
+-(IBAction)setAmpLo:(id)sender
+{
+  #pragma unused (sender)
+  float ampVal = 0.0f;
+  [_ampSlider setFloatValue:ampVal];
+  [_renderer setAmp:ampVal];
+}
+
+-(IBAction)setAmpHi:(id)sender
+{
+  #pragma unused (sender)
+  float ampVal = 1.0f;
+  [_ampSlider setFloatValue:ampVal];
+  [_renderer setAmp:ampVal];
+}
+
+-(IBAction)toggleTimeDisplay:(id)sender
+{
+  #pragma unused (sender)
+  _showTimeLeft = !_showTimeLeft;
+  [self _updateTimeDisplay];
+}
+
+-(IBAction)setProgress:(id)sender
+{
+  #pragma unused (sender)
+  [_renderer suspend];
+  [_renderer gotoPosition:[_progress trackingValue]];
+  [_renderer resume];
+}
+
 -(IBAction)setLoop:(id)sender
 {
   #pragma unused (sender)
@@ -108,4 +143,23 @@
   [_startStopButton setImage:_img_play];
   [_startStopButton setAlternateImage:_img_play_pressed];
 }
+
+#pragma mark Internal
+// FIXME: is it possible to localize this format?
+-(void)_updateTimeDisplay
+{
+  NSString* timeStr;
+  double percent = [_renderer position];
+  double secs = [_renderer seconds];
+  if (_showTimeLeft) secs = secs * (1.0 - percent);
+  else secs = secs * percent;
+  timeStr = [[NSString alloc] initWithFormat:@"%s%d:%02d:%02d",
+                    (_showTimeLeft) ? "-" : "",
+                    (int)(secs / 3600.0),
+                    (int)(secs / 60.0) % 60,
+                    (int)secs % 60];
+  [_timeButton setTitle:timeStr];
+  [timeStr release];
+}
+
 @end

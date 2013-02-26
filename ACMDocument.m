@@ -15,6 +15,7 @@
  */
 #import "ACMDocument.h"
 #import "Onizuka.h"
+#import <objc/runtime.h>
 
 @implementation ACMDocumentController
 -(NSInteger)runModalOpenPanel:(NSOpenPanel*)openPanel
@@ -26,20 +27,12 @@
 @end
 
 @interface ACMDocument (Private)
--(void)updateTimeDisplay;
 -(void)aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code
        contextInfo:(void*)contextInfo;
 -(NSString*)runScript:(NSString*)script onString:(NSString*)string;
 @end
 
 @implementation ACMDocument
--(id)init
-{
-  self = [super init];
-  _showTimeLeft = NO;
-  return self;
-}
-
 -(NSString*)windowNibName {return @"ACMDocument";}
 
 -(void)windowControllerDidLoadNib:(NSWindowController*)aController
@@ -86,7 +79,6 @@
     if (doc != self)
       if ([doc respondsToSelector:@selector(suspend)])
         [doc suspend];
-  //NSLog(@"windowDidBecomeMain:");
   if (_suspendedInBackground) [_renderer resume];
 }
 
@@ -135,38 +127,6 @@
 }
 
 #pragma mark Action
--(IBAction)setAmpLo:(id)sender
-{
-  #pragma unused (sender)
-  float ampVal = 0.0f;
-  [_ampSlider setFloatValue:ampVal];
-  [_renderer setAmp:ampVal];
-}
-
--(IBAction)setAmpHi:(id)sender
-{
-  #pragma unused (sender)
-  float ampVal = 1.0f;
-  [_ampSlider setFloatValue:ampVal];
-  [_renderer setAmp:ampVal];
-}
-
--(IBAction)toggleTimeDisplay:(id)sender
-{
-  #pragma unused (sender)
-  //NSLog(@"toggleTimeDisplay");
-  _showTimeLeft = !_showTimeLeft;
-  [self updateTimeDisplay];
-}
-
--(IBAction)setProgress:(id)sender
-{
-  #pragma unused (sender)
-  [_renderer suspend];
-  [_renderer gotoPosition:[_progress trackingValue]];
-  [_renderer resume];
-}
-
 -(IBAction)epilogueAction:(id)sender
 {
   #pragma unused (sender)
@@ -231,23 +191,6 @@
                                withTitle:@"__EPILOGUE_PLAYING__"];
     else [_epilogueStateButton setTitle:@""];
   }
-}
-
-// FIXME: is it possible to localize this format?
--(void)updateTimeDisplay
-{
-  NSString* timeStr;
-  double percent = [_renderer position];
-  double secs = [_renderer seconds];
-  if (_showTimeLeft) secs = secs * (1.0 - percent);
-  else secs = secs * percent;
-  timeStr = [[NSString alloc] initWithFormat:@"%s%d:%02d:%02d",
-                    (_showTimeLeft) ? "-" : "",
-                    (int)(secs / 3600.0),
-                    (int)(secs / 60.0) % 60,
-                    (int)secs % 60];
-  [_timeButton setTitle:timeStr];
-  [timeStr release];
 }
 
 -(void)acmExportProgress:(id)renderer

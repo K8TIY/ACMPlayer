@@ -28,9 +28,19 @@
   NSImage*           _img_pause;
   NSImage*           _img_play_pressed;
   NSImage*           _img_pause_pressed;
+  IBOutlet NSSlider*          _ampSlider;
+  IBOutlet NSButton*          _ampLoButton;
+  IBOutlet NSButton*          _ampHiButton;
+  IBOutlet NSButton*          _timeButton;
+  IBOutlet ACMProgressSlider* _progress;
+  BOOL                        _showTimeLeft;
 }
 -(IBAction)startStop:(id)sender;
 -(IBAction)setLoop:(id)sender;
 -(IBAction)setAmp:(id)sender;
+-(IBAction)setAmpLo:(id)sender;
+-(IBAction)setAmpHi:(id)sender;
+-(IBAction)toggleTimeDisplay:(id)sender;
+-(IBAction)setProgress:(id)sender;
 -(void)acmDidFinishPlaying:(id)sender;
 @end

@@ -24,22 +24,13 @@
 @interface ACMDocument : ACMDocumentCommon <ACM>
 {
   IBOutlet ACMWindow* _playerWindow;
-  IBOutlet NSButton* _ampLoButton;
-  IBOutlet NSButton* _ampHiButton;
-  IBOutlet NSButton* _timeButton;
   IBOutlet NSButton* _epilogueStateButton;
   IBOutlet NSButton* _epilogueButton;
-  IBOutlet ACMProgressSlider* _progress;
-  BOOL _showTimeLeft;
   BOOL _closing;
   BOOL _suspendedInBackground; // Playing is suspended because the window was backgrounded.
   BOOL _haveEpilogue; // If reading a playlist w/ epilogue, enable "Epilogue" button
 }
 -(void)suspend;
--(IBAction)setAmpLo:(id)sender;
--(IBAction)setAmpHi:(id)sender;
--(IBAction)toggleTimeDisplay:(id)sender;
--(IBAction)setProgress:(id)sender;
 -(IBAction)epilogueAction:(id)sender;
 -(IBAction)exportAIFF:(id)sender;
 -(void)windowDidReceiveSpace:(id)sender;
