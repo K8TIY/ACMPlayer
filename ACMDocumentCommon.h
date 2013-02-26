@@ -15,6 +15,8 @@
  */
 #import <Cocoa/Cocoa.h>
 #import "ACMRenderer.h"
+@interface ACMWindow : NSWindow
+@end
 
 @interface ACMDocumentCommon : NSDocument
 {

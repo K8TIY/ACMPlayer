@@ -16,30 +16,6 @@
 #import "ACMDocument.h"
 #import "Onizuka.h"
 
-// Subclass that can detect spacebar and send notification to its delegate.
-@implementation ACMWindow
--(void)sendEvent:(NSEvent*)event
-{
-  BOOL handled = NO;
-  //NSLog(@"sendEvent: %@", event);
-  if ([event type] == NSKeyUp || [event type] == NSKeyDown)
-  {
-    //NSLog(@"got '%@'", [event charactersIgnoringModifiers]);
-    if ([[event charactersIgnoringModifiers] isEqualToString:@" "])
-    {
-      if ([event type] == NSKeyUp)
-      {
-        id del = [self delegate];
-        if (del && [del respondsToSelector:@selector(windowDidReceiveSpace:)])
-          [del windowDidReceiveSpace:self];
-      }
-      handled = YES;
-    }
-  }
-  if (!handled) [super sendEvent:event];
-}
-@end
-
 @implementation ACMDocumentController
 -(NSInteger)runModalOpenPanel:(NSOpenPanel*)openPanel
             forTypes:(NSArray*)extensions

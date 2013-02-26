@@ -17,8 +17,6 @@
 #import "ACMDocumentCommon.h"
 #import "ACMProgressSlider.h"
 
-@interface ACMWindow : NSWindow
-@end
 
 @interface ACMDocumentController : NSDocumentController
 @end
