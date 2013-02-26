@@ -134,6 +134,20 @@
   [_renderer setDoesLoop:([_loopButton state] == NSOnState)];
 }
 
+#pragma mark Delegate
+-(void)windowWillClose:(NSNotification*)note
+{
+  #pragma unused (note)
+  _closing = YES;
+  [_renderer setDelegate:nil];
+  [_renderer stop];
+}
+
+-(void)windowDidReceiveSpace:(id)sender
+{
+  [self startStop:sender];
+}
+
 #pragma mark Notification
 -(void)acmDidFinishPlaying:(id)sender
 {

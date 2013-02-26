@@ -15,24 +15,19 @@
  */
 #import <Cocoa/Cocoa.h>
 #import "ACMDocumentCommon.h"
-#import "ACMProgressSlider.h"
-
 
 @interface ACMDocumentController : NSDocumentController
 @end
 
 @interface ACMDocument : ACMDocumentCommon <ACM>
 {
-  IBOutlet ACMWindow* _playerWindow;
   IBOutlet NSButton* _epilogueStateButton;
   IBOutlet NSButton* _epilogueButton;
-  BOOL _closing;
   BOOL _suspendedInBackground; // Playing is suspended because the window was backgrounded.
   BOOL _haveEpilogue; // If reading a playlist w/ epilogue, enable "Epilogue" button
 }
 -(void)suspend;
 -(IBAction)epilogueAction:(id)sender;
 -(IBAction)exportAIFF:(id)sender;
--(void)windowDidReceiveSpace:(id)sender;
 @end
 

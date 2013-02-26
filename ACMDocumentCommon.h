@@ -36,6 +36,7 @@
   IBOutlet NSButton*          _timeButton;
   IBOutlet ACMProgressSlider* _progress;
   BOOL                        _showTimeLeft;
+  BOOL                        _closing;
 }
 -(IBAction)startStop:(id)sender;
 -(IBAction)setLoop:(id)sender;
@@ -44,5 +45,6 @@
 -(IBAction)setAmpHi:(id)sender;
 -(IBAction)toggleTimeDisplay:(id)sender;
 -(IBAction)setProgress:(id)sender;
+-(void)windowDidReceiveSpace:(id)sender;
 -(void)acmDidFinishPlaying:(id)sender;
 @end

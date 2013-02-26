@@ -42,23 +42,12 @@
   [_progress setDoubleValue:0.0];
   double loopPosition = [_renderer loopPosition];
   if (loopPosition > 0.0) [_progress setLoopPosition:loopPosition];
-  [_epilogueStateButton setTitle:@""];
   if (!_haveEpilogue)
   {
     [_epilogueButton removeFromSuperview];
     _epilogueButton = nil;
   }
-  float ampVal = [_ampSlider floatValue];
-  [_renderer setAmp:ampVal];
-  [_ampSlider setDoubleValue:[_renderer amp]];
-}
-
--(void)windowWillClose:(NSNotification*)note
-{
-  #pragma unused (note)
-  _closing = YES;
-  [_renderer setDelegate:nil];
-  [_renderer stop];
+  [_epilogueStateButton setTitle:@""];
 }
 
 //-(void)windowDidResignMain:(NSNotification*)note
@@ -199,12 +188,6 @@
   double percent = [_renderer position];
   [_progress setProgressValue:percent];
   [_progress display];
-}
-
-#pragma mark Delegate
--(void)windowDidReceiveSpace:(id)sender
-{
-  [self startStop:sender];
 }
 
 #pragma mark Internal
