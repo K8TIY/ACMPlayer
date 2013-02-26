@@ -40,11 +40,13 @@ for line in data:
   while len(comps) > 0:
     # Next components may be [@TAG,epilogue] or loop, or in some cases [prefix,loop]
     # This seems to happen only after SPC1 line, as if to remind the MUS reader to go back to
-    # the correct sudirectory (since SPC1 is up a level).
+    # the correct subdirectory (since SPC1 is up a level).
     tag = comps.pop(0)
     if tag.lower() == prefix.lower(): pass
     elif tag.upper() == "@TAG":
-      epilogues.append(os.path.join(dir,prefix+comps.pop(0)+".acm"))
+      tag = comps.pop(0)
+      if tag.upper() != "END":
+        epilogues.append(os.path.join(dir,prefix+tag+".acm"))
     else:
       loop = os.path.join(dir,prefix+tag+".acm")
   if len(epilogues) < len(files): epilogues.append("")
