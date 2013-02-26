@@ -15,6 +15,8 @@
  */
 #import <Cocoa/Cocoa.h>
 #import "ACMRenderer.h"
+#import "ACMProgressSlider.h"
+
 @interface ACMWindow : NSWindow
 @end
 
