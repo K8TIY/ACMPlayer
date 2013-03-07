@@ -44,13 +44,23 @@
 }
 @end
 
+NSImage* gPlayImage = nil;
+NSImage* gPlayPressedImage = nil;
+NSImage* gPauseImage = nil;
+NSImage* gPausePressedImage = nil;
+
 @implementation ACMDocumentCommon
++(void)initialize
+{
+  NSBundle* mb = [NSBundle mainBundle];
+  gPlayImage = [[NSImage alloc] initWithContentsOfFile:[mb pathForImageResource:@"play"]];
+  gPlayPressedImage = [[NSImage alloc] initWithContentsOfFile:[mb pathForImageResource:@"play_blue"]];
+  gPauseImage = [[NSImage alloc] initWithContentsOfFile:[mb pathForImageResource:@"pause"]];
+  gPausePressedImage = [[NSImage alloc] initWithContentsOfFile:[mb pathForImageResource:@"pause_blue"]];
+}
+
 -(void)dealloc
 {
-  [_img_pause_pressed release];
-  [_img_play_pressed release];
-  [_img_pause release];
-  [_img_play release];
   if (_renderer) [_renderer release];
   [super dealloc];
 }
@@ -58,33 +68,52 @@
 -(void)windowControllerDidLoadNib:(NSWindowController*)controller
 {
   #pragma unused (controller)
-  NSBundle* mb = [NSBundle mainBundle];
-  _img_play = [[NSImage alloc] initWithContentsOfFile:[mb pathForImageResource:@"play"]];
-  _img_play_pressed = [[NSImage alloc] initWithContentsOfFile:[mb pathForImageResource:@"play_blue"]];
-  _img_pause = [[NSImage alloc] initWithContentsOfFile:[mb pathForImageResource:@"pause"]];
-  _img_pause_pressed = [[NSImage alloc] initWithContentsOfFile:[mb pathForImageResource:@"pause_blue"]];
-  [_startStopButton setImage:_img_play];
-  [_startStopButton setAlternateImage:_img_play_pressed];
+  [_startStopButton setImage:gPlayImage];
+  [_startStopButton setAlternateImage:gPlayPressedImage];
   NSWindow* w = [[[self windowControllers] objectAtIndex:0] window];
   [[Onizuka sharedOnizuka] localizeWindow:w];
+  NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
+  float ampVal = [defs floatForKey:@"defaultVol"];
+  if (_renderer) [_renderer setAmp:ampVal];
+  [_ampSlider setDoubleValue:ampVal];
+}
+
+-(ACMRenderer*)copyRendererForAIFFExport
+{
+  return [_renderer copy];
+}
+
+-(NSString*)AIFFFilename
+{
+  return [[[[[self fileURL] path] lastPathComponent]
+           stringByDeletingPathExtension]
+           stringByAppendingPathExtension:@"aiff"];
 }
 
 #pragma mark Action
 -(IBAction)startStop:(id)sender
 {
   #pragma unused (sender)
-  if (_renderer && [_renderer isPlaying])
+  if (_renderer && _renderer.playing)
   {
     [_renderer stop];
-    [_startStopButton setImage:_img_play];
-    [_startStopButton setAlternateImage:_img_play_pressed];
+    [_startStopButton setImage:gPlayImage];
+    [_startStopButton setAlternateImage:gPlayPressedImage];
   }
   else
   {
     [_renderer start];
-    [_startStopButton setImage:_img_pause];
-    [_startStopButton setAlternateImage:_img_pause_pressed];
+    [_startStopButton setImage:gPauseImage];
+    [_startStopButton setAlternateImage:gPausePressedImage];
   }
+}
+
+-(IBAction)rewind:(id)sender
+{
+  #pragma unused (sender)
+  [_renderer gotoPct:0.0];
+  [_progress setDoubleValue:0.0];
+  [self _updateTimeDisplay];
 }
 
 -(IBAction)setAmp:(id)sender
@@ -124,7 +153,7 @@
 {
   #pragma unused (sender)
   [_renderer suspend];
-  [_renderer gotoPosition:[_progress trackingValue]];
+  [_renderer gotoPct:[_progress trackingValue]];
   [_renderer resume];
 }
 
@@ -132,6 +161,20 @@
 {
   #pragma unused (sender)
   [_renderer setDoesLoop:([_loopButton state] == NSOnState)];
+  [_progress setLoopPct:[_renderer loopPct]];
+}
+
+-(IBAction)exportAIFF:(id)sender
+{
+  #pragma unused (sender)
+  NSSavePanel* panel = [NSSavePanel savePanel];
+  [panel setAllowedFileTypes:[NSArray arrayWithObject:@"aiff"]];
+  [panel setCanSelectHiddenExtension:YES];
+  NSString* aiffName = [self AIFFFilename];
+  [panel beginSheetForDirectory:nil file:aiffName
+         modalForWindow:_docWindow modalDelegate:self
+         didEndSelector:@selector(aiffExportDidEnd:returnCode:contextInfo:)
+         contextInfo:nil];
 }
 
 #pragma mark Delegate
@@ -148,14 +191,39 @@
   [self startStop:sender];
 }
 
+#pragma mark Callback
+-(void)aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code
+       contextInfo:(void*)ctx
+{
+  #pragma unused (ctx)
+  if (code == NSOKButton)
+  {
+    NSURL* url = [sheet URL];
+    ACMRenderer* r = [self copyRendererForAIFFExport];
+    [r exportAIFFToURL:url];
+    [r release];
+    [sheet orderOut:nil];
+  }
+}
+
 #pragma mark Notification
 -(void)acmDidFinishPlaying:(id)sender
 {
   #pragma unused (sender)
   [_renderer stop];
-  [_renderer gotoPosition:0.0];
-  [_startStopButton setImage:_img_play];
-  [_startStopButton setAlternateImage:_img_play_pressed];
+  [_renderer gotoPct:0.0];
+  [_startStopButton setImage:gPlayImage];
+  [_startStopButton setAlternateImage:gPlayPressedImage];
+}
+
+-(void)acmProgress:(id)renderer
+{
+  #pragma unused (renderer)
+  if (_renderer && _progress && !_closing)
+  {
+    [_progress setDoubleValue:[_renderer pct]];
+    [self _updateTimeDisplay];
+  }
 }
 
 #pragma mark Internal
@@ -163,10 +231,10 @@
 -(void)_updateTimeDisplay
 {
   NSString* timeStr;
-  double percent = [_renderer position];
-  double secs = [_renderer seconds];
-  if (_showTimeLeft) secs = secs * (1.0 - percent);
-  else secs = secs * percent;
+  double pct = _renderer.pct;
+  double secs = _renderer.seconds;
+  if (_showTimeLeft) secs = secs * (1.0 - pct);
+  else secs = secs * pct;
   timeStr = [[NSString alloc] initWithFormat:@"%s%d:%02d:%02d",
                     (_showTimeLeft) ? "-" : "",
                     (int)(secs / 3600.0),

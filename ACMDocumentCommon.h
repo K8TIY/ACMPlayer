@@ -20,31 +20,38 @@
 @interface ACMWindow : NSWindow
 @end
 
+extern NSImage* gPlayImage;
+extern NSImage* gPlayPressedImage;
+extern NSImage* gPauseImage;
+extern NSImage* gPausePressedImage;
+
 @interface ACMDocumentCommon : NSDocument
 {
-  IBOutlet NSButton* _startStopButton;
-  IBOutlet NSButton* _loopButton;
-  IBOutlet NSSlider* _ampSlider;
-	ACMRenderer*       _renderer;
-  NSImage*           _img_play;
-  NSImage*           _img_pause;
-  NSImage*           _img_play_pressed;
-  NSImage*           _img_pause_pressed;
+  IBOutlet ACMWindow*         _docWindow;
+  IBOutlet NSButton*          _startStopButton;
+  IBOutlet NSButton*          _loopButton;
   IBOutlet NSSlider*          _ampSlider;
   IBOutlet NSButton*          _ampLoButton;
   IBOutlet NSButton*          _ampHiButton;
   IBOutlet NSButton*          _timeButton;
   IBOutlet ACMProgressSlider* _progress;
+  ACMRenderer*                _renderer;
+  ACMRenderer*                _exportRenderer;
   BOOL                        _showTimeLeft;
   BOOL                        _closing;
 }
+-(ACMRenderer*)copyRendererForAIFFExport;
+-(NSString*)AIFFFilename;
 -(IBAction)startStop:(id)sender;
+-(IBAction)rewind:(id)sender;
 -(IBAction)setLoop:(id)sender;
 -(IBAction)setAmp:(id)sender;
 -(IBAction)setAmpLo:(id)sender;
 -(IBAction)setAmpHi:(id)sender;
 -(IBAction)toggleTimeDisplay:(id)sender;
 -(IBAction)setProgress:(id)sender;
+-(IBAction)exportAIFF:(id)sender;
 -(void)windowDidReceiveSpace:(id)sender;
 -(void)acmDidFinishPlaying:(id)sender;
+-(void)acmProgress:(id)renderer;
 @end

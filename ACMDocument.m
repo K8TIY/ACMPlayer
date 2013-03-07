@@ -40,20 +40,24 @@
   [super windowControllerDidLoadNib:aController];
   [self setAmp:nil];
   [_progress setDoubleValue:0.0];
-  double loopPosition = [_renderer loopPosition];
-  if (loopPosition > 0.0) [_progress setLoopPosition:loopPosition];
+  double loopPct = [_renderer loopPct];
+  if (loopPct > 0.0) [_progress setLoopPct:loopPct];
   if (!_haveEpilogue)
   {
     [_epilogueButton removeFromSuperview];
     _epilogueButton = nil;
   }
   [_epilogueStateButton setTitle:@""];
+  NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
+  BOOL loop = [defs floatForKey:@"defaultLoop"];
+  [_renderer setDoesLoop:loop];
+  [_loopButton setState:(loop)? NSOnState:NSOffState];
 }
 
 //-(void)windowDidResignMain:(NSNotification*)note
 -(void)suspend
 {
-  if (![_renderer isSuspended])
+  if (!_renderer.suspended)
   {
     [_renderer suspend];
     _suspendedInBackground = YES;
@@ -74,7 +78,7 @@
 -(BOOL)readFromURL:(NSURL*)url ofType:(NSString *)type error:(NSError**)oError
 {
   BOOL loaded = NO;
-  NSUInteger loopPoint = 0;
+  NSUInteger loopIndex = 0;
   NSArray* acms = nil;
   NSArray* eps = nil;
   NSString* path = [url path];
@@ -88,7 +92,7 @@
     NSDictionary* pl = [parsed propertyList];
     acms = [pl objectForKey:@"files"];
     eps = [pl objectForKey:@"epilogues"];
-    loopPoint = [[pl objectForKey:@"loop"] intValue];
+    loopIndex = [[pl objectForKey:@"loop"] intValue];
     if ([eps count]) _haveEpilogue = YES;
   }
   else if (oError)
@@ -109,7 +113,7 @@
     {
       loaded = YES;
       [_renderer setDelegate:self];
-      if (loopPoint != 0) [_renderer setLoopPoint:loopPoint];
+      if (loopIndex != 0) [_renderer setLoopIndex:loopIndex];
     }
   }
   return loaded;
@@ -124,89 +128,38 @@
   [_renderer setDoesLoop:NO];
 }
 
--(IBAction)exportAIFF:(id)sender
-{
-  #pragma unused (sender)
-  NSSavePanel* panel = [NSSavePanel savePanel];
-  [panel setAllowedFileTypes:[NSArray arrayWithObject:@"aiff"]];
-  [panel setCanSelectHiddenExtension:YES];
-  NSString* aiffName = [[[[[self fileURL] path] lastPathComponent]
-                         stringByDeletingPathExtension]
-                         stringByAppendingPathExtension:@"aiff"];
-  [panel beginSheetForDirectory:nil file:aiffName
-         modalForWindow:_playerWindow modalDelegate:self
-         didEndSelector:@selector(aiffExportDidEnd:returnCode:contextInfo:)
-         contextInfo:nil];
-}
-
 #pragma mark Callback
--(void)aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code
-       contextInfo:(void*)ctx
-{
-  #pragma unused (ctx)
-  if (code == NSOKButton)
-  {
-    NSURL* url = [sheet URL];
-    //NSLog(@"Saving to %@", filename);
-    [sheet orderOut:nil];
-    /*[NSApp beginSheet:_exportSheet modalForWindow:_playerWindow
-           modalDelegate:self didEndSelector:NULL contextInfo:nil];*/
-    [_progress setShowsProgress:YES];
-    [_epilogueStateButton setTitle:NSLocalizedString(@"__EXPORTING__",@"blah")];
-    [_epilogueStateButton display];
-    // Have to call [_epilogueStateButton display]; because we are hogging the
-    // main thread here during the export. Should spawn a new thread but would
-    // have to probably start a new renderer or the current one might freak out
-    // doing 2 things at once.
-    [_renderer exportAIFFToURL:url];
-    [_epilogueStateButton setTitle:@""];
-    [_progress setShowsProgress:NO];
-  }
-}
-
--(void)acmProgress:(id)renderer
-{
-  #pragma unused (renderer)
-  if (_renderer && _progress && !_closing)
-  {
-    double percent = [_renderer position];
-    [_progress setDoubleValue:percent];
-    [self _updateTimeDisplay];
-  }
-}
-
 -(void)acmEpilogueStateChanged:(id)renderer
 {
   #pragma unused (renderer)
   if (_renderer && _progress && !_closing)
   {
+    double start, end, delta;
+    [_renderer getEpilogueStartPct:&start endPct:&end pctDelta:&delta];
+    //NSLog(@"start %f, end %f, delta %f pct %f", start, end, delta, [_renderer pct]);
+    [_progress setDoubleValue:[_renderer pct]];
+    [_progress setEpilogueStartPct:start endPct:end];
     int es = [_renderer epilogueState];
-    if (es == acmWillDoEpilogue)
-    {
-      [_epilogueButton setEnabled:NO];
-      [[Onizuka sharedOnizuka] localizeObject:_epilogueStateButton
-                               withTitle:@"__EPILOGUE_WILL_PLAY__"];
-    }
-    else if (es == acmDoingEpilogue)
-    {
-      [_epilogueButton setEnabled:NO];
-      [[Onizuka sharedOnizuka] localizeObject:_epilogueStateButton
-                               withTitle:@"__EPILOGUE_PLAYING__"];
-    }
-    else
+    if (es == acmNoEpilogue || es == acmWillDoFinalEpilogue)
     {
       [_epilogueButton setEnabled:YES];
       [_epilogueStateButton setTitle:@""];
     }
+    else
+    {
+      [_epilogueButton setEnabled:NO];
+      if (es == acmWillDoEpilogue)
+      {
+        [[Onizuka sharedOnizuka] localizeObject:_epilogueStateButton
+                                 withTitle:@"__EPILOGUE_WILL_PLAY__"];
+      }
+      else if (es == acmDoingEpilogue)
+      {
+        [[Onizuka sharedOnizuka] localizeObject:_epilogueStateButton
+                                 withTitle:@"__EPILOGUE_PLAYING__"];
+      }
+    }
   }
-}
-
--(void)acmExportProgress:(id)renderer
-{
-  #pragma unused (renderer)
-  double percent = [_renderer position];
-  [_progress setProgressValue:percent];
-  [_progress display];
 }
 
 #pragma mark Internal

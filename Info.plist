@@ -59,6 +59,22 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
+				<string>bif</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>__BIFF__</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSDocumentClass</key>
+			<string>BIFFDocument</string>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
 				<string>aiff</string>
 			</array>
 			<key>CFBundleTypeName</key>
@@ -82,11 +98,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.3</string>
+	<string>2.0</string>
 	<key>CFBundleSignature</key>
 	<string>ACM!</string>
 	<key>CFBundleVersion</key>
-	<string>2013.01.25</string>
+	<string>2013.03.07</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

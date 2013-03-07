@@ -17,20 +17,15 @@
 #import <AudioToolbox/AudioToolbox.h>
 
 @interface ACMRenderer (Private)
--(ACMStream*)_acmAtIndex:(NSUInteger)i;
 -(OSStatus)_initAUGraph:(double)rate;
 -(int16_t*)_bufferSamples:(UInt32)count;
--(ACMStream*)_advACM;
--(ACMStream*)_epilogueAtPosition:(NSUInteger)pos;
+-(ACMData*)_advACM;
+-(ACMData*)_epilogueAtIndex:(NSUInteger)idx;
 -(void)_progress;
+-(void)_setEpilogueState:(int)state;
+-(void)_gotoACMAtIndex:(NSUInteger)index;
+-(double)_pctForPCM:(unsigned long)pcm;
 @end
-
-
-
-static int read_func(void *ptr, int size, int n, void *datasrc);
-static int seek_func(void *datasrc, int offset, int whence);
-static int close_func(void *datasrc);
-static int get_length_func(void *datasrc);
 
 static OSStatus	RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFlags, 
                          const AudioTimeStamp* inTimeStamp, UInt32 inBusNumber, 
@@ -47,8 +42,8 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   float* lBuffer = ioData->mBuffers[0].mData;
   float* rBuffer = ioData->mBuffers[1].mData;
   UInt32 samples = inNumberFrames;
-  BOOL mono = myself.mono;
-  if (!mono) samples *= 2;
+  unsigned channels = myself.channels;
+  if (channels > 1) samples *= 2;
   int16_t* acmBuffer = [myself _bufferSamples:samples];
   if (acmBuffer) acmBufferRead = acmBuffer;
   for (i = 0; i < inNumberFrames; i++)
@@ -59,7 +54,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
       int16_t lSample = *acmBufferRead;
       acmBufferRead++;
       int16_t rSample = lSample;
-      if (!mono)
+      if (channels > 1)
       {
         rSample = *acmBufferRead;
         acmBufferRead++;
@@ -85,36 +80,41 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 }
 
 @implementation ACMRenderer
-@synthesize mono = _mono;
+@synthesize amp = _amp;
+@synthesize seconds = _totalSeconds;
+@synthesize channels = _channels;
+@synthesize playing = _nowPlaying;
+@synthesize suspended = _suspended;
+@synthesize loops = _loops;
+//@synthesize loopIndex = _loopIndex;
+@synthesize epilogueState = _epilogue;
 
 -(ACMRenderer*)initWithPlaylist:(NSArray*)list andEpilogues:(NSArray*)epilogues
 {
   self = [super init];
+  _acmFiles = [list retain];
+  _epilogueFiles = [epilogues retain];
   _amp = 0.5f;
   _totalSeconds = 0.0;
-  _loop = NO;
+  _loops = NO;
   double rate = 0.0;
   _acms = [[NSMutableArray alloc] init];
-  ACMStream* acm;
+  ACMData* acm;
   for (NSString* file in list)
   {
-    int err = acm_open_file(&acm, [file UTF8String], 0);
-    if (!err)
+    acm = [[ACMData alloc] initWithPath:file];
+    if (acm)
     {
-      rate = acm_rate(acm);
-      if (1 == acm_channels(acm)) _mono = YES;
-      unsigned tpcm = acm_pcm_total(acm);
-      acm_seek_pcm(acm, tpcm-4);
-      [_acms addObject:[NSValue valueWithPointer:acm]];
-      _totalPCM += tpcm;
-      double secs = tpcm/rate;
-      if (!_mono) _totalSeconds /= 2.0;
-      _totalSeconds += secs;
-      acm_seek_pcm(acm, 0);
+      [_acms addObject:acm];
+      _totalPCM += [acm PCMTotal];
+      _totalSeconds += acm.timeTotal;
+      _channels = [acm channels];
+      rate = acm.rate;
+      [acm release];
     }
     // FIXME: this happens for BGII last entry in BM2.mus
     // Could try to repair???
-    else NSLog(@"WARNING: can't find acm file named %@; sound will be truncated", file);
+    else NSLog(@"WARNING: can't find acm file named %@", file);
 	}
   if (epilogues && [epilogues count])
   {
@@ -134,21 +134,18 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
         if (![obj isKindOfClass:[NSNull class]]) continue;
         //NSLog(@"trying to fix NSNull for %@", file);
       }
-      int err = acm_open_file(&acm, [file UTF8String], 0);
+      acm = [[ACMData alloc] initWithPath:file];
       obj = nil;
-      if (err)
+      if (!acm)
       {
         NSLog(@"WARNING: can't find epilogue named %@; using NSNull", file);
         obj = [NSNull null];
       }
-      else
-      {
-        unsigned tpcm = acm_pcm_total(acm);
-        acm_seek_pcm(acm, tpcm-4);
-        obj = [NSValue valueWithPointer:acm];
-      }
+      else obj = acm;
       [_epilogues setObject:obj forKey:file];
+      if (acm) [acm release];
     }
+    _hasFinalEpilogue = (nil != [self _epilogueAtIndex:[_acms count]-1]);
   }
   OSStatus err = [self _initAUGraph:rate];
   if (err)
@@ -164,56 +161,72 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 -(ACMRenderer*)initWithData:(NSData*)data
 {
   self = [super init];
-  _ctx.data = [data copy];
+  _data = [data copy];
   _amp = 0.5f;
   _totalSeconds = 0.0;
-  _loop = NO;
-  double rate = 0.0;
+  _loops = NO;
+  OSStatus err = noErr;
   _acms = [[NSMutableArray alloc] init];
-  OSStatus err = 0;
-  ACMStream* acm;
-  acm_io_callbacks io = {read_func, seek_func, close_func, get_length_func};
-  int res = acm_open_decoder(&acm, &_ctx, io, 0);
-  if (res) NSLog(@"%s", acm_strerror(res));
-  else
+  ACMData* acm = [[ACMData alloc] initWithData:data];
+  if (acm)
   {
-    rate = acm_rate(acm);
-    if (1 == acm_channels(acm)) _mono = YES;
-    unsigned tpcm = acm_pcm_total(acm);
-    acm_seek_pcm(acm, tpcm-4);
-    [_acms addObject:[NSValue valueWithPointer:acm]];
-    _totalPCM += tpcm;
-    double secs = tpcm/rate;
-    if (!_mono) _totalSeconds /= 2.0;
-    _totalSeconds += secs;
-    acm_seek_pcm(acm, 0);
-    err = [self _initAUGraph:rate];
+    [_acms addObject:acm];
+    _totalPCM = [acm PCMTotal];
+    _totalSeconds = acm.timeTotal;
+    _channels = [acm channels];
+    [acm release];
+    err = [self _initAUGraph:acm.rate];
   }
-  if (res || err)
+  else NSLog(@"WARNING: can't load ACM data");
+  if (err)
   {
-    NSLog(@"_initAUGraph: %f failed: '%.4s'", rate, (char*)&err);
+    NSLog(@"_initAUGraph: %d failed: '%.4s'", acm.rate, (char*)&err);
+  }
+  if (err || !acm)
+  {
+    [_acms release];
     [self release];
     self = nil;
   }
   return self;
 }
 
-
 -(void)dealloc
 {
   if (_ag) DisposeAUGraph(_ag);
-  for (NSValue* val in _acms) acm_close([val pointerValue]);
-  [_acms release];
+  if (_acms) [_acms release];
   if (_epilogueNames) [_epilogueNames release];
   if (_epilogues) [_epilogues release];
+  if (_acmFiles) [_acmFiles release];
+  if (_epilogueFiles) [_epilogueFiles release];
+  if (_data) [_data release];
   [super dealloc];
 }
 
+-(id)copyWithZone:(NSZone*)zone
+{
+  #pragma unused (zone)
+  if (_data) return [[ACMRenderer alloc] initWithData:_data];
+  else return [[ACMRenderer alloc] initWithPlaylist:_acmFiles andEpilogues:_epilogueFiles];
+}
+
 -(void)setDelegate:(id)del {_delegate = del;}
--(void)setDoesLoop:(BOOL)loop {_loop = loop;}
--(BOOL)doesLoop {return _loop;}
--(NSUInteger)loopPoint {return _loopPoint;}
--(void)setLoopPoint:(NSUInteger)lp {if (lp < [_acms count]) _loopPoint = lp;}
+
+-(void)setDoesLoop:(BOOL)loop
+{
+  _loops = loop;
+  if (loop)
+  {
+    if (_epilogue == acmWillDoEpilogue ||
+        _epilogue == acmWillDoFinalEpilogue) [self _setEpilogueState:acmNoEpilogue];
+  }
+  else
+  {
+    if (_hasFinalEpilogue && _epilogue != acmWillDoEpilogue)
+      [self _setEpilogueState:acmWillDoFinalEpilogue];
+  }
+}
+-(void)setLoopIndex:(NSUInteger)li {if (li < [_acms count]) _loopIndex = li;}
 
 -(void)start
 {
@@ -236,31 +249,29 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 
 -(void)suspend {_suspended = YES;}
 -(void)resume {_suspended = NO;}
--(BOOL)isSuspended {return _suspended;}
 
--(double)position
+-(double)pct
 {
-  double tsp = (double)_totalPCMPlayed;
-  double ts = (double)_totalPCM;
-  double p = tsp/ts;
-  //NSLog(@"tsp=%f ts=%f p=%f", tsp, ts, p);
-  return p;
+  return [self _pctForPCM:_totalPCMPlayed + _totalEpiloguePCMPlayed];
 }
 
--(void)gotoPosition:(double)pos
+// FIXME: this should take into account final epilogue
+-(void)gotoPct:(double)pct
 {
-  _epilogue = acmNoEpilogue;
-  unsigned long posPCM = _totalPCM * pos;
+  if (pct < 0.0) pct = 0.0;
+  if (pct > 1.0) pct = 1.0;
+  [self _setEpilogueState:acmNoEpilogue];
+  unsigned long posPCM = (_totalPCM + _totalEpiloguePCM) * pct;
   _totalPCMPlayed = 0;
   NSUInteger i;
   for (i = 0; i < [_acms count]; i++)
   {
-    ACMStream* acm = [self _acmAtIndex:i];
-    int acmPCM = acm_pcm_total(acm);
-    if (_totalPCMPlayed + acmPCM > posPCM)
+    ACMData* acm = [_acms objectAtIndex:i];
+    int acmPCM = acm.PCMTotal;
+    if (_totalPCMPlayed + acmPCM >= posPCM)
     {
       unsigned long offset = posPCM - _totalPCMPlayed;
-      acm_seek_pcm(acm, (unsigned)offset);
+      [acm PCMSeek:offset];
       _totalPCMPlayed += offset;
       _currentACM = i;
       break;
@@ -273,26 +284,19 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 }
 
 // Returns number between 0.0 and 1.0 inclusive that represents the loop point.
--(double)loopPosition
+-(double)loopPct
 {
-  double pos = 0.0, samplesBeforeLoop = 0.0;
-  unsigned long i;
-  for (i = 0; i < _loopPoint; i++)
+  unsigned long pcm = 0;
+  NSUInteger i;
+  for (i = 0; i < _loopIndex; i++)
   {
-    samplesBeforeLoop += acm_pcm_total([self _acmAtIndex:i]);
+    ACMData* acm = [_acms objectAtIndex:i];
+    pcm += acm.PCMTotal;
   }
-  pos = samplesBeforeLoop / (double)_totalPCM;
-  return pos;
+  return [self _pctForPCM:pcm];
 }
 
--(ACMStream*)_acmAtIndex:(NSUInteger)i
-{
-  return [[_acms objectAtIndex:i] pointerValue];
-}
-
--(double)seconds {return _totalSeconds;}
-
--(void)setAmp:(float)val
+-(void)setAmp:(double)val
 {
   // The dial does not go up to 11 ;-)
   if (val < 0.0) val = 0.0;
@@ -300,9 +304,48 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   _amp = val;
 }
 
--(float)amp {return _amp;}
--(BOOL)isPlaying {return _nowPlaying;}
+-(void)doEpilogue:(BOOL)flag
+{
+  if (_epilogues)
+    [self _setEpilogueState:(flag)?acmWillDoEpilogue:acmNoEpilogue];
+}
 
+-(void)getEpilogueStartPct:(double*)oStart endPct:(double*)oEnd
+       pctDelta:(double*)oDelta
+{
+  double start = 0.0;
+  double end = 0.0;
+  double delta = 1.0;
+  if (_epilogue != acmNoEpilogue && _epilogues)
+  {
+    unsigned grandTotal = _totalPCM;
+    unsigned long startPCM = 0;
+    unsigned long endPCM = 0;
+    NSUInteger n = [_acms count];
+    for (unsigned i = 0; i < n; i++)
+    {
+      ACMData* acm = [_acms objectAtIndex:i];
+      startPCM += acm.PCMTotal;
+      endPCM += acm.PCMTotal;
+      ACMData* ep = [self _epilogueAtIndex:i];
+      if (_epilogue == acmWillDoFinalEpilogue && i < n-1) continue;
+      if (i >= _currentACM && ep)
+      {
+        endPCM += ep.PCMTotal;
+        grandTotal += ep.PCMTotal;
+        break;
+      }
+    }
+    start = (double)startPCM / (double)grandTotal;
+    end = (double)endPCM / (double)grandTotal;
+    delta = (double)_totalPCM / (double)grandTotal;
+  }
+  if (NULL != oStart) *oStart = start;
+  if (NULL != oEnd) *oEnd = end;
+  if (NULL != oDelta) *oDelta = delta;
+}
+
+#pragma mark Internal
 -(OSStatus)_initAUGraph:(double)rate
 {
   OSStatus result = NewAUGraph(&_ag);
@@ -365,41 +408,43 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 {
   //NSLog(@"_bufferSamples:%d", count);
   int16_t* acmBuffer = NULL;
-  if (!_suspended && _epilogue != acmDidEpilogue)
+  if (!_suspended)
   {
     unsigned long bytesNeeded = count * sizeof(int16_t);
     unsigned long bytesBuffered = 0;
     while (bytesBuffered < bytesNeeded)
     {
-      ACMStream* acm = NULL;
+      ACMData* acm = NULL;
       if (_epilogue == acmDoingEpilogue)
       {
         if (_currentACM < [_epilogueNames count])
-          acm = [self _epilogueAtPosition:_currentACM];
+          acm = [self _epilogueAtIndex:_currentACM];
       }
       else
       {
         if (_currentACM < [_acms count])
-          acm = [self _acmAtIndex:_currentACM];
+          acm = [_acms objectAtIndex:_currentACM];
       }
-      if (!acm) NSLog(@"No acm at index %u of %d??", (unsigned)_currentACM,
-                      [_acms count]);
-      unsigned pcm1 = acm_pcm_tell(acm);
-      unsigned pcmall = acm_pcm_total(acm);
+      if (!acm) NSLog(@"No acm at index %u of %lu??", (unsigned)_currentACM,
+                      (unsigned long)[_acms count]);
+      unsigned pcm1 = [acm PCMTell];
+      unsigned pcmall = acm.PCMTotal;
       //NSLog(@" pcm1 %d pcmall %d", pcm1, pcmall);
       if (pcmall > pcm1)
       {
         unsigned long needed = bytesNeeded - bytesBuffered;
         if (!acmBuffer) acmBuffer = calloc(bytesNeeded, 1L);
-        int before = acm_pcm_tell(acm);
-        int res = acm_read_loop(acm, ((char*)acmBuffer) + bytesBuffered,
-                                needed, 0, 2, 1);
-        #if ACMPLAYER_DEBUG
-        hexdump(((char*)acmBuffer) + bytesBuffered, res);
-        #endif
-        int after = acm_pcm_tell(acm);
+        int before = [acm PCMTell];
+        int res = [acm bufferSamples:((char*)acmBuffer) + bytesBuffered
+                       count:needed bigEndian:TARGET_RT_BIG_ENDIAN];
+        //#if ACMPLAYER_DEBUG
+        //hexdump(((char*)acmBuffer) + bytesBuffered, res);
+        //#endif
+        int after = [acm PCMTell];
+        if (!res) break;
         bytesBuffered += res;
         if (_epilogue != acmDoingEpilogue) _totalPCMPlayed += (after - before);
+        else _totalEpiloguePCMPlayed += (after - before);
       }
       else
       {
@@ -417,53 +462,59 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   return acmBuffer;
 }
 
--(void)doEpilogue:(BOOL)flag
-{
-  if (_epilogues)
-    [self _setEpilogueState:(flag)?acmWillDoEpilogue:acmNoEpilogue];
-}
-
--(int)epilogueState {return _epilogue;}
-
 // Normally will just report the ACM that is playing in sequence.
 // When we are in 'epilogue mode' then it reports the ACM that was identified
 // in the .mus file by the @tag directive.
 // This upates the _currentACM index and returns the next reader to play.
 // If nil, we are done playing.
--(ACMStream*)_advACM
+-(ACMData*)_advACM
 {
-  ACMStream* acm = NULL;
-  if (_epilogue == acmDidEpilogue) {}
-  else if (_epilogue == acmDoingEpilogue)
-    [self _setEpilogueState:acmDidEpilogue];
-  else if (_epilogue == acmWillDoEpilogue ||
-           (!_loop && _currentACM == [_acms count]-1))
+  ACMData* acm = nil;
+  BOOL finishedEpilogue = NO;
+  if (_epilogue == acmDoingEpilogue)
   {
-    if (_epilogues)
+    finishedEpilogue = YES;
+    [self _setEpilogueState:acmNoEpilogue];
+  }
+  else if (_epilogue == acmWillDoEpilogue)
+  {
+    acm = [self _epilogueAtIndex:_currentACM];
+    if (acm)
     {
-      acm = [self _epilogueAtPosition:_currentACM];
-      if (acm) [self _setEpilogueState:acmDoingEpilogue];
+      [self _setEpilogueState:acmDoingEpilogue];
+      _totalEpiloguePCM = acm.PCMTotal;
+      _totalEpiloguePCMPlayed = 0;
     }
   }
-  if (_epilogue != acmDidEpilogue && !acm)
+  else if (_epilogue == acmWillDoFinalEpilogue &&
+           !_loops && _currentACM == [_acms count]-1)
+  {
+    acm = [self _epilogueAtIndex:_currentACM];
+    if (acm)
+    {
+      [self _setEpilogueState:acmDoingEpilogue];
+      _totalEpiloguePCMPlayed = 0;
+    }
+  }
+  if (!finishedEpilogue && !acm)
   {
     _currentACM++;
-    if (_loop && _currentACM >= [_acms count])
-      [self gotoPosition:[self loopPosition]];
+    if (_loops && _currentACM >= [_acms count])
+      [self _gotoACMAtIndex:_loopIndex];
     if (_currentACM < [_acms count])
-      acm = [[_acms objectAtIndex:_currentACM] pointerValue];
+      acm = [_acms objectAtIndex:_currentACM];
   }
-  if (acm) acm_seek_time(acm, 0);
+  if (acm) [acm PCMSeek:0];
   else _currentACM = 0;
   return acm;
 }
 
--(ACMStream*)_epilogueAtPosition:(NSUInteger)pos
+-(ACMData*)_epilogueAtIndex:(NSUInteger)idx
 {
-  NSString* epname = [_epilogueNames objectAtIndex:pos];
-  id obj = [_epilogues objectForKey:epname];
-  if ([obj isKindOfClass:[NSNull class]]) return nil;
-  return [obj pointerValue];
+  NSString* epname = [_epilogueNames objectAtIndex:idx];
+  ACMData* obj = [_epilogues objectForKey:epname];
+  if ([obj isKindOfClass:[NSNull class]]) obj = nil;
+  return obj;
 }
 
 -(void)_progress
@@ -478,37 +529,74 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 
 -(void)_setEpilogueState:(int)state
 {
-  int prev = _epilogue;
-  _epilogue = state;
-  if (prev != state)
+  if (_epilogues)
   {
-    if (_delegate && [_delegate respondsToSelector:@selector(acmEpilogueStateChanged:)])
+    if (!_loops && state == acmNoEpilogue && _hasFinalEpilogue)
+      state = acmWillDoFinalEpilogue;
+    if (state == acmWillDoFinalEpilogue)
     {
-      [_delegate performSelectorOnMainThread:@selector(acmEpilogueStateChanged:)
-                 withObject:self waitUntilDone:NO];
+      ACMData* ep = [self _epilogueAtIndex:[_acms count]-1];
+      _totalEpiloguePCM = ep.PCMTotal;
+      _totalEpiloguePCMPlayed = 0;
+    }
+    if (state == acmNoEpilogue)
+    {
+      _totalEpiloguePCM = 0;
+    }
+    int prev = _epilogue;
+    if (prev == acmDoingEpilogue && state == acmWillDoEpilogue) return;
+    _epilogue = state;
+    if (prev != state)
+    {
+      if (_delegate && [_delegate respondsToSelector:@selector(acmEpilogueStateChanged:)])
+      {
+        [_delegate performSelectorOnMainThread:@selector(acmEpilogueStateChanged:)
+                   withObject:self waitUntilDone:NO];
+      }
     }
   }
+}
+
+-(void)_gotoACMAtIndex:(NSUInteger)idx
+{
+  if (idx > [_acms count]) idx = [_acms count]-1;
+  [self _setEpilogueState:acmNoEpilogue];
+  _totalPCMPlayed = 0;
+  _currentACM = idx;
+  ACMData* acm;
+  for (NSUInteger i = 0; i < idx; i++)
+  {
+    acm = [_acms objectAtIndex:i];
+    int acmPCM = acm.PCMTotal;
+    _totalPCMPlayed += acmPCM;
+  }
+  acm = [_acms objectAtIndex:idx];
+  [acm PCMSeek:0];
+}
+
+-(double)_pctForPCM:(unsigned long)pcm
+{
+  double tpcm = (double)_totalPCM + (double)_totalEpiloguePCM;
+  double pct = (double)pcm / tpcm;
+  //NSLog(@"pcm=%lu tpcm=%f (%f + %f) pct=%f", pcm, tpcm, (double)_totalPCM, (double)_totalEpiloguePCM, pct);
+  return pct;
 }
 
 #define BUFF_SIZE 0x20000L
 -(void)exportAIFFToURL:(NSURL*)url
 {
-  unsigned char* buff = malloc(BUFF_SIZE);
+  char* buff = malloc(BUFF_SIZE);
   if (buff)
   {
-    ACMStream* acm;
-    BOOL savesusp = _suspended;
-    [self suspend];
-    double savePos = [self position];
-    [self gotoPosition:0.0];
+    ACMData* acm;
     AudioStreamBasicDescription streamFormat;
-    acm = [[_acms objectAtIndex:0L] pointerValue];
-    unsigned channels = acm_channels(acm);
-    streamFormat.mSampleRate = acm_rate(acm);
+    acm = [_acms objectAtIndex:0L];
+    //NSLog(@"Rate: %d", acm.rate);
+    streamFormat.mSampleRate = acm.rate;
     streamFormat.mFormatID = kAudioFormatLinearPCM;
     streamFormat.mFormatFlags = kLinearPCMFormatFlagIsBigEndian |
                                 kLinearPCMFormatFlagIsPacked;
-    streamFormat.mChannelsPerFrame = channels;
+    streamFormat.mChannelsPerFrame = acm.channels;
     streamFormat.mFramesPerPacket = 1;
     streamFormat.mBitsPerChannel = 16;
     streamFormat.mBytesPerFrame = 4;
@@ -524,12 +612,12 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
     for (_currentACM = 0; _currentACM < [_acms count]; _currentACM++)
     {
       unsigned bytesDone = 0;
-      acm = [self _acmAtIndex:_currentACM];
-      acm_seek_pcm(acm, 0);
-      unsigned totalBytes = acm_pcm_total(acm) * acm_channels(acm) * ACM_WORD;
+      acm = [_acms objectAtIndex:_currentACM];
+      [acm PCMSeek:0];
+      unsigned totalBytes = acm.PCMTotal * acm.channels * sizeof(int16_t);
 	    while (bytesDone < totalBytes)
       {
-		    int res = acm_read_loop(acm, buff, BUFF_SIZE, 1, 2, 1);
+        unsigned res = [acm bufferSamples:buff count:BUFF_SIZE bigEndian:YES];
         #if ACMPLAYER_DEBUG
         hexdump(buff,res);
         #endif
@@ -546,7 +634,8 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
         if (_delegate &&
             [_delegate respondsToSelector:@selector(acmExportProgress:)])
         {
-          [_delegate acmExportProgress:self];
+          [_delegate performSelector:@selector(acmExportProgress:)
+                     withObject:self];
         }
       }
     }
@@ -554,13 +643,13 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
     if (_epilogues && [_epilogues count])
     {
       //NSLog(@"Will use epilogue %@", [_epilogueNames lastObject]);
-      acm = [self _epilogueAtPosition:[_epilogueNames count]-1];
-      acm_seek_pcm(acm, 0);
-      unsigned totalBytes = acm_pcm_total(acm) * acm_channels(acm) * ACM_WORD;
+      acm = [self _epilogueAtIndex:[_epilogueNames count]-1];
+      [acm PCMSeek:0];
+      unsigned totalBytes = [acm PCMTotal] * acm.channels * ACM_WORD;
 	    unsigned bytesDone = 0;
       while (bytesDone < totalBytes)
       {
-		    int res = acm_read_loop(acm, buff, BUFF_SIZE, 1, 2, 1);
+		    unsigned res = [acm bufferSamples:buff count:BUFF_SIZE bigEndian:YES];
         if (!res)
         {
           //NSLog(@"WTF? Couldn't get acm reader to cough up any bits for the epilogue??\n%@", epiacm);
@@ -574,46 +663,10 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
       }
     }
     AudioFileClose(fileID);
-    [self gotoPosition:savePos];
-    if (!savesusp) [self resume];
     free(buff);
   }
 }
 @end
-
-static int read_func(void *ptr, int size, int n, void *datasrc)
-{
-  ACMDataRendererContext* ctx = datasrc;
-  size_t bytes = n * size;
-  size_t avail = [ctx->data length] - ctx->off;
-  if (avail < bytes) bytes = avail;
-  [ctx->data getBytes:ptr range:NSMakeRange(ctx->off, bytes)];
-  ctx->off += bytes;
-  return bytes;
-}
-
-static int seek_func(void *datasrc, int offset, int whence)
-{
-  ACMDataRendererContext* ctx = datasrc;
-  if (whence == SEEK_SET) ctx->off = offset;
-  else if (whence == SEEK_CUR) ctx->off += offset;
-  else if (whence == SEEK_END) ctx->off = [ctx->data length] + offset;
-  return 0;
-}
-
-static int close_func(void *datasrc)
-{
-  ACMDataRendererContext* ctx = datasrc;
-  if (ctx->data) [ctx->data release];
-  ctx->data = nil;
-  return 0;
-}
-
-static int get_length_func(void *datasrc)
-{
-  ACMDataRendererContext* ctx = datasrc;
-  return [ctx->data length];
-}
 
 
 #if ACMPLAYER_DEBUG

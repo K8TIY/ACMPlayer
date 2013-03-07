@@ -21,74 +21,74 @@
 #import <CoreAudio/AudioHardware.h>
 #import <CoreServices/CoreServices.h>
 #import <AudioToolbox/AudioToolbox.h>
-#import "libacm.h"
+#import "ACMData.h"
 
 @protocol ACM
 -(void)acmDidFinishPlaying:(id)renderer;
 -(void)acmProgress:(id)renderer;
 -(void)acmEpilogueStateChanged:(id)renderer;
--(void)acmExportProgress:(id)renderer;
 @end
 
 enum
 {
   acmNoEpilogue,
   acmWillDoEpilogue,
-  acmDoingEpilogue,
-  acmDidEpilogue
+  acmWillDoFinalEpilogue,
+  acmDoingEpilogue
 };
 
-typedef struct
+@interface ACMRenderer : NSObject <NSCopying>
 {
-  NSData* data;
-  size_t  off;
-} ACMDataRendererContext;
-
-@interface ACMRenderer : NSObject //<NSCopying> This would make AIFF rendering easier
-{
-  float _amp;
-  double _totalSeconds;
-  NSMutableArray* _acms; // Array of NSValue of ACMStream*
-  NSMutableArray* _epilogueNames; // Names, may be nil
-  NSMutableDictionary* _epilogues; // Name -> NSValue -> ACMStream*, may be nil
-  AUGraph _ag;
-  id _delegate;
-  unsigned long _totalPCM;
-  unsigned long _totalPCMPlayed;
-  NSUInteger _currentACM; // 0-based
-  NSUInteger _loopPoint; // 0-based
-  BOOL _nowPlaying;
-  BOOL _suspended;
-  BOOL _loop;
-  BOOL _mono;
+  double                 _amp;
+  double                 _totalSeconds;
+  NSArray*               _acmFiles; // For NSCopying
+  NSArray*               _epilogueFiles; // For NSCopying
+  NSData*                _data; // For NSCopying
+  NSMutableArray*        _acms; // Array of ACMData*
+  NSMutableArray*        _epilogueNames; // Names, may be nil
+  NSMutableDictionary*   _epilogues; // Name -> ACMData*, may be nil
+  AUGraph                _ag;
+  id                     _delegate;
+  unsigned               _channels;
+  uint64_t               _totalPCM;
+  uint64_t               _totalPCMPlayed;
+  uint64_t               _totalEpiloguePCM;
+  uint64_t               _totalEpiloguePCMPlayed;
+  NSUInteger             _currentACM; // 0-based
+  //FIXME: _loopPoint should be a PCM number for efficiency
+  NSUInteger             _loopIndex; // 0-based
+  BOOL                   _nowPlaying;
+  BOOL                   _suspended;
+  BOOL                   _loops;
+  BOOL                   _hasFinalEpilogue;
   // When we have epilogues, and we get done with an acm that has one,
   //   we will play the epilogue and stop playing (and clear these flags).
-  int _epilogue;
-  ACMDataRendererContext _ctx;
+  int                    _epilogue;
 }
-@property (readonly) BOOL mono;
+@property(readonly) double amp;
+@property(readonly) double seconds;
+@property(readonly) unsigned channels;
+@property(readonly) BOOL playing;
+@property(readonly) BOOL suspended;
+@property(readonly) BOOL loops;
+@property(readonly) int epilogueState;
 
 -(ACMRenderer*)initWithPlaylist:(NSArray*)list andEpilogues:(NSArray*)epilogues;
 -(ACMRenderer*)initWithData:(NSData*)data;
--(float)amp;
--(void)setAmp:(float)val;
+-(void)setAmp:(double)val;
 -(void)start;
 -(void)stop;
 -(void)suspend;
 -(void)resume;
--(BOOL)isSuspended;
--(double)position;
--(void)gotoPosition:(double)pos;
--(double)loopPosition;
--(double)seconds;
--(BOOL)isPlaying;
+-(double)pct;
+-(void)gotoPct:(double)pct;
 -(void)setDelegate:(id)delegate;
 -(void)setDoesLoop:(BOOL)loop;
--(void)setLoopPoint:(NSUInteger)lp;
--(NSUInteger)loopPoint;
--(BOOL)doesLoop;
--(int)epilogueState;
+-(void)setLoopIndex:(NSUInteger)li;
+-(double)loopPct;
 -(void)doEpilogue:(BOOL)flag;
+-(void)getEpilogueStartPct:(double*)oStart endPct:(double*)oEnd
+       pctDelta:(double*)oDelta;
 -(void)exportAIFFToURL:(NSURL*)url;
 @end
 

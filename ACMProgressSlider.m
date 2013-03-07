@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010-2011, Brian "Moses" Hall
+ * Copyright © 2010-2013, Brian "Moses" Hall
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -31,19 +31,14 @@ static void _drawFrameInRect(NSRect frameRect);
   return [[self cell] trackingValue];
 }
 
--(void)setShowsProgress:(BOOL)flag
+-(void)setLoopPct:(double)pct
 {
-  [[self cell] setShowsProgress:flag];
+  [[self cell] setLoopPct:pct];
 }
 
--(void)setProgressValue:(double)aDouble
+-(void)setEpilogueStartPct:(double)start endPct:(double)end
 {
-  [[self cell] setProgressValue:aDouble];
-}
-
--(void)setLoopPosition:(double)aDouble
-{
-  [[self cell] setLoopPosition:aDouble];
+  [[self cell] setEpilogueStartPct:start endPct:end];
 }
 @end
 
@@ -56,19 +51,19 @@ NSColor*_myBorderColor = nil;
 @end
 
 @implementation ACMProgressSliderCell
++(BOOL)prefersTrackingUntilMouseUp {return YES;}
 -(void)_setup
 {
   // set up all the default values...
   [self setDoubleValue:0.0];
   _trackingValue = 0.0;
   _tracking = NO;
-  _progressing = NO;
   [self setShowsFirstResponder:YES];
   // these are noted as private in the docs, but this is the only way to configure them.
-  _cFlags.actOnMouseDragged = NO;
-  _cFlags.actOnMouseDown = NO;
-  _cFlags.dontActOnMouseUp = YES;
-  _cFlags.refusesFirstResponder = NO;
+  //_cFlags.actOnMouseDragged = NO;
+  //_cFlags.actOnMouseDown = NO;
+  //_cFlags.dontActOnMouseUp = YES;
+  //_cFlags.refusesFirstResponder = NO;
   [self setContinuous:NO];
 }
 
@@ -128,25 +123,24 @@ static void _drawFrameInRect(NSRect r)
   //[[[NSColor blackColor] colorWithAlphaComponent:0.6] set];
   [[NSColor blackColor] set];
   _drawFrameInRect(rect);
-  if (_progressing)
+  knobRect.size.width = knobRect.size.height;
+  knobRect.origin.x += (rect.size.width - knobRect.size.width) * ((_tracking) ? _trackingValue : _value);
+  _drawKnobInRect(knobRect);
+  // Indicate loop point
+  if (_loopPct != 0.0)
   {
-    rect.size.width *= _progressValue;
-    NSBezierPath* path = [NSBezierPath bezierPathWithRect:rect];
-    [path fill];
+    NSRect loopRect = rect;
+    loopRect.size.width *= _loopPct;
+    [[[NSColor blackColor] colorWithAlphaComponent:0.1f] set];
+    NSRectFillUsingOperation(loopRect, NSCompositeSourceOver);
   }
-  else
+  if (_epilogueStartPct != _epilogueEndPct)
   {
-    knobRect.size.width = knobRect.size.height;
-    knobRect.origin.x += (rect.size.width - knobRect.size.width) * ((_tracking) ? _trackingValue : _value);
-    _drawKnobInRect(knobRect);
-    // Indicate loop point
-    if (_loopPosition != 0.0)
-    {
-      NSRect loopRect = rect;
-      loopRect.size.width *= _loopPosition;
-      [[[NSColor blackColor] colorWithAlphaComponent:0.1f] set];
-      NSRectFillUsingOperation(loopRect, NSCompositeSourceOver);
-    }
+    NSRect loopRect = rect;
+    loopRect.origin.x += (_epilogueStartPct * rect.size.width);
+    loopRect.size.width *= (_epilogueEndPct - _epilogueStartPct);
+    [[[NSColor blackColor] colorWithAlphaComponent:0.2f] set];
+    NSRectFillUsingOperation(loopRect, NSCompositeSourceOver);
   }
   // Draw shadow
   [[[NSColor blackColor] colorWithAlphaComponent:0.1f] set];
@@ -160,21 +154,17 @@ static void _drawFrameInRect(NSRect r)
 
 -(BOOL)startTrackingAt:(NSPoint)startPoint inView:(NSView*)controlView
 {
-  BOOL ret = NO;
-  if (!_progressing)
+  BOOL ret = YES;
+  /*if (!_tracking)
   {
-    ret = YES;
-    /*if (!_tracking)
-    {
-      NSView* cv = [self controlView];
-      [[cv window] makeFirstResponder:cv];
-    }*/
-    NSRect r = [controlView bounds];
-    double val = (startPoint.x - r.origin.x)/r.size.width;
-    _tracking = YES;
-    [self setTrackingValue:val];
-    //NSLog(@"startTrackingAt: setTrackingValue %f", _trackingValue);
-  }
+    NSView* cv = [self controlView];
+    [[cv window] makeFirstResponder:cv];
+  }*/
+  NSRect r = [controlView bounds];
+  double val = (startPoint.x - r.origin.x)/r.size.width;
+  _tracking = YES;
+  [self setTrackingValue:val];
+  //NSLog(@"startTrackingAt: setTrackingValue %f", _trackingValue);
   return ret;
 }
 
@@ -182,39 +172,32 @@ static void _drawFrameInRect(NSRect r)
        inView:(NSView*)controlView
 {
   #pragma unused (lastPoint)
-  BOOL ret = NO;
-  if (!_progressing)
-  {
-    ret = YES;
-    NSRect r = [controlView bounds];
-    double val = (currentPoint.x - r.origin.x)/r.size.width;
-    [self setTrackingValue:val];
-    //NSLog(@"continueTracking: setTrackingValue %f", _trackingValue);
-  }
-  return ret;
+  NSRect r = [controlView bounds];
+  double val = (currentPoint.x - r.origin.x)/r.size.width;
+  [self setTrackingValue:val];
+  //NSLog(@"continueTracking: setTrackingValue %f", _trackingValue);
+  return YES;
 }
 
 -(void)stopTracking:(NSPoint)lastPoint at:(NSPoint)stopPoint
        inView:(NSView*)controlView mouseIsUp:(BOOL)flag
 {
   #pragma unused (lastPoint)
+  if (!flag) return;
   _tracking = NO;
-  if (!_progressing)
+  NSRect r = [controlView bounds];
+  double val = (stopPoint.x - r.origin.x)/r.size.width;
+  [self setTrackingValue:val];
+  //NSLog(@"stopTracking: setDoubleValue %f", val);
+  if (flag)
   {
-    NSRect r = [controlView bounds];
-    double val = (stopPoint.x - r.origin.x)/r.size.width;
-    [self setTrackingValue:val];
-    if (flag)
+    [self setDoubleValue:val];
+    SEL action = [self action];
+    id target = [self target];
+    if (action && target)
     {
-      [self setDoubleValue:val];
-      //NSLog(@"stopTracking: setDoubleValue %f", val);
-      SEL action = [self action];
-      id target = [self target];
-      if (action && target)
-      {
-        IMP imp = [target methodForSelector:action];
-        (imp)(target, action);
-      }
+      IMP imp = [target methodForSelector:action];
+      (imp)(target, action);
     }
   }
 }
@@ -222,48 +205,43 @@ static void _drawFrameInRect(NSRect r)
 -(double)trackingValue {return _trackingValue;}
 -(double)doubleValue {return _value;}
 
--(void)setDoubleValue:(double)aDouble
+-(void)setDoubleValue:(double)val
 {
-  if (_value != aDouble)
+  if (_value != val)
   {
-    _value = aDouble;
+    if (val < 0.0) val = 0.0;
+    else if (val > 1.0) val = 1.0;
+    _value = val;
     if (!_tracking) [[self controlView] setNeedsDisplay:YES];
   }
 }
 
--(void)setTrackingValue:(double)aDouble
+-(void)setTrackingValue:(double)val
 {
-  if (_trackingValue != aDouble)
+  if (_trackingValue != val)
   {
-    _trackingValue = aDouble;
+    if (val < 0.0) val = 0.0;
+    else if (val > 1.0) val = 1.0;
+    _trackingValue = val;
     if (_tracking) [[self controlView] setNeedsDisplay:YES];
   }
 }
 
--(void)setShowsProgress:(BOOL)flag
+-(void)setLoopPct:(double)pct
 {
-  if (_progressing != flag)
+  if (_loopPct != pct)
   {
-    _progressing = flag;
+    _loopPct = pct;
     [[self controlView] setNeedsDisplay:YES];
   }
 }
 
--(void)setProgressValue:(double)aDouble
+-(void)setEpilogueStartPct:(double)start endPct:(double)end
 {
-  if (_progressValue != aDouble)
+  if (_epilogueStartPct != start || _epilogueEndPct != end)
   {
-    _progressValue = aDouble;
-    if (_progressing) [[self controlView] setNeedsDisplay:YES];
-    //else NSLog(@"But I'm not progressive!");
-  }
-}
-
--(void)setLoopPosition:(double)aDouble
-{
-  if (_loopPosition != aDouble)
-  {
-    _loopPosition = aDouble;
+    _epilogueStartPct = start;
+    _epilogueEndPct = end;
     [[self controlView] setNeedsDisplay:YES];
   }
 }
@@ -276,7 +254,7 @@ static void _drawFrameInRect(NSRect r)
   [[NSColor colorWithCalibratedRed:0.94f green:0.98f blue:0.79f alpha:1.0f] set];
   NSBezierPath* path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:4.0f yRadius:4.0f];
   [path fill];
-  [[NSColor colorWithCalibratedRed:0.2f green:0.2f blue:0.2f alpha:1.0f] set];
+  [[NSColor colorWithCalibratedRed:0.2f green:0.3f blue:0.1f alpha:1.0f] set];
   [path stroke];
 }
 @end

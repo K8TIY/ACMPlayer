@@ -28,6 +28,5 @@
 }
 -(void)suspend;
 -(IBAction)epilogueAction:(id)sender;
--(IBAction)exportAIFF:(id)sender;
 @end
 

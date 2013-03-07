@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010, Brian "Moses" Hall
+ * Copyright © 2010-2013, Brian "Moses" Hall
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
  */
 #import <Cocoa/Cocoa.h>
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-  return NSApplicationMain(argc,  (const char **) argv);
+  return NSApplicationMain(argc, (const char**)argv);
 }

@@ -4,3 +4,9 @@
 [submodule "Onizuka"]
 	path = Onizuka
 	url = git@github.com:K8TIY/Onizuka.git
+[submodule "ogg"]
+	path = ogg
+	url = git://git.xiph.org/mirrors/ogg.git
+[submodule "vorbis"]
+	path = vorbis
+	url = git://git.xiph.org/mirrors/vorbis.git

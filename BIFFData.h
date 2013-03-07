@@ -15,23 +15,32 @@
  */
 #import <Cocoa/Cocoa.h>
 
-@interface ACMProgressSliderCell : NSActionCell
+@interface BIFFFile : NSObject
 {
-  double _value; // A value between 0.0 and 1.0 inclusive.
-  double _trackingValue;
-  double _loopPct;
-  double _epilogueStartPct;
-  double _epilogueEndPct;
-  BOOL   _tracking;
+  uint32_t  _loc;
+  uint32_t  _off; // From _bytes
+  uint32_t  _len;
+  uint16_t  _type;
 }
--(double)trackingValue;
+@property (readonly) uint32_t loc;
+@property (readonly) uint32_t off;
+@property (readonly) uint32_t len;
+@property (readonly) uint16_t type;
+
+-(id)initWithLocator:(uint32_t)loc offset:(uint32_t)off length:(uint32_t)len
+     type:(uint16_t)type;
 @end
 
-@interface ACMProgressSlider : NSControl{}
--(double)trackingValue;
--(void)setLoopPct:(double)pct;
--(void)setEpilogueStartPct:(double)start endPct:(double)end;
-@end
-
-@interface OldYaller : NSView
+@interface BIFFData : NSObject
+{
+  NSMutableArray*      _strings;
+  uint32_t             _offset;  // To string data
+  NSData*              _data;    // Release when done
+  const unsigned char* _bytes;   // [_data bytes]
+  double               _loaded;  // Ratio loaded (0.0 to 1.0)
+}
+-(void)setData:(NSData*)data/* path:(NSString*)path*/;
+-(NSData*)dataAtIndex:(uint32_t)i;
+@property (readonly) NSArray* strings;
+@property (readonly) double loaded;
 @end

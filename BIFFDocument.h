@@ -14,24 +14,31 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 #import <Cocoa/Cocoa.h>
+#import "BIFFData.h"
+#import "KEYData.h"
+#import "TLKData.h"
+#import "ACMDocumentCommon.h"
 
-@interface ACMProgressSliderCell : NSActionCell
+@interface NSIndexSet (IndexAtIndex)
+-(NSUInteger)indexAtIndex:(NSUInteger)anIndex;
+@end
+
+@interface BIFFTableView : NSTableView
+@end
+
+@interface BIFFDocument : ACMDocumentCommon
 {
-  double _value; // A value between 0.0 and 1.0 inclusive.
-  double _trackingValue;
-  double _loopPct;
-  double _epilogueStartPct;
-  double _epilogueEndPct;
-  BOOL   _tracking;
+  BIFFData*                     _data; // Just the relevant file entries
+  NSTimer*                      _timer;
+  KEYData*                      _key;
+  TLKData*                      _tlk;
+  NSMutableIndexSet*            _indices;
+  IBOutlet NSTableView*         _table;
+  IBOutlet NSTextView*          _text;
+  IBOutlet NSSearchField*       _search;
+  IBOutlet NSProgressIndicator* _loadProgress;
+  NSInteger                     _lastSelectedRow;
+  BOOL                          _didSelect;
 }
--(double)trackingValue;
-@end
-
-@interface ACMProgressSlider : NSControl{}
--(double)trackingValue;
--(void)setLoopPct:(double)pct;
--(void)setEpilogueStartPct:(double)start endPct:(double)end;
-@end
-
-@interface OldYaller : NSView
+-(IBAction)doSearch:(id)sender;
 @end

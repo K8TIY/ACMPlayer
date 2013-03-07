@@ -14,24 +14,33 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 #import <Cocoa/Cocoa.h>
+#import "libacm.h"
+#include <vorbis/vorbisfile.h>
 
-@interface ACMProgressSliderCell : NSActionCell
+@interface ACMData : NSObject
 {
-  double _value; // A value between 0.0 and 1.0 inclusive.
-  double _trackingValue;
-  double _loopPct;
-  double _epilogueStartPct;
-  double _epilogueEndPct;
-  BOOL   _tracking;
+  union
+  {
+    ACMStream*      acm;
+    OggVorbis_File* ogg;
+  }          _acm;
+  NSData*    _data;
+  off_t      _dataOffset;
+  unsigned   _channels;
+  unsigned   _rate;
+  uint64_t   _pcmTotal;
+  double     _timeTotal;
 }
--(double)trackingValue;
-@end
-
-@interface ACMProgressSlider : NSControl{}
--(double)trackingValue;
--(void)setLoopPct:(double)pct;
--(void)setEpilogueStartPct:(double)start endPct:(double)end;
-@end
-
-@interface OldYaller : NSView
+@property(readonly) uint64_t PCMTotal;
+@property(readonly) double timeTotal;
+@property(readonly) unsigned channels;
+@property(readonly) unsigned rate;
+@property(readonly) NSData* data;
+@property(assign) off_t dataOffset;
+-(id)initWithPath:(NSString*)path;
+-(id)initWithData:(NSData*)data;
+-(uint64_t)PCMTell;
+-(void)PCMSeek:(uint64_t)off;
+-(long)bufferSamples:(char*)buffer count:(unsigned)bytes
+       bigEndian:(BOOL)big;
 @end

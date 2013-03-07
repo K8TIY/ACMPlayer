@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010-2011, Brian "Moses" Hall
+ * Copyright © 2010-2013, Brian "Moses" Hall
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -19,12 +19,23 @@
 @implementation AppController
 -(void)awakeFromNib
 {
-  [[Onizuka sharedOnizuka] localizeMenu:[NSApp mainMenu]];
+  NSString* where = [[NSBundle mainBundle] pathForResource:@"defaults" ofType:@"plist"];
+  NSMutableDictionary* d = [NSMutableDictionary dictionaryWithContentsOfFile:where];
+  [[NSUserDefaults standardUserDefaults] registerDefaults:d];
+  Onizuka* oz = [Onizuka sharedOnizuka];
+  [oz localizeMenu:[NSApp mainMenu]];
+  [oz localizeWindow:_prefsWindow];
 }
 
 -(BOOL)applicationShouldOpenUntitledFile:(NSApplication*)sender
 {
   #pragma unused (sender)
   return NO;
+}
+
+-(IBAction)orderFrontPrefsWindow:(id)sender
+{
+  #pragma unused (sender)
+  [_prefsWindow makeKeyAndOrderFront:sender];
 }
 @end

@@ -6,3 +6,4 @@
 #include <CoreAudio/AudioHardware.h>
 #include <CoreServices/CoreServices.h>
 #include <AudioUnit/AudioUnit.h>
+#define __MACOSX__ 1

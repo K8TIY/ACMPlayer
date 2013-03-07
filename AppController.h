@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010-2011, Brian "Moses" Hall
+ * Copyright © 2010-2013, Brian "Moses" Hall
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,5 +15,9 @@
  */
 #import <Cocoa/Cocoa.h>
 
-@interface AppController : NSObject {}
+@interface AppController : NSObject
+{
+  IBOutlet NSWindow* _prefsWindow;
+}
+-(IBAction)orderFrontPrefsWindow:(id)sender;
 @end
