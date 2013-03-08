@@ -4,6 +4,8 @@ ACMPlayer is a player for Baldur's Gate (original or Enhanced Edition)
 .acm and .wav music/sound files and .mus playlist files. As of this version
 it can open BIFF files (.bif) and find the sounds embedded therein.
 
+###Download a binary for OS X 10.5 and later [here](http://blugs.com/Downloads/ACMPlayer.zip).
+
 ### New in this Version ###
 * This is the Baldur's Gate: Enhanced Edition version.
   That means Ogg Vorbis support... and boy howdy does that music sound good!
