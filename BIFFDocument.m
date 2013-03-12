@@ -31,9 +31,8 @@ static void format_size(char buf[SIZE_BUFSZ], uint64_t sz);
 @end
 
 @interface BIFFDocument (Private)
--(void)_auxLoadData:(NSData*)data;
+-(void)_auxLoadData;
 -(void)_timerAction:(NSTimer*)t;
--(void)_reportNoSoundData;
 -(void)_tableReturn:(id)sender;
 -(void)_endSheet:(NSPanel*)sheet returnCode:(int)code
        contextInfo:(void*)ctx;
@@ -94,21 +93,35 @@ static void format_size(char buf[SIZE_BUFSZ], uint64_t sz);
        error:(NSError**)outError
 {
   #pragma unused (data, typeName, outError)
+  BOOL ok = YES;
+  NSString* key = nil;
   NSString* file = [[self fileURL] path];
   _key = [KEYData KEYDataForFile:file loading:NO];
   _tlk = [TLKData TLKDataForFile:file loading:NO withKEYData:_key];
   _data = [[BIFFData alloc] init];
-  _timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self
-                    selector:@selector(_timerAction:) userInfo:NULL
-                    repeats:YES];
-  [NSThread detachNewThreadSelector:@selector(_auxLoadData:)
-            toTarget:self withObject:data];
-  /*if (outError != NULL)
+  [_data setData:data];
+  if (0 == [_data.strings count])
   {
-		*outError = [NSError errorWithDomain:NSOSStatusErrorDomain
-                         code:unimpErr userInfo:NULL];
-	}*/
-  return YES;
+    key = @"__NO_SOUNDS__";
+    ok = NO;
+  }
+  else
+  {
+    _timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self
+                      selector:@selector(_timerAction:) userInfo:NULL
+                      repeats:YES];
+    [NSThread detachNewThreadSelector:@selector(_auxLoadData)
+              toTarget:self withObject:nil];
+  }
+  if (!ok && outError != NULL)
+  {
+    NSString* msg = [[Onizuka sharedOnizuka] copyLocalizedTitle:key];
+    NSMutableDictionary* errorDetail = [NSMutableDictionary dictionary];
+    [errorDetail setValue:msg forKey:NSLocalizedFailureReasonErrorKey];
+		*outError = [[NSError alloc] initWithDomain:[[NSBundle mainBundle] bundleIdentifier]
+                         code:unimpErr userInfo:errorDetail];
+	}
+  return ok;
 }
 
 -(BOOL)validateMenuItem:(NSMenuItem*)item
@@ -217,7 +230,6 @@ static void format_size(char buf[SIZE_BUFSZ], uint64_t sz);
       [_renderer setDelegate:self];
       [_renderer setAmp:[_ampSlider floatValue]];
       [_renderer setDoesLoop:([_loopButton state] == NSOnState)];
-      
     }
   }
   if (_renderer) [super startStop:self];
@@ -252,10 +264,9 @@ static void format_size(char buf[SIZE_BUFSZ], uint64_t sz);
 }
 
 #pragma mark Internal
--(void)_auxLoadData:(NSData*)data
+-(void)_auxLoadData
 {
   NSAutoreleasePool* arp = [[NSAutoreleasePool alloc] init];
-  [_data setData:data];
   if (1.0 != _key.loaded) [_key setData];
   if (1.0 != _tlk.loaded) [_tlk setData];
   [arp release];
@@ -267,7 +278,7 @@ static void format_size(char buf[SIZE_BUFSZ], uint64_t sz);
   [self doSearch:_search];
   [_table reloadData];
   [self tableViewSelectionDidChange:nil];
-  double pct = (_data.loaded + _key.loaded + _tlk.loaded) / 3.0;
+  double pct = (_key.loaded + _tlk.loaded) / 2.0;
   //NSLog(@"pct %f from %f, %f, %f", pct, _data.loaded, _key.loaded, _tlk.loaded);
   [_loadProgress setDoubleValue:pct];
   if (pct >= 1.0)
@@ -278,30 +289,13 @@ static void format_size(char buf[SIZE_BUFSZ], uint64_t sz);
   }
   if (_data.loaded >= 1.0)
   {
-    if (0 == [_data.strings count])
-    {
-      if (_timer) [_timer invalidate];
-      _timer = nil;
-      [self _reportNoSoundData];
-    }
-    else if (!_didSelect)
+    if (!_didSelect)
     {
       NSIndexSet* is = [NSIndexSet indexSetWithIndex:0];
       [_table selectRowIndexes:is byExtendingSelection:NO];
       _didSelect = YES;
     }
   }
-}
-
--(void)_reportNoSoundData
-{
-  NSAlert* alert = [NSAlert new];
-  NSString* msg = [[Onizuka sharedOnizuka] copyLocalizedTitle:@"__NO_SOUNDS__"];
-  [alert setInformativeText:msg];
-  [alert beginSheetModalForWindow:_docWindow modalDelegate:self
-         didEndSelector:@selector(_endSheet:returnCode:contextInfo:)
-         contextInfo:@"__NO_SOUNDS__"];
-  [msg release];
 }
 
 -(void)_tableReturn:(id)sender
