@@ -98,11 +98,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0</string>
+	<string>2.0.1</string>
 	<key>CFBundleSignature</key>
 	<string>ACM!</string>
 	<key>CFBundleVersion</key>
-	<string>2013.03.07</string>
+	<string>2013.03.12</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
