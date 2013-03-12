@@ -25,8 +25,6 @@
   IBOutlet NSButton* _epilogueButton;
   BOOL _haveEpilogue; // If reading a playlist w/ epilogue, enable "Epilogue" button
 }
--(void)suspend;
--(void)resume;
 -(IBAction)epilogueAction:(id)sender;
 @end
 

@@ -46,6 +46,8 @@ extern NSImage* gPausePressedImage;
 
 -(ACMRenderer*)copyRendererForAIFFExport;
 -(NSString*)AIFFFilename;
+-(void)suspend;
+-(void)resume;
 -(IBAction)startStop:(id)sender;
 -(IBAction)rewind:(id)sender;
 -(IBAction)setLoop:(id)sender;
