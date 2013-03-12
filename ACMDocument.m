@@ -27,9 +27,9 @@
 @end
 
 @interface ACMDocument (Private)
--(void)aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code
+-(void)_aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code
        contextInfo:(void*)contextInfo;
--(NSString*)runScript:(NSString*)script onString:(NSString*)string;
+-(NSString*)_runScript:(NSString*)script onString:(NSString*)string;
 @end
 
 @implementation ACMDocument
@@ -54,27 +54,6 @@
   [_loopButton setState:(loop)? NSOnState:NSOffState];
 }
 
-//-(void)windowDidResignMain:(NSNotification*)note
--(void)suspend
-{
-  if (!_renderer.suspended)
-  {
-    [_renderer suspend];
-    _suspendedInBackground = YES;
-  }
-}
-
--(void)windowDidBecomeMain:(NSNotification*)note
-{
-  #pragma unused (note)
-  NSArray* docs = [[NSDocumentController sharedDocumentController] documents];
-  for (ACMDocument* doc in docs)
-    if (doc != self)
-      if ([doc respondsToSelector:@selector(suspend)])
-        [doc suspend];
-  if (_suspendedInBackground) [_renderer resume];
-}
-
 -(BOOL)readFromURL:(NSURL*)url ofType:(NSString *)type error:(NSError**)oError
 {
   BOOL loaded = NO;
@@ -88,7 +67,7 @@
   }
   else if ([type isEqualToString:@"__MUS__"])
   {
-    NSString* parsed = [self runScript:@"mus.py" onString:path];
+    NSString* parsed = [self _runScript:@"mus.py" onString:path];
     NSDictionary* pl = [parsed propertyList];
     acms = [pl objectForKey:@"files"];
     eps = [pl objectForKey:@"epilogues"];
@@ -164,7 +143,7 @@
 
 #pragma mark Internal
 // script is full or partial path to script file, including extension.
--(NSString*)runScript:(NSString*)script onString:(NSString*)string
+-(NSString*)_runScript:(NSString*)script onString:(NSString*)string
 {
   NSBundle* bundle = [NSBundle mainBundle];
   NSString* path = [bundle pathForResource:script ofType:nil];

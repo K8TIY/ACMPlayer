@@ -18,6 +18,8 @@
 
 @interface ACMDocumentCommon (Private)
 -(void)_updateTimeDisplay;
+-(void)_suspendOthers;
+-(void)_resumeOther;
 @end
 
 // Subclass that can detect spacebar and send notification to its delegate.
@@ -90,6 +92,37 @@ NSImage* gPausePressedImage = nil;
            stringByAppendingPathExtension:@"aiff"];
 }
 
+-(BOOL)playing
+{
+  return (_renderer && !_closing && _renderer.playing);
+}
+
+-(void)suspend
+{
+  if (_renderer.playing)
+  {
+    [_renderer stop];
+    _suspendedInBackground = YES;
+  }
+}
+
+-(void)resume
+{
+  if (_suspendedInBackground)
+  {
+    [_renderer start];
+    _suspendedInBackground = NO;
+  }
+}
+
+-(void)windowDidBecomeMain:(NSNotification*)note
+{
+  #pragma unused (note)
+  if (_renderer.playing || _suspendedInBackground)
+    [self _suspendOthers];
+  [self resume];
+}
+
 #pragma mark Action
 -(IBAction)startStop:(id)sender
 {
@@ -99,9 +132,11 @@ NSImage* gPausePressedImage = nil;
     [_renderer stop];
     [_startStopButton setImage:gPlayImage];
     [_startStopButton setAlternateImage:gPlayPressedImage];
+    [self _resumeOther];
   }
   else
   {
+    [self _suspendOthers];
     [_renderer start];
     [_startStopButton setImage:gPauseImage];
     [_startStopButton setAlternateImage:gPausePressedImage];
@@ -152,9 +187,9 @@ NSImage* gPausePressedImage = nil;
 -(IBAction)setProgress:(id)sender
 {
   #pragma unused (sender)
-  [_renderer suspend];
+  [_renderer stop];
   [_renderer gotoPct:[_progress trackingValue]];
-  [_renderer resume];
+  [_renderer start];
 }
 
 -(IBAction)setLoop:(id)sender
@@ -244,4 +279,25 @@ NSImage* gPausePressedImage = nil;
   [timeStr release];
 }
 
+-(void)_suspendOthers
+{
+  NSArray* docs = [[NSDocumentController sharedDocumentController] documents];
+  for (ACMDocumentCommon* doc in docs)
+    if (doc != self)
+      if ([doc isMemberOfClass:[self class]] &&
+          [doc respondsToSelector:@selector(suspend)])
+        [doc suspend];
+}
+
+-(void)_resumeOther
+{
+  NSArray* docs = [[NSDocumentController sharedDocumentController] documents];
+  for (ACMDocumentCommon* doc in docs)
+    if (doc != self)
+      if ([doc respondsToSelector:@selector(resume)])
+      {
+        [doc resume];
+        break;
+      }
+}
 @end

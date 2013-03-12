@@ -39,7 +39,11 @@ extern NSImage* gPausePressedImage;
   ACMRenderer*                _exportRenderer;
   BOOL                        _showTimeLeft;
   BOOL                        _closing;
+  BOOL                        _suspendedInBackground; // Backgrounded.
 }
+
+@property (readonly) BOOL playing;
+
 -(ACMRenderer*)copyRendererForAIFFExport;
 -(NSString*)AIFFFilename;
 -(IBAction)startStop:(id)sender;

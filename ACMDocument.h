@@ -23,10 +23,10 @@
 {
   IBOutlet NSButton* _epilogueStateButton;
   IBOutlet NSButton* _epilogueButton;
-  BOOL _suspendedInBackground; // Playing is suspended because the window was backgrounded.
   BOOL _haveEpilogue; // If reading a playlist w/ epilogue, enable "Epilogue" button
 }
 -(void)suspend;
+-(void)resume;
 -(IBAction)epilogueAction:(id)sender;
 @end
 
