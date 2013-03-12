@@ -84,7 +84,6 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 @synthesize seconds = _totalSeconds;
 @synthesize channels = _channels;
 @synthesize playing = _nowPlaying;
-@synthesize suspended = _suspended;
 @synthesize loops = _loops;
 //@synthesize loopIndex = _loopIndex;
 @synthesize epilogueState = _epilogue;
@@ -247,9 +246,6 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   }
 }
 
--(void)suspend {_suspended = YES;}
--(void)resume {_suspended = NO;}
-
 -(double)pct
 {
   return [self _pctForPCM:_totalPCMPlayed + _totalEpiloguePCMPlayed];
@@ -408,53 +404,50 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 {
   //NSLog(@"_bufferSamples:%d", count);
   int16_t* acmBuffer = NULL;
-  if (!_suspended)
+  unsigned long bytesNeeded = count * sizeof(int16_t);
+  unsigned long bytesBuffered = 0;
+  while (bytesBuffered < bytesNeeded)
   {
-    unsigned long bytesNeeded = count * sizeof(int16_t);
-    unsigned long bytesBuffered = 0;
-    while (bytesBuffered < bytesNeeded)
+    ACMData* acm = NULL;
+    if (_epilogue == acmDoingEpilogue)
     {
-      ACMData* acm = NULL;
-      if (_epilogue == acmDoingEpilogue)
+      if (_currentACM < [_epilogueNames count])
+        acm = [self _epilogueAtIndex:_currentACM];
+    }
+    else
+    {
+      if (_currentACM < [_acms count])
+        acm = [_acms objectAtIndex:_currentACM];
+    }
+    if (!acm) NSLog(@"No acm at index %u of %lu??", (unsigned)_currentACM,
+                    (unsigned long)[_acms count]);
+    unsigned pcm1 = [acm PCMTell];
+    unsigned pcmall = acm.PCMTotal;
+    //NSLog(@" pcm1 %d pcmall %d", pcm1, pcmall);
+    if (pcmall > pcm1)
+    {
+      unsigned long needed = bytesNeeded - bytesBuffered;
+      if (!acmBuffer) acmBuffer = calloc(bytesNeeded, 1L);
+      int before = [acm PCMTell];
+      int res = [acm bufferSamples:((char*)acmBuffer) + bytesBuffered
+                     count:needed bigEndian:TARGET_RT_BIG_ENDIAN];
+      //#if ACMPLAYER_DEBUG
+      //hexdump(((char*)acmBuffer) + bytesBuffered, res);
+      //#endif
+      int after = [acm PCMTell];
+      if (!res) break;
+      bytesBuffered += res;
+      if (_epilogue != acmDoingEpilogue) _totalPCMPlayed += (after - before);
+      else _totalEpiloguePCMPlayed += (after - before);
+    }
+    else
+    {
+      acm = [self _advACM];
+      if (!acm && _delegate)
       {
-        if (_currentACM < [_epilogueNames count])
-          acm = [self _epilogueAtIndex:_currentACM];
-      }
-      else
-      {
-        if (_currentACM < [_acms count])
-          acm = [_acms objectAtIndex:_currentACM];
-      }
-      if (!acm) NSLog(@"No acm at index %u of %lu??", (unsigned)_currentACM,
-                      (unsigned long)[_acms count]);
-      unsigned pcm1 = [acm PCMTell];
-      unsigned pcmall = acm.PCMTotal;
-      //NSLog(@" pcm1 %d pcmall %d", pcm1, pcmall);
-      if (pcmall > pcm1)
-      {
-        unsigned long needed = bytesNeeded - bytesBuffered;
-        if (!acmBuffer) acmBuffer = calloc(bytesNeeded, 1L);
-        int before = [acm PCMTell];
-        int res = [acm bufferSamples:((char*)acmBuffer) + bytesBuffered
-                       count:needed bigEndian:TARGET_RT_BIG_ENDIAN];
-        //#if ACMPLAYER_DEBUG
-        //hexdump(((char*)acmBuffer) + bytesBuffered, res);
-        //#endif
-        int after = [acm PCMTell];
-        if (!res) break;
-        bytesBuffered += res;
-        if (_epilogue != acmDoingEpilogue) _totalPCMPlayed += (after - before);
-        else _totalEpiloguePCMPlayed += (after - before);
-      }
-      else
-      {
-        acm = [self _advACM];
-        if (!acm && _delegate)
-        {
-          [_delegate performSelectorOnMainThread:@selector(acmDidFinishPlaying:)
-                     withObject:self waitUntilDone:NO];
-          break;
-        }
+        [_delegate performSelectorOnMainThread:@selector(acmDidFinishPlaying:)
+                   withObject:self waitUntilDone:NO];
+        break;
       }
     }
   }
@@ -519,8 +512,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 
 -(void)_progress
 {
-  if (!_suspended && _delegate &&
-      [_delegate respondsToSelector:@selector(acmProgress:)])
+  if (_delegate && [_delegate respondsToSelector:@selector(acmProgress:)])
   {
     [_delegate performSelectorOnMainThread:@selector(acmProgress:)
                withObject:self waitUntilDone:NO];

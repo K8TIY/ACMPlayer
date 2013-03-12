@@ -58,7 +58,6 @@ enum
   //FIXME: _loopPoint should be a PCM number for efficiency
   NSUInteger             _loopIndex; // 0-based
   BOOL                   _nowPlaying;
-  BOOL                   _suspended;
   BOOL                   _loops;
   BOOL                   _hasFinalEpilogue;
   // When we have epilogues, and we get done with an acm that has one,
@@ -69,7 +68,6 @@ enum
 @property(readonly) double seconds;
 @property(readonly) unsigned channels;
 @property(readonly) BOOL playing;
-@property(readonly) BOOL suspended;
 @property(readonly) BOOL loops;
 @property(readonly) int epilogueState;
 
@@ -78,8 +76,6 @@ enum
 -(void)setAmp:(double)val;
 -(void)start;
 -(void)stop;
--(void)suspend;
--(void)resume;
 -(double)pct;
 -(void)gotoPct:(double)pct;
 -(void)setDelegate:(id)delegate;
