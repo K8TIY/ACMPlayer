@@ -68,38 +68,37 @@ static NSMutableDictionary* gTLKData = nil;
   NSString* tlkPath = nil;
   @synchronized(gTLKData)
   {
-    kd = [gTLKData objectForKey:path2];
-    if (!kd)
+    tlkPath = [keys pathForLocalizedFileName:nil extension:@"tlk"];
+    if (!tlkPath)
     {
-      tlkPath = [keys pathForLocalizedFileName:nil extension:@"tlk"];
-      if (!tlkPath)
+      path2 = path;
+      do
       {
-        path2 = path;
-        do
+        NSString* path3 = [path2 stringByDeletingLastPathComponent];
+        kd = [gTLKData objectForKey:path3];
+        if (kd) break;
+        NSString* try = [path3 stringByAppendingPathComponent:@"dialog.tlk"];
+        //NSLog(@"TLKDataForFile: trying for .tlk at %@", try);
+        if ([fm fileExistsAtPath:try isDirectory:&dir] && !dir)
         {
-          NSString* path3 = [path2 stringByDeletingLastPathComponent];
-          NSString* try = [path3 stringByAppendingPathComponent:@"dialog.tlk"];
-          //NSLog(@"TLKDataForFile: trying for .tlk at %@", try);
-          if ([fm fileExistsAtPath:try isDirectory:&dir] && !dir)
-          {
-            tlkPath = try;
-            break;
-          }
-          //NSLog(@"TLKDataForFile: %@=%@?", path2, path3);
-          if ([path3 isEqualToString:path2]) break;
+          tlkPath = try;
           path2 = path3;
-        } while (YES);
-      }
-      if (tlkPath)
-      {
-        //NSLog(@"GOT IT! %@", tlkPath);
-        NSData* data = [[NSData alloc] initWithContentsOfFile:tlkPath];
-        kd = [[TLKData alloc] initWithData:data];
-        if (load) [kd setData];
-        [data release];
-        [gTLKData setObject:kd forKey:path2];
-        [kd release];
-      }
+          break;
+        }
+        //NSLog(@"TLKDataForFile: %@=%@?", path2, path3);
+        if ([path3 isEqualToString:path2]) break;
+        path2 = path3;
+      } while (YES);
+    }
+    if (tlkPath)
+    {
+      //NSLog(@"GOT IT! %@", tlkPath);
+      NSData* data = [[NSData alloc] initWithContentsOfFile:tlkPath];
+      kd = [[TLKData alloc] initWithData:data];
+      if (load) [kd setData];
+      [data release];
+      [gTLKData setObject:kd forKey:path2];
+      [kd release];
     }
   } // Synchronized
   [fm release];
