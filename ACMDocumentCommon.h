@@ -48,6 +48,7 @@ extern NSImage* gPausePressedImage;
 -(NSString*)AIFFFilename;
 -(void)suspend;
 -(void)resume;
+-(BOOL)isSuspended;
 -(IBAction)startStop:(id)sender;
 -(IBAction)rewind:(id)sender;
 -(IBAction)setLoop:(id)sender;

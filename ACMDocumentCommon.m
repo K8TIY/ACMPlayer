@@ -115,6 +115,11 @@ NSImage* gPausePressedImage = nil;
   }
 }
 
+-(BOOL)isSuspended
+{
+  return _suspendedInBackground;
+}
+
 -(void)windowDidBecomeMain:(NSNotification*)note
 {
   #pragma unused (note)
@@ -294,10 +299,15 @@ NSImage* gPausePressedImage = nil;
   NSArray* docs = [[NSDocumentController sharedDocumentController] documents];
   for (ACMDocumentCommon* doc in docs)
     if (doc != self)
-      if ([doc respondsToSelector:@selector(resume)])
+      if ([doc isKindOfClass:[self class]] &&
+          [doc respondsToSelector:@selector(resume)] &&
+          [doc respondsToSelector:@selector(isSuspended)])
       {
-        [doc resume];
-        break;
+        if ([doc isSuspended])
+        {
+          [doc resume];
+          break;
+        }
       }
 }
 @end
