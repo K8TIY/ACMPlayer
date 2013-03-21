@@ -46,7 +46,7 @@ case-sensitive filesystems.
 * There are still problems with indicating the epilogue shading in the right
   place, particularly when playing one in the middle of the playlist.
 * There may still be threading issues when opening a BIFF file; it parses the
-  .bif, .tlk, and .key files in a background thread to keep from beachballing.
+  .tlk and .key files in a background thread to keep from beachballing.
   Because .key and .tlk files are globally owned, strange things may happen if
   you open a second BIFF while the first is still loading.
 * Because multiple .tlk entries may reference the same sound, only the first
