@@ -20,15 +20,12 @@
   uint32_t  _loc;
   uint32_t  _off; // From _bytes
   uint32_t  _len;
-  uint16_t  _type;
 }
 @property (readonly) uint32_t loc;
 @property (readonly) uint32_t off;
 @property (readonly) uint32_t len;
-@property (readonly) uint16_t type;
 
--(id)initWithLocator:(uint32_t)loc offset:(uint32_t)off length:(uint32_t)len
-     type:(uint16_t)type;
+-(id)initWithLocator:(uint32_t)loc offset:(uint32_t)off length:(uint32_t)len;
 @end
 
 @interface BIFFData : NSObject

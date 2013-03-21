@@ -21,15 +21,13 @@
 @synthesize loc = _loc;
 @synthesize off = _off;
 @synthesize len = _len;
-@synthesize type = _type;
 
--(id)initWithLocator:(uint32_t)loc offset:(uint32_t)off length:(uint32_t)len type:(uint16_t)type
+-(id)initWithLocator:(uint32_t)loc offset:(uint32_t)off length:(uint32_t)len
 {
   self = [super init];
   _loc = loc;
   _off = off;
   _len = len;
-  _type = type;
   return self;
 }
 @end
@@ -78,14 +76,6 @@
   _loaded = 1.0;
 }
 
-typedef struct
-{
-  uint32_t sig;
-  uint32_t ver;
-  uint32_t nf;
-  uint32_t nts;
-} BIFFHeader;
-
 -(void)setBIFFData:(NSData*)data
 {
   _data = data;
@@ -119,8 +109,7 @@ typedef struct
       {
         info = [[BIFFFile alloc] initWithLocator:loc
                                  offset:off
-                                 length:len
-                                 type:type];
+                                 length:len];
         @synchronized(self)
         {
           [_strings addObject:info];
