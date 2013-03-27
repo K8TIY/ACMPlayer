@@ -285,6 +285,7 @@
 											<string key="NSFrame">{{1, 17}, {838, 672}}</string>
 											<reference key="NSSuperview" ref="868032586"/>
 											<reference key="NSWindow"/>
+											<reference key="NSNextKeyView" ref="351839538"/>
 											<reference key="NSDocView" ref="351839538"/>
 											<reference key="NSBGColor" ref="256800074"/>
 											<int key="NScvFlags">4</int>
@@ -320,6 +321,7 @@
 											<string key="NSFrame">{{1, 0}, {838, 17}}</string>
 											<reference key="NSSuperview" ref="868032586"/>
 											<reference key="NSWindow"/>
+											<reference key="NSNextKeyView" ref="616272774"/>
 											<reference key="NSDocView" ref="616272774"/>
 											<reference key="NSBGColor" ref="256800074"/>
 											<int key="NScvFlags">4</int>
@@ -329,6 +331,7 @@
 									<string key="NSFrameSize">{840, 690}</string>
 									<reference key="NSSuperview" ref="228893928"/>
 									<reference key="NSWindow"/>
+									<reference key="NSNextKeyView" ref="606585787"/>
 									<int key="NSsFlags">562</int>
 									<reference key="NSVScroller" ref="23745951"/>
 									<reference key="NSHScroller" ref="447320025"/>
@@ -436,6 +439,7 @@
 											<string key="NSFrame">{{1, 1}, {823, 89}}</string>
 											<reference key="NSSuperview" ref="19000751"/>
 											<reference key="NSWindow"/>
+											<reference key="NSNextKeyView" ref="640136478"/>
 											<reference key="NSDocView" ref="640136478"/>
 											<reference key="NSBGColor" ref="53253907"/>
 											<object class="NSCursor" key="NSCursor">
@@ -470,6 +474,7 @@
 									<string key="NSFrame">{{0, 699}, {840, 91}}</string>
 									<reference key="NSSuperview" ref="228893928"/>
 									<reference key="NSWindow"/>
+									<reference key="NSNextKeyView" ref="191248830"/>
 									<int key="NSsFlags">18</int>
 									<reference key="NSVScroller" ref="190019834"/>
 									<reference key="NSHScroller" ref="657044134"/>
@@ -1064,6 +1069,22 @@ AAAD2QAAwHFtbW9kAAAAAAAABhAAAKAMAAAAAMknFnUAAAAAAAAAAAAAAAAAAAAAA</bytes>
 					</object>
 					<int key="connectionID">100165</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">nextKeyView</string>
+						<reference key="source" ref="672038063"/>
+						<reference key="destination" ref="351839538"/>
+					</object>
+					<int key="connectionID">100171</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">nextKeyView</string>
+						<reference key="source" ref="351839538"/>
+						<reference key="destination" ref="672038063"/>
+					</object>
+					<int key="connectionID">100172</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -1579,7 +1600,7 @@ AAAD2QAAwHFtbW9kAAAAAAAABhAAAKAMAAAAAMknFnUAAAAAAAAAAAAAAAAAAAAAA</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">100170</int>
+			<int key="maxID">100172</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2488,7 +2509,7 @@ AAAD2QAAwHFtbW9kAAAAAAAABhAAAKAMAAAAAMknFnUAAAAAAAAAAAAAAAAAAAAAA</bytes>
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>{18, 17}</string>
 				<string>{18, 17}</string>
-				<string>{128, 128}</string>
+				<string>{39, 39}</string>
 				<string>{39, 39}</string>
 				<string>{33, 20}</string>
 				<string>{33, 20}</string>
