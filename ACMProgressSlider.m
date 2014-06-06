@@ -248,13 +248,29 @@ static void _drawFrameInRect(NSRect r)
 @end
 
 @implementation OldYaller
+-(void)dealloc
+{
+  [self setColor:nil];
+  [super dealloc];
+}
+
 -(void)drawRect:(NSRect)rect
 {
   rect = NSInsetRect([self bounds], 1.0f, 1.0f);
-  [[NSColor colorWithCalibratedRed:0.94f green:0.98f blue:0.79f alpha:1.0f] set];
+  if (!_color)
+    [self setColor:[NSColor colorWithCalibratedRed:0.94f green:0.98f blue:0.79f alpha:1.0f]];
+  [_color set];
   NSBezierPath* path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:4.0f yRadius:4.0f];
   [path fill];
   [[NSColor colorWithCalibratedRed:0.2f green:0.3f blue:0.1f alpha:1.0f] set];
   [path stroke];
+}
+
+-(void)setColor:(NSColor*)color
+{
+  [color retain];
+  if (_color) [_color release];
+  _color = color;
+  [self setNeedsDisplay:YES];
 }
 @end

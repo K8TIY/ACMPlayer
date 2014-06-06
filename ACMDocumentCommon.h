@@ -35,6 +35,7 @@ extern NSImage* gPausePressedImage;
   IBOutlet NSButton*          _ampHiButton;
   IBOutlet NSButton*          _timeButton;
   IBOutlet ACMProgressSlider* _progress;
+  IBOutlet OldYaller*         _oy;
   ACMRenderer*                _renderer;
   ACMRenderer*                _exportRenderer;
   BOOL                        _showTimeLeft;

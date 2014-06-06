@@ -38,6 +38,7 @@ static long tell_func(void* datasrc);
 @synthesize rate = _rate;
 @synthesize data = _data;
 @synthesize dataOffset = _dataOffset;
+@synthesize isVorbis = _isVorbis;
 -(id)initWithPath:(NSString*)path
 {
   self = [super init];
@@ -182,6 +183,7 @@ static long tell_func(void* datasrc);
   _timeTotal = ov_time_total(vf, 0);
   ov_pcm_seek(vf, _pcmTotal-4);
   ov_pcm_seek(vf, 0);
+  _isVorbis = YES;
 }
 
 -(void)dealloc

@@ -87,6 +87,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
 @synthesize loops = _loops;
 //@synthesize loopIndex = _loopIndex;
 @synthesize epilogueState = _epilogue;
+@synthesize isVorbis = _isVorbis;
 
 -(ACMRenderer*)initWithPlaylist:(NSArray*)list andEpilogues:(NSArray*)epilogues
 {
@@ -104,6 +105,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
     acm = [[ACMData alloc] initWithPath:file];
     if (acm)
     {
+      if (!_isVorbis) _isVorbis = [acm isVorbis];
       [_acms addObject:acm];
       _totalPCM += [acm PCMTotal];
       _totalSeconds += acm.timeTotal;

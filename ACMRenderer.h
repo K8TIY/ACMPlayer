@@ -60,6 +60,7 @@ enum
   BOOL                   _nowPlaying;
   BOOL                   _loops;
   BOOL                   _hasFinalEpilogue;
+  BOOL                   _isVorbis;
   // When we have epilogues, and we get done with an acm that has one,
   //   we will play the epilogue and stop playing (and clear these flags).
   int                    _epilogue;
@@ -70,6 +71,7 @@ enum
 @property(readonly) BOOL playing;
 @property(readonly) BOOL loops;
 @property(readonly) int epilogueState;
+@property(readonly) BOOL isVorbis;
 
 -(ACMRenderer*)initWithPlaylist:(NSArray*)list andEpilogues:(NSArray*)epilogues;
 -(ACMRenderer*)initWithData:(NSData*)data;

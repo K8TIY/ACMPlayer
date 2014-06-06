@@ -30,12 +30,14 @@
   unsigned   _rate;
   uint64_t   _pcmTotal;
   double     _timeTotal;
+  BOOL       _isVorbis;
 }
 @property(readonly) uint64_t PCMTotal;
 @property(readonly) double timeTotal;
 @property(readonly) unsigned channels;
 @property(readonly) unsigned rate;
 @property(readonly) NSData* data;
+@property(readonly) BOOL isVorbis;
 @property(assign) off_t dataOffset;
 -(id)initWithPath:(NSString*)path;
 -(id)initWithData:(NSData*)data;

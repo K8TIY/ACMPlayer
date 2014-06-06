@@ -34,4 +34,8 @@
 @end
 
 @interface OldYaller : NSView
+{
+  NSColor* _color;
+}
+-(void)setColor:(NSColor*)color;
 @end

@@ -78,6 +78,9 @@ NSImage* gPausePressedImage = nil;
   float ampVal = [defs floatForKey:@"defaultVol"];
   if (_renderer) [_renderer setAmp:ampVal];
   [_ampSlider setDoubleValue:ampVal];
+  if ([_renderer isVorbis])
+    [_oy setColor:[NSColor colorWithCalibratedRed:0.79f green:0.94f
+                           blue:0.98f alpha:1.0f]];
 }
 
 -(ACMRenderer*)copyRendererForAIFFExport
@@ -224,6 +227,7 @@ NSImage* gPausePressedImage = nil;
   _closing = YES;
   [_renderer setDelegate:nil];
   [_renderer stop];
+  [self _resumeOther];
 }
 
 -(void)windowDidReceiveSpace:(id)sender
@@ -254,6 +258,7 @@ NSImage* gPausePressedImage = nil;
   [_renderer gotoPct:0.0];
   [_startStopButton setImage:gPlayImage];
   [_startStopButton setAlternateImage:gPlayPressedImage];
+  [self _resumeOther];
 }
 
 -(void)acmProgress:(id)renderer
