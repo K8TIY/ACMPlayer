@@ -92,7 +92,7 @@ static void format_size(char buf[SIZE_BUFSZ], uint64_t sz);
 -(BOOL)readFromData:(NSData*)data ofType:(NSString*)typeName
        error:(NSError**)outError
 {
-  #pragma unused (data, typeName, outError)
+  #pragma unused (data, typeName)
   BOOL ok = YES;
   NSString* key = nil;
   NSString* file = [[self fileURL] path];
@@ -118,8 +118,9 @@ static void format_size(char buf[SIZE_BUFSZ], uint64_t sz);
     NSString* msg = [[Onizuka sharedOnizuka] copyLocalizedTitle:key];
     NSMutableDictionary* errorDetail = [NSMutableDictionary dictionary];
     [errorDetail setValue:msg forKey:NSLocalizedFailureReasonErrorKey];
-		*outError = [[NSError alloc] initWithDomain:[[NSBundle mainBundle] bundleIdentifier]
-                         code:unimpErr userInfo:errorDetail];
+		*outError = [NSError errorWithDomain:NSCocoaErrorDomain
+                         code:NSFileReadUnknownError userInfo:errorDetail];
+    [msg release];
 	}
   return ok;
 }
