@@ -151,7 +151,7 @@ static NSMutableDictionary* gTLKData = nil;
       03 - Standard message. Ambient message. Used for sound without text (BG1) or message displayed over characters head (BG2) , Message with tags (for instance <CHARNAME>) for all games except BG2
       07 - Message with tags (for instance <CHARNAME> ) in BG2 only
       */
-      uint16_t flag = EndianU32_LtoN(*(uint16_t*)p);
+      //uint16_t flag = EndianU32_LtoN(*(uint16_t*)p);
       p += 2;
       bzero(buff, 12);
       (void)strncpy(buff, p, 8);
