@@ -45,7 +45,6 @@ extern NSImage* gPausePressedImage;
 
 @property (readonly) BOOL playing;
 
--(ACMRenderer*)copyRendererForAIFFExport;
 -(NSString*)AIFFFilename;
 -(void)suspend;
 -(void)resume;

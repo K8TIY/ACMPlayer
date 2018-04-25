@@ -83,11 +83,6 @@ NSImage* gPausePressedImage = nil;
                            blue:0.98f alpha:1.0f]];
 }
 
--(ACMRenderer*)copyRendererForAIFFExport
-{
-  return [_renderer copy];
-}
-
 -(NSString*)AIFFFilename
 {
   return [[[[[self fileURL] path] lastPathComponent]
@@ -213,11 +208,18 @@ NSImage* gPausePressedImage = nil;
   NSSavePanel* panel = [NSSavePanel savePanel];
   [panel setAllowedFileTypes:[NSArray arrayWithObject:@"aiff"]];
   [panel setCanSelectHiddenExtension:YES];
-  NSString* aiffName = [self AIFFFilename];
-  [panel beginSheetForDirectory:nil file:aiffName
-         modalForWindow:_docWindow modalDelegate:self
-         didEndSelector:@selector(aiffExportDidEnd:returnCode:contextInfo:)
-         contextInfo:nil];
+  panel.nameFieldStringValue = [self AIFFFilename];
+  [panel beginSheetModalForWindow:_docWindow
+         completionHandler:^(NSModalResponse returnCode)
+  {
+    if (NSModalResponseOK == returnCode)
+    {
+      NSURL* url = [panel URL];
+      ACMRenderer* r = [_renderer copy];
+      [r exportAIFFToURL:url];
+      [r release];
+    }
+  }];
 }
 
 #pragma mark Delegate
@@ -233,21 +235,6 @@ NSImage* gPausePressedImage = nil;
 -(void)windowDidReceiveSpace:(id)sender
 {
   [self startStop:sender];
-}
-
-#pragma mark Callback
--(void)aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code
-       contextInfo:(void*)ctx
-{
-  #pragma unused (ctx)
-  if (code == NSOKButton)
-  {
-    NSURL* url = [sheet URL];
-    ACMRenderer* r = [self copyRendererForAIFFExport];
-    [r exportAIFFToURL:url];
-    [r release];
-    [sheet orderOut:nil];
-  }
 }
 
 #pragma mark Notification
