@@ -14,8 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 #import <Cocoa/Cocoa.h>
-#import "libacm.h"
-#include <vorbis/vorbisfile.h>
+#include "libacm.h"
+#include "vorbisfile.h"
 
 @interface ACMData : NSObject
 {

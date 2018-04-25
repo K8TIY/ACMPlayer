@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		32153DFB208A92300074C02F /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32153D6E208A8CFB0074C02F /* libvorbis.a */; };
+		32153DFC208A92300074C02F /* libvorbisenc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32153D71208A8D130074C02F /* libvorbisenc.a */; };
+		32153DFD208A92300074C02F /* libvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32153D70208A8D130074C02F /* libvorbisfile.a */; };
 		321BE638124D122200109958 /* Phones.icns in Resources */ = {isa = PBXBuildFile; fileRef = 321BE637124D122200109958 /* Phones.icns */; };
 		322FD211135CBFBE00A10278 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 322FD208135CBFBE00A10278 /* Credits.rtf */; };
 		322FD212135CBFBE00A10278 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 322FD20A135CBFBE00A10278 /* InfoPlist.strings */; };
@@ -21,11 +24,8 @@
 		3267F0DF16B3240C00F9507E /* BIFFData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3267F0DE16B3240C00F9507E /* BIFFData.m */; };
 		32815E051295C34400D4672E /* VolMute.png in Resources */ = {isa = PBXBuildFile; fileRef = 32815E031295C34400D4672E /* VolMute.png */; };
 		32815E061295C34400D4672E /* VolFull.png in Resources */ = {isa = PBXBuildFile; fileRef = 32815E041295C34400D4672E /* VolFull.png */; };
+		3285E7F6208A97B200EA6941 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32153D6C208A8CED0074C02F /* libogg.a */; };
 		329D9CB316DC1F3600CC53EE /* ACMData.m in Sources */ = {isa = PBXBuildFile; fileRef = 329D9CB216DC1F3600CC53EE /* ACMData.m */; };
-		32B1252D16DFDB4100A69E35 /* Ogg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32B1252C16DFDB4100A69E35 /* Ogg.framework */; };
-		32B1253216DFDB6D00A69E35 /* Vorbis.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32B1253116DFDB6D00A69E35 /* Vorbis.framework */; };
-		32B1254016DFDC9600A69E35 /* Vorbis.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 32B1253116DFDB6D00A69E35 /* Vorbis.framework */; };
-		32B1254516DFDC9900A69E35 /* Ogg.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 32B1252C16DFDB4100A69E35 /* Ogg.framework */; };
 		32C1C7A816D6D94E00652861 /* defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 32C1C7A716D6D94E00652861 /* defaults.plist */; };
 		32CDFCB1135CB9D300B3AE32 /* Onizuka.strings in Resources */ = {isa = PBXBuildFile; fileRef = 32CDFCAE135CB9D300B3AE32 /* Onizuka.strings */; };
 		32CDFCCD135CBB3800B3AE32 /* ACMDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 32815DC21295BF6D00D4672E /* ACMDocument.xib */; };
@@ -57,8 +57,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				32B1254516DFDC9900A69E35 /* Ogg.framework in CopyFiles */,
-				32B1254016DFDC9600A69E35 /* Vorbis.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,6 +69,10 @@
 		2A37F4B0FDCFA73011CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		32153D6C208A8CED0074C02F /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = ogg/macosx/DerivedData/Ogg/Build/Products/Release/libogg.a; sourceTree = SOURCE_ROOT; };
+		32153D6E208A8CFB0074C02F /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbis.a; path = vorbis/macosx/DerivedData/Vorbis/Build/Products/Release/libvorbis.a; sourceTree = SOURCE_ROOT; };
+		32153D70208A8D130074C02F /* libvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisfile.a; path = vorbis/macosx/DerivedData/Vorbis/Build/Products/Release/libvorbisfile.a; sourceTree = SOURCE_ROOT; };
+		32153D71208A8D130074C02F /* libvorbisenc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisenc.a; path = vorbis/macosx/DerivedData/Vorbis/Build/Products/Release/libvorbisenc.a; sourceTree = SOURCE_ROOT; };
 		321BE637124D122200109958 /* Phones.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Phones.icns; sourceTree = "<group>"; };
 		322FD209135CBFBE00A10278 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		322FD20B135CBFBE00A10278 /* en */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -96,10 +98,9 @@
 		32815DC21295BF6D00D4672E /* ACMDocument.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ACMDocument.xib; sourceTree = "<group>"; };
 		32815E031295C34400D4672E /* VolMute.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VolMute.png; sourceTree = "<group>"; };
 		32815E041295C34400D4672E /* VolFull.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VolFull.png; sourceTree = "<group>"; };
+		3285E7F7208A980400EA6941 /* vorbisfile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = vorbisfile.h; path = vorbis/include/vorbis/vorbisfile.h; sourceTree = "<group>"; };
 		329D9CB116DC1F3600CC53EE /* ACMData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACMData.h; sourceTree = "<group>"; };
 		329D9CB216DC1F3600CC53EE /* ACMData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACMData.m; sourceTree = "<group>"; };
-		32B1252C16DFDB4100A69E35 /* Ogg.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Ogg.framework; path = ogg/macosx/build/Release/Ogg.framework; sourceTree = "<group>"; };
-		32B1253116DFDB6D00A69E35 /* Vorbis.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vorbis.framework; path = vorbis/macosx/build/Release/Vorbis.framework; sourceTree = "<group>"; };
 		32C1C7A716D6D94E00652861 /* defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = defaults.plist; path = Localizations/defaults.plist; sourceTree = "<group>"; };
 		32CDFCAF135CB9D300B3AE32 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Onizuka.strings; sourceTree = "<group>"; };
 		32CDFCB0135CB9D300B3AE32 /* ja */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Onizuka.strings; sourceTree = "<group>"; };
@@ -131,13 +132,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32153DFB208A92300074C02F /* libvorbis.a in Frameworks */,
 				8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */,
+				32153DFD208A92300074C02F /* libvorbisfile.a in Frameworks */,
 				A6C335B6090F00E50089BBE9 /* Foundation.framework in Frameworks */,
+				3285E7F6208A97B200EA6941 /* libogg.a in Frameworks */,
 				A6C335B7090F00E50089BBE9 /* AppKit.framework in Frameworks */,
 				A6C335C3090F01F90089BBE9 /* AudioUnit.framework in Frameworks */,
+				32153DFC208A92300074C02F /* libvorbisenc.a in Frameworks */,
 				32E3D12F116BE7EC0078CCF7 /* AudioToolbox.framework in Frameworks */,
-				32B1252D16DFDB4100A69E35 /* Ogg.framework in Frameworks */,
-				32B1253216DFDB6D00A69E35 /* Vorbis.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,8 +153,6 @@
 				32E3D12E116BE7EC0078CCF7 /* AudioToolbox.framework */,
 				A6C335C2090F01F90089BBE9 /* AudioUnit.framework */,
 				1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */,
-				32B1252C16DFDB4100A69E35 /* Ogg.framework */,
-				32B1253116DFDB6D00A69E35 /* Vorbis.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -199,11 +200,13 @@
 				2A37F4B0FDCFA73011CA2CEA /* main.m */,
 				32504E53124BD99C004B7654 /* libacm */,
 				32CDFCCF135CBBA900B3AE32 /* Onizuka */,
+				3285E7F7208A980400EA6941 /* vorbisfile.h */,
 				A69E079D0E70EC710078AC19 /* mus.py */,
 				32DBCF750370BD2300C91783 /* ACMPlayer_Prefix.pch */,
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
 				322FD207135CBFBE00A10278 /* Localizations */,
 				32CDFD34135CBBF100B3AE32 /* README.md */,
+				32153D6B208A8CDD0074C02F /* Libraries */,
 				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
 			);
@@ -231,6 +234,17 @@
 				1058C7A8FEA54F5311CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		32153D6B208A8CDD0074C02F /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				32153D6C208A8CED0074C02F /* libogg.a */,
+				32153D6E208A8CFB0074C02F /* libvorbis.a */,
+				32153D71208A8D130074C02F /* libvorbisenc.a */,
+				32153D70208A8D130074C02F /* libvorbisfile.a */,
+			);
+			path = Libraries;
 			sourceTree = "<group>";
 		};
 		322FD207135CBFBE00A10278 /* Localizations */ = {
@@ -306,6 +320,9 @@
 /* Begin PBXProject section */
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0930;
+			};
 			buildConfigurationList = A6C1726E090D537400E21D11 /* Build configuration list for PBXProject "ACMPlayer" */;
 			compatibilityVersion = "Xcode 3.0";
 			developmentRegion = English;
@@ -423,17 +440,10 @@
 		A6C1726B090D537400E21D11 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-					x86_64,
-				);
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/ogg/macosx/build/Release\"",
-					"\"$(SRCROOT)/vorbis/macosx/build/Release\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
@@ -448,7 +458,6 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_MISSING_PARENTHESES = YES;
-				GCC_WARN_PROTOTYPE_CONVERSION = NO;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				GCC_WARN_UNUSED_FUNCTION = YES;
@@ -456,14 +465,21 @@
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/libacm/src\"",
+					"\"$(SRCROOT)/ogg/include\"/**",
+				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ogg/macosx/DerivedData/Ogg/Build/Products/Release",
+					"\"$(SRCROOT)/vorbis/macosx/DerivedData/Vorbis/Build/Products/Release\"",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = ACMPlayer;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = macosx;
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-16";
 				WRAPPER_EXTENSION = app;
 			};
@@ -473,16 +489,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc,
 					i386,
 					x86_64,
 				);
+				CLANG_ENABLE_OBJC_WEAK = NO;
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/ogg/macosx/build/Release\"",
-					"\"$(SRCROOT)/vorbis/macosx/build/Release\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -495,7 +507,6 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_MISSING_PARENTHESES = YES;
-				GCC_WARN_PROTOTYPE_CONVERSION = NO;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
@@ -503,14 +514,21 @@
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/libacm/src\"",
+					"\"$(SRCROOT)/ogg/include\"/**",
+				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ogg/macosx/DerivedData/Ogg/Build/Products/Release",
+					"\"$(SRCROOT)/vorbis/macosx/DerivedData/Vorbis/Build/Products/Release\"",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = ACMPlayer;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = macosx;
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-16";
 				WRAPPER_EXTENSION = app;
 			};
@@ -519,46 +537,90 @@
 		A6C1726F090D537400E21D11 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-					x86_64,
-				);
-				GCC_DEBUGGING_SYMBOLS = default;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_MODEL_TUNING = G3;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_PROTOTYPE_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_SHADOW = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/libacm/src\"/**",
+					"\"$(SRCROOT)/vorbis/include/vorbis\"",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-16";
-				ZERO_LINK = NO;
 			};
 			name = Debug;
 		};
 		A6C17270090D537400E21D11 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-					x86_64,
-				);
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_MODEL_TUNING = G3;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_PROTOTYPE_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_SHADOW = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/libacm/src\"/**",
+					"\"$(SRCROOT)/vorbis/include/vorbis\"",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				SDKROOT = macosx;
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-16";
 			};
 			name = Release;

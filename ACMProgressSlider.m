@@ -196,8 +196,9 @@ static void _drawFrameInRect(NSRect r)
     id target = [self target];
     if (action && target)
     {
-      IMP imp = [target methodForSelector:action];
-      (imp)(target, action);
+      typedef void (*send_type)(void*, SEL);
+      send_type imp = (send_type)[target methodForSelector:action];
+      imp(target, action);
     }
   }
 }
