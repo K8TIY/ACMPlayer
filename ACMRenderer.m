@@ -589,6 +589,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
     streamFormat.mSampleRate = acm.rate;
     streamFormat.mFormatID = kAudioFormatLinearPCM;
     streamFormat.mFormatFlags = kLinearPCMFormatFlagIsBigEndian |
+                                kAudioFormatFlagIsSignedInteger |
                                 kLinearPCMFormatFlagIsPacked;
     streamFormat.mChannelsPerFrame = acm.channels;
     streamFormat.mFramesPerPacket = 1;
