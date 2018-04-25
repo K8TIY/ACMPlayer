@@ -351,7 +351,7 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   AUNode outputNode;
   AudioUnit outputUnit;
   //  output component
-  ComponentDescription output_desc;
+  AudioComponentDescription output_desc;
   output_desc.componentType = kAudioUnitType_Output;
   output_desc.componentSubType = kAudioUnitSubType_DefaultOutput;
   output_desc.componentFlags = 0;
@@ -626,12 +626,15 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
         if (err) NSLog(@"AudioFileWritePackets: error '%.4s'", (char*)&err);
         packetidx += ioNumPackets;
         //NSLog(@"Wrote %lu samples of %lu (%f\%)", _totalSamplesPlayed, _totalSamples, percent*100);
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wundeclared-selector"
         if (_delegate &&
             [_delegate respondsToSelector:@selector(acmExportProgress:)])
         {
           [_delegate performSelector:@selector(acmExportProgress:)
                      withObject:self];
         }
+        #pragma clang diagnostic pop
       }
     }
     //NSLog(@"Ready for AIFF epilogue");
