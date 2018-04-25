@@ -127,6 +127,7 @@ static long tell_func(void* datasrc);
 @implementation ACMVorbisData
 -(id)initWithPath:(NSString*)path
 {
+  self = [super init];
   FILE* f = fopen([path UTF8String], "r");
   OggVorbis_File* vf = malloc(sizeof(OggVorbis_File));
   int err = ov_open_callbacks(f, vf, NULL, 0, OV_CALLBACKS_DEFAULT);
