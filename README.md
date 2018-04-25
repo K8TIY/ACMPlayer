@@ -6,6 +6,17 @@ it can open BIFF files (.bif) and find the sounds embedded therein.
 
 ###Download a binary for OS X 10.5 and later [here](http://blugs.com/Downloads/ACMPlayer.zip).
 
+### Build Instructions ###
+```
+git clone https://github.com/markokr/libacm.git
+git clone https://github.com/xiph/ogg.git
+git clone https://github.com/xiph/vorbis.git
+git clone https://github.com/K8TIY/Onizuka.git
+```
+
+Build the ogg and vorbis static libraries by futzing with
+the XCode project until they compile.
+
 ### New in this Version ###
 * This is the Baldur's Gate: Enhanced Edition version.
   That means Ogg Vorbis support... and boy howdy does that music sound good!
