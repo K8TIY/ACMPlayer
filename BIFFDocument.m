@@ -356,7 +356,7 @@ static void format_size(char buf[SIZE_BUFSZ], uint64_t sz);
   if (_indices) row = [_indices indexAtIndex:row];
   if ([identifier isEqual:@"1"])
   {
-    val = [NSString stringWithFormat:@"%d", row+1];
+    val = [NSString stringWithFormat:@"%ld", row+1];
   }
   else
   {
