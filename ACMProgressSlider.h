@@ -25,9 +25,11 @@
   BOOL   _tracking;
 }
 -(double)trackingValue;
+-(void)setLoopPct:(double)pct;
+-(void)setEpilogueStartPct:(double)start endPct:(double)end;
 @end
 
-@interface ACMProgressSlider : NSControl{}
+@interface ACMProgressSlider : NSControl
 -(double)trackingValue;
 -(void)setLoopPct:(double)pct;
 -(void)setEpilogueStartPct:(double)start endPct:(double)end;
