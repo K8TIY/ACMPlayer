@@ -165,9 +165,10 @@ static NSMutableDictionary* gTLKData = nil;
       uint32_t len = EndianU32_LtoN(*(uint32_t*)p);
       p += 4;
       NSString* str = nil;
-      if (strlen(buff))
+      if (strlen((char*)buff))
       {
-        str = [[NSString alloc] initWithCString:buff encoding:NSUTF8StringEncoding];
+        str = [[NSString alloc] initWithCString:(const char*)buff
+                                encoding:NSUTF8StringEncoding];
         // FIXME use the flags to determine whether the value should be replaced.
         //if (nil == [_resNames objectForKey:str])
         {
