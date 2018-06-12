@@ -190,9 +190,10 @@ NSImage* gPausePressedImage = nil;
 -(IBAction)setProgress:(id)sender
 {
   #pragma unused (sender)
+  BOOL playing = _renderer.playing;
   [_renderer stop];
   [_renderer gotoPct:[_progress trackingValue]];
-  [_renderer start];
+  if (playing) [_renderer start];
 }
 
 -(IBAction)setLoop:(id)sender
