@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14109"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -12,7 +12,6 @@
                 <outlet property="_ampLoButton" destination="40" id="61"/>
                 <outlet property="_ampSlider" destination="25" id="27"/>
                 <outlet property="_docWindow" destination="26" id="101"/>
-                <outlet property="_epilogueButton" destination="84" id="85"/>
                 <outlet property="_epilogueStateButton" destination="87" id="88"/>
                 <outlet property="_loopButton" destination="34" id="36"/>
                 <outlet property="_oy" destination="48" id="zQa-fK-gSh"/>
@@ -115,17 +114,6 @@ DQ
                         </buttonCell>
                         <connections>
                             <action selector="toggleTimeDisplay:" target="-2" id="74"/>
-                        </connections>
-                    </button>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="84">
-                        <rect key="frame" x="203" y="16" width="97" height="20"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                        <buttonCell key="cell" type="squareTextured" title="__EPILOGUE__" bezelStyle="texturedSquare" alignment="center" controlSize="small" borderStyle="border" inset="2" id="97">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="epilogueAction:" target="-2" id="86"/>
                         </connections>
                     </button>
                     <button imageHugsTitle="YES" id="87">

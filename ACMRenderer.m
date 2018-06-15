@@ -302,12 +302,6 @@ static OSStatus RenderCB(void* inRefCon, AudioUnitRenderActionFlags* ioActionFla
   _amp = val;
 }
 
--(void)doEpilogue:(BOOL)flag
-{
-  if (_epilogues)
-    [self _setEpilogueState:(flag)?acmWillDoEpilogue:acmNoEpilogue];
-}
-
 -(void)getEpilogueStartPct:(double*)oStart endPct:(double*)oEnd
        pctDelta:(double*)oDelta
 {

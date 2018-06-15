@@ -42,11 +42,6 @@
   [_progress setDoubleValue:0.0];
   double loopPct = [_renderer loopPct];
   if (loopPct > 0.0) [_progress setLoopPct:loopPct];
-  if (!_haveEpilogue)
-  {
-    [_epilogueButton removeFromSuperview];
-    _epilogueButton = nil;
-  }
   [_epilogueStateButton setTitle:@""];
   NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
   BOOL loop = [defs floatForKey:@"defaultLoop"];
@@ -98,15 +93,6 @@
   return loaded;
 }
 
-#pragma mark Action
--(IBAction)epilogueAction:(id)sender
-{
-  #pragma unused (sender)
-  [_renderer doEpilogue:YES];
-  [_loopButton setState:NSOffState];
-  [_renderer setDoesLoop:NO];
-}
-
 #pragma mark Callback
 -(void)acmEpilogueStateChanged:(id)renderer
 {
@@ -121,12 +107,10 @@
     int es = [_renderer epilogueState];
     if (es == acmNoEpilogue || es == acmWillDoFinalEpilogue)
     {
-      [_epilogueButton setEnabled:YES];
       [_epilogueStateButton setTitle:@""];
     }
     else
     {
-      [_epilogueButton setEnabled:NO];
       if (es == acmWillDoEpilogue)
       {
         [[Onizuka sharedOnizuka] localizeObject:_epilogueStateButton

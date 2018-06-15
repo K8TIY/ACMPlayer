@@ -84,7 +84,6 @@ enum
 -(void)setDoesLoop:(BOOL)loop;
 -(void)setLoopIndex:(NSUInteger)li;
 -(double)loopPct;
--(void)doEpilogue:(BOOL)flag;
 -(void)getEpilogueStartPct:(double*)oStart endPct:(double*)oEnd
        pctDelta:(double*)oDelta;
 -(void)exportAIFFToURL:(NSURL*)url;
