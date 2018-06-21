@@ -57,6 +57,7 @@ extern NSImage* gPausePressedImage;
 -(IBAction)setAmpHi:(id)sender;
 -(IBAction)setProgress:(id)sender;
 -(IBAction)exportAIFF:(id)sender;
+-(ACMRenderer*)copyRendererForAIFFExport;
 -(void)windowDidReceiveSpace:(id)sender;
 -(void)acmDidFinishPlaying:(id)sender;
 -(void)acmProgress:(id)renderer;

@@ -228,11 +228,16 @@ NSImage* gPausePressedImage = nil;
     if (NSModalResponseOK == returnCode)
     {
       NSURL* url = [panel URL];
-      ACMRenderer* r = [_renderer copy];
+      ACMRenderer* r = [self copyRendererForAIFFExport];
       [r exportAIFFToURL:url];
       [r release];
     }
   }];
+}
+
+-(ACMRenderer*)copyRendererForAIFFExport
+{
+  return [_renderer copy];
 }
 
 #pragma mark Delegate
