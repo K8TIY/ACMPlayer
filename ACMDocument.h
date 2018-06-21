@@ -24,6 +24,5 @@
   IBOutlet NSButton*  _epilogueStateButton;
   BOOL                _haveEpilogue;
 }
--(IBAction)epilogueAction:(id)sender;
 @end
 
