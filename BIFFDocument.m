@@ -70,6 +70,7 @@ static void format_size(char buf[SIZE_BUFSZ], uint64_t sz);
   BOOL loop = [defs floatForKey:@"defaultLoopBIFF"];
   [_renderer setDoesLoop:loop];
   [_loopButton setState:(loop)? NSOnState:NSOffState];
+  [_lengthField setStringValue:@""];
 }
 
 -(void)windowWillClose:(NSNotification*)note
