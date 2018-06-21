@@ -76,11 +76,22 @@ NSImage* gPausePressedImage = nil;
   [[Onizuka sharedOnizuka] localizeWindow:w];
   NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
   float ampVal = [defs floatForKey:@"defaultVol"];
-  if (_renderer) [_renderer setAmp:ampVal];
   [_ampSlider setDoubleValue:ampVal];
-  if ([_renderer isVorbis])
-    [_oy setColor:[NSColor colorWithCalibratedRed:0.79f green:0.94f
-                           blue:0.98f alpha:1.0f]];
+  if (_renderer)
+  {
+    [_renderer setAmp:ampVal];
+    if ([_renderer isVorbis])
+      [_oy setColor:[NSColor colorWithCalibratedRed:0.79f green:0.94f
+                             blue:0.98f alpha:1.0f]];
+    NSString* timeStr;
+    double secs = _renderer.seconds;
+    timeStr = [[NSString alloc] initWithFormat:@"%d:%02d:%02d",
+                      (int)(secs / 3600.0),
+                      (int)(secs / 60.0) % 60,
+                      (int)secs % 60];
+    [_lengthField setStringValue:timeStr];
+    [timeStr release];
+  }
 }
 
 -(NSString*)AIFFFilename
@@ -143,6 +154,14 @@ NSImage* gPausePressedImage = nil;
     [_renderer start];
     [_startStopButton setImage:gPauseImage];
     [_startStopButton setAlternateImage:gPausePressedImage];
+    NSString* timeStr;
+    double secs = _renderer.seconds;
+    timeStr = [[NSString alloc] initWithFormat:@"%d:%02d:%02d",
+                      (int)(secs / 3600.0),
+                      (int)(secs / 60.0) % 60,
+                      (int)secs % 60];
+    [_lengthField setStringValue:timeStr];
+    [timeStr release];
   }
 }
 
@@ -178,13 +197,6 @@ NSImage* gPausePressedImage = nil;
   float ampVal = 1.0f;
   [_ampSlider setFloatValue:ampVal];
   [_renderer setAmp:ampVal];
-}
-
--(IBAction)toggleTimeDisplay:(id)sender
-{
-  #pragma unused (sender)
-  _showTimeLeft = !_showTimeLeft;
-  [self _updateTimeDisplay];
 }
 
 -(IBAction)setProgress:(id)sender
@@ -264,16 +276,12 @@ NSImage* gPausePressedImage = nil;
 -(void)_updateTimeDisplay
 {
   NSString* timeStr;
-  double pct = _renderer.pct;
-  double secs = _renderer.seconds;
-  if (_showTimeLeft) secs = secs * (1.0 - pct);
-  else secs = secs * pct;
-  timeStr = [[NSString alloc] initWithFormat:@"%s%d:%02d:%02d",
-                    (_showTimeLeft) ? "-" : "",
+  double secs = _renderer.seconds * _renderer.pct;
+  timeStr = [[NSString alloc] initWithFormat:@"%d:%02d:%02d",
                     (int)(secs / 3600.0),
                     (int)(secs / 60.0) % 60,
                     (int)secs % 60];
-  [_timeButton setTitle:timeStr];
+  [_timeField setStringValue:timeStr];
   [timeStr release];
 }
 

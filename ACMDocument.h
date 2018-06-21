@@ -21,8 +21,7 @@
 
 @interface ACMDocument : ACMDocumentCommon <ACM>
 {
-  IBOutlet NSButton*  _epilogueStateButton;
-  BOOL                _haveEpilogue;
+  BOOL _haveEpilogue;
 }
 @end
 

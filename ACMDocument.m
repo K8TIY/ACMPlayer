@@ -27,8 +27,8 @@
 @end
 
 @interface ACMDocument (Private)
--(void)_aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code
-       contextInfo:(void*)contextInfo;
+//-(void)_aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code
+//       contextInfo:(void*)contextInfo;
 -(NSString*)_runScript:(NSString*)script onString:(NSString*)string;
 @end
 
@@ -42,7 +42,6 @@
   [_progress setDoubleValue:0.0];
   double loopPct = [_renderer loopPct];
   if (loopPct > 0.0) [_progress setLoopPct:loopPct];
-  [_epilogueStateButton setTitle:@""];
   NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
   BOOL loop = [defs floatForKey:@"defaultLoop"];
   [_renderer setDoesLoop:loop];
@@ -104,24 +103,6 @@
     //NSLog(@"start %f, end %f, delta %f pct %f", start, end, delta, [_renderer pct]);
     [_progress setDoubleValue:[_renderer pct]];
     [_progress setEpilogueStartPct:start endPct:end];
-    int es = [_renderer epilogueState];
-    if (es == acmNoEpilogue || es == acmWillDoFinalEpilogue)
-    {
-      [_epilogueStateButton setTitle:@""];
-    }
-    else
-    {
-      if (es == acmWillDoEpilogue)
-      {
-        [[Onizuka sharedOnizuka] localizeObject:_epilogueStateButton
-                                 withTitle:@"__EPILOGUE_WILL_PLAY__"];
-      }
-      else if (es == acmDoingEpilogue)
-      {
-        [[Onizuka sharedOnizuka] localizeObject:_epilogueStateButton
-                                 withTitle:@"__EPILOGUE_PLAYING__"];
-      }
-    }
   }
 }
 

@@ -33,12 +33,12 @@ extern NSImage* gPausePressedImage;
   IBOutlet NSSlider*          _ampSlider;
   IBOutlet NSButton*          _ampLoButton;
   IBOutlet NSButton*          _ampHiButton;
-  IBOutlet NSButton*          _timeButton;
+  IBOutlet NSTextField*       _timeField;
+  IBOutlet NSTextField*       _lengthField;
   IBOutlet ACMProgressSlider* _progress;
   IBOutlet OldYaller*         _oy;
   ACMRenderer*                _renderer;
   ACMRenderer*                _exportRenderer;
-  BOOL                        _showTimeLeft;
   BOOL                        _closing;
   BOOL                        _suspendedInBackground; // Backgrounded.
 }
@@ -55,7 +55,6 @@ extern NSImage* gPausePressedImage;
 -(IBAction)setAmp:(id)sender;
 -(IBAction)setAmpLo:(id)sender;
 -(IBAction)setAmpHi:(id)sender;
--(IBAction)toggleTimeDisplay:(id)sender;
 -(IBAction)setProgress:(id)sender;
 -(IBAction)exportAIFF:(id)sender;
 -(void)windowDidReceiveSpace:(id)sender;

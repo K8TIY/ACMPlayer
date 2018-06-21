@@ -239,7 +239,6 @@ static void format_size(char buf[SIZE_BUFSZ], uint64_t sz);
 #pragma mark Delegate
 -(void)windowDidReceiveSpace:(id)sender
 {
-  //[self startStop:sender];
   NSInteger row = [_table selectedRow];
   if (row != -1)
   {
