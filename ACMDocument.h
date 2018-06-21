@@ -21,7 +21,6 @@
 
 @interface ACMDocument : ACMDocumentCommon <ACM>
 {
-  BOOL _haveEpilogue;
 }
 @end
 

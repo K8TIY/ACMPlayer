@@ -66,7 +66,6 @@
     acms = [pl objectForKey:@"files"];
     eps = [pl objectForKey:@"epilogues"];
     loopIndex = [[pl objectForKey:@"loop"] intValue];
-    if ([eps count]) _haveEpilogue = YES;
   }
   else if (oError)
   {
