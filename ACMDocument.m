@@ -27,21 +27,32 @@
 @end
 
 @interface ACMDocument (Private)
-//-(void)_aiffExportDidEnd:(NSSavePanel*)sheet returnCode:(int)code
-//       contextInfo:(void*)contextInfo;
 -(NSString*)_runScript:(NSString*)script onString:(NSString*)string;
 @end
 
 @implementation ACMDocument
 -(NSString*)windowNibName {return @"ACMDocument";}
 
--(void)windowControllerDidLoadNib:(NSWindowController*)aController
+-(void)windowControllerDidLoadNib:(NSWindowController*)controller
 {
-  [super windowControllerDidLoadNib:aController];
+  [super windowControllerDidLoadNib:controller];
   [self setAmp:nil];
   [_progress setDoubleValue:0.0];
   double loopPct = [_renderer loopPct];
   if (loopPct > 0.0) [_progress setLoopPct:loopPct];
+  _trackTitleField.wantsLayer = YES;
+  _trackTitleField.layer.cornerRadius = 4.0f;
+  _trackTitleField.layer.borderWidth = 1.0f;
+  NSColor* border = [NSColor colorWithCalibratedRed:0.2f green:0.3f
+                             blue:0.1f alpha:1.0f];
+  NSColor* bg  = [_renderer isVorbis]?
+                   [NSColor colorWithCalibratedRed:0.79f green:0.94f
+                            blue:0.98f alpha:1.0f]:
+                   [NSColor colorWithCalibratedRed:0.94f green:0.98f
+                            blue:0.79f alpha:1.0f];
+  _trackTitleField.layer.borderColor = border.CGColor;
+  [_trackTitleField setBackgroundColor:bg];
+  [_trackTitleField setStringValue:(_trackTitle)? _trackTitle:@""];
   NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
   BOOL loop = [defs floatForKey:@"defaultLoop"];
   [_renderer setDoesLoop:loop];
@@ -50,6 +61,7 @@
 
 -(BOOL)readFromURL:(NSURL*)url ofType:(NSString *)type error:(NSError**)oError
 {
+  _game = kUnknownGameIdentifier;
   BOOL loaded = NO;
   NSUInteger loopIndex = 0;
   NSArray* acms = nil;
@@ -66,6 +78,21 @@
     acms = [pl objectForKey:@"files"];
     eps = [pl objectForKey:@"epilogues"];
     loopIndex = [[pl objectForKey:@"loop"] intValue];
+    NSBundle* mb = [NSBundle mainBundle];
+    _game = [ACMGame identifyGameAtURL:url];
+    if (_game <= kLastGameIdentifier)
+    {
+      NSString* name = (_game == kBaldursGateGameIdentifier)? @"bg":
+        ((_game == kBaldursGate2GameIdentifier)? @"bg2":@"iwd");
+      NSString* p = [mb pathForResource:name ofType:@"strings"];
+      NSDictionary* trackTitles = [[NSDictionary alloc] initWithContentsOfFile:p];
+      if (trackTitles)
+      {
+        NSString* title = [trackTitles objectForKey:[[url lastPathComponent] lowercaseString]];
+        if (title) _trackTitle = [[NSString alloc] initWithString:title];
+        [trackTitles release];
+      }
+    }
   }
   else if (oError)
   {

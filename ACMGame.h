@@ -13,18 +13,19 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-#import <Cocoa/Cocoa.h>
-#import "ACMDocumentCommon.h"
-#import "ACMGame.h"
+ #import <Cocoa/Cocoa.h>
 
-@interface ACMDocumentController : NSDocumentController
+ typedef enum : NSUInteger
+ {
+  kBaldursGateGameIdentifier,
+  kBaldursGate2GameIdentifier,
+  kIcewindDaleGameIdentifier,
+  kLastGameIdentifier = kIcewindDaleGameIdentifier,
+  kUnknownGameIdentifier
+} ACMGameIdentifier;
+
+@interface ACMGame : NSObject
++(ACMGameIdentifier)identifyGameAtURL:(NSURL*)url;
 @end
 
-@interface ACMDocument : ACMDocumentCommon <ACM>
-{
-  IBOutlet NSTextField* _trackTitleField;
-  NSString*             _trackTitle;
-  ACMGameIdentifier     _game;
-}
-@end
 

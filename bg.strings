@@ -1,0 +1,57 @@
+"bc1.mus" = "Attacked by Bounty Hunter";
+"bc2.mus" = "Attacked By Assassins";
+"bf2.mus" = "Bandit Melee";
+"cday1.mus" = "Candlekeep / BG City";
+"fday1.mus" = "Cloakwood Forest";
+"dung2.mus" = "Down to the Sewers";
+"inite.mus" = "End of the quest";
+/* 14:58 - 16:11 - Entering Baldur's Gate */
+"dung3.mus" = "Ever Deeper";
+"pday.mus" = "Exploring the Plains";
+"bd2.mus" = "Fighting for Survival";
+"bw1.mus" = "From out of the Storm";
+"bf1.mus" = "Giant Spiders";
+"bl2.mus" = "Gorion's Battle";
+"chants.mus" = "Helm's Temple";
+"bp1.mus" = "Hobgoblins and Worgs";
+"chapter.mus" = "Leaving Home";
+"oldthm.mus" = "Main Theme";
+"cnite.mus" = "Night Falls on Baldur's Gate";
+"fnite.mus" = "Night in Cloakwood";
+"pnite.mus" = "Night on the Plains";
+"tday1.mus" = "Safe in Beregost/Friendly Arms Inn";
+/* 38:07 - 39:34 - Settong the Stage */
+"fort.mus" = "Stealth in the Bandit Camp";
+"cday2.mus" = "Streets of the City";
+"bd1.mus" = "Swords against Darkness";
+"tnite.mus" = "The Beregost Night";
+"dream.mus" = "The Dream";
+"tday2.mus" = "The Friendly Arms Inn";
+"bp2.mus" = "The Gibberling Horde";
+"temple.mus" = "Lady's House / Song of Morning Temple";
+"bl1.mus" = "The Last Battle";
+"dung1.mus" = "The Ruins of Ulcaster";
+
+"theme.mus" = "Rebirth of a Legend (Enhanced Edition Theme)";
+"nadoys.mus" = "Adoy's Enclave";
+"rpeaks.mus" = "Cloud Peaks";
+"bptheme.mus" = "The Black Pits";
+"bpstg.mus" = "Captivity";
+"bpc2.mus" = "Blood for Sport";
+"bpc3.mus" = "Duel to the Death";
+
+"sodthm.mus" = "Shadow of the Shining Lady";
+"bdbgmx.mus" = "The Hero of Baldur's Gate";
+"bdbgnx.mus" = "Baldur's Gate Nightfall";
+"bd100x.mus" = "Crusaders at Coast Way Crossing";
+"bdcw.mus" = "Danger in the Wild";
+"bd200x.mus" = "Here Fell the Lord of Murder";
+"bdbfb.mus" = "The Battle for Bridgefort";
+"bd300x.mus" = "The Siege Camp";
+"bd510x.mus" = "Dark Waters Flow";
+"bddsb.mus" = "Assault on Dragonspear";
+"bdcu.mus" = "Descent into Peril";
+"bd410x.mus" = "Castle Ruins";
+"bdlbb.mus" = "Fighting the Crusade";
+"bd440x.mus" = "The Wastes of Avernus";
+"bdbec.mus" = "The Devil's Fury";
