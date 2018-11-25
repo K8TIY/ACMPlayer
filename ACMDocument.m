@@ -17,6 +17,8 @@
 #import "Onizuka.h"
 #import <objc/runtime.h>
 
+NSArray* gGameIcons;
+
 @implementation ACMDocumentController
 -(NSInteger)runModalOpenPanel:(NSOpenPanel*)openPanel
             forTypes:(NSArray*)extensions
@@ -31,6 +33,12 @@
 @end
 
 @implementation ACMDocument
++(void)initialize
+{
+  gGameIcons = [[NSArray alloc] initWithObjects:@"bg.icns", @"bg2.icns",
+                                @"iwd.icns", NULL];
+}
+
 -(NSString*)windowNibName {return @"ACMDocument";}
 
 -(void)windowControllerDidLoadNib:(NSWindowController*)controller
@@ -57,6 +65,11 @@
   BOOL loop = [defs floatForKey:@"defaultLoop"];
   [_renderer setDoesLoop:loop];
   [_loopButton setState:(loop)? NSOnState:NSOffState];
+  if (_game < kUnknownGameIdentifier)
+  {
+    NSImage* img = [NSImage imageNamed:[gGameIcons objectAtIndex:_game]];
+    [_gameIcon setImage:img];
+  }
 }
 
 -(BOOL)readFromURL:(NSURL*)url ofType:(NSString *)type error:(NSError**)oError

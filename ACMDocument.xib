@@ -12,6 +12,7 @@
                 <outlet property="_ampLoButton" destination="40" id="61"/>
                 <outlet property="_ampSlider" destination="25" id="27"/>
                 <outlet property="_docWindow" destination="26" id="101"/>
+                <outlet property="_gameIcon" destination="wQV-uV-OyU" id="L6P-3C-CL9"/>
                 <outlet property="_lengthField" destination="saV-F8-W4T" id="qUR-RM-xAI"/>
                 <outlet property="_loopButton" destination="34" id="36"/>
                 <outlet property="_oy" destination="48" id="zQa-fK-gSh"/>
@@ -25,18 +26,18 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="26" userLabel="Window" customClass="ACMWindow">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="341" y="408" width="320" height="123"/>
+            <rect key="contentRect" x="341" y="408" width="377" height="136"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1024" height="746"/>
-            <value key="minSize" type="size" width="320" height="123"/>
-            <value key="maxSize" type="size" width="620" height="123"/>
+            <value key="minSize" type="size" width="340" height="136"/>
+            <value key="maxSize" type="size" width="620" height="136"/>
             <view key="contentView" id="24">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="123"/>
+                <rect key="frame" x="0.0" y="0.0" width="377" height="136"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <slider verticalHuggingPriority="750" id="25">
-                        <rect key="frame" x="84" y="25" width="69" height="15"/>
+                        <rect key="frame" x="84" y="38" width="69" height="15"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="1" doubleValue="0.5" tickMarkPosition="above" sliderType="linear" id="90">
                             <font key="font" size="12" name="Helvetica"/>
@@ -46,7 +47,7 @@
                         </connections>
                     </slider>
                     <button toolTip="__LOOP__" imageHugsTitle="YES" id="34">
-                        <rect key="frame" x="11" y="22" width="36" height="22"/>
+                        <rect key="frame" x="11" y="35" width="36" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="repeat_embedded" imagePosition="only" alignment="left" alternateImage="repeat_embedded_blue" inset="2" id="91">
                             <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
@@ -59,7 +60,7 @@
                         </connections>
                     </button>
                     <button imageHugsTitle="YES" id="40">
-                        <rect key="frame" x="58" y="20" width="20" height="24"/>
+                        <rect key="frame" x="58" y="33" width="20" height="24"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="VolMute" imagePosition="only" alignment="center" id="92">
                             <behavior key="behavior" lightByContents="YES"/>
@@ -70,7 +71,7 @@
                         </connections>
                     </button>
                     <button imageHugsTitle="YES" id="41">
-                        <rect key="frame" x="159" y="20" width="20" height="24"/>
+                        <rect key="frame" x="159" y="33" width="20" height="24"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="VolFull" imagePosition="only" alignment="center" id="93">
                             <behavior key="behavior" lightByContents="YES"/>
@@ -81,7 +82,7 @@
                         </connections>
                     </button>
                     <button imageHugsTitle="YES" id="44">
-                        <rect key="frame" x="9" y="49" width="39" height="39"/>
+                        <rect key="frame" x="9" y="62" width="39" height="39"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="play" imagePosition="only" alignment="center" alternateImage="play_blue" id="94">
                             <behavior key="behavior" lightByContents="YES"/>
@@ -95,19 +96,19 @@ DQ
                         </connections>
                     </button>
                     <imageView id="48" customClass="OldYaller">
-                        <rect key="frame" x="60" y="50" width="240" height="36"/>
+                        <rect key="frame" x="60" y="63" width="205" height="36"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <imageCell key="cell" enabled="NO" refusesFirstResponder="YES" alignment="left" imageScaling="axesIndependently" id="95"/>
                     </imageView>
                     <customView id="65" customClass="ACMProgressSlider">
-                        <rect key="frame" x="68" y="55" width="221" height="10"/>
+                        <rect key="frame" x="68" y="68" width="186" height="10"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <connections>
                             <action selector="setProgress:" target="-2" id="66"/>
                         </connections>
                     </customView>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="saV-F8-W4T">
-                        <rect key="frame" x="224" y="69" width="67" height="14"/>
+                        <rect key="frame" x="192" y="82" width="67" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="0:00:00" id="cuB-zx-FtG">
                             <font key="font" metaFont="smallSystem"/>
@@ -116,7 +117,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="27L-fA-w9b">
-                        <rect key="frame" x="66" y="69" width="71" height="14"/>
+                        <rect key="frame" x="66" y="82" width="71" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="0:00:00" id="dNr-dg-NkM">
                             <font key="font" metaFont="smallSystem"/>
@@ -125,7 +126,7 @@ DQ
                         </textFieldCell>
                     </textField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" textCompletion="NO" id="iw9-hO-ojM">
-                        <rect key="frame" x="11" y="96" width="289" height="20"/>
+                        <rect key="frame" x="11" y="109" width="254" height="20"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" lineBreakMode="truncatingTail" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="center" title="Track Title" drawsBackground="YES" allowsEditingTextAttributes="YES" id="weF-dj-LjE">
                             <font key="font" metaFont="system"/>
@@ -133,12 +134,17 @@ DQ
                             <color key="backgroundColor" red="0.96103869818652854" green="0.95381558828922008" blue="0.85975874835414245" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         </textFieldCell>
                     </textField>
+                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="wQV-uV-OyU">
+                        <rect key="frame" x="273" y="56" width="80" height="80"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="p85-JC-oHk"/>
+                    </imageView>
                 </subviews>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="83"/>
             </connections>
-            <point key="canvasLocation" x="130" y="162.5"/>
+            <point key="canvasLocation" x="168.5" y="156"/>
         </window>
     </objects>
     <resources>

@@ -23,6 +23,7 @@
 @interface ACMDocument : ACMDocumentCommon <ACM>
 {
   IBOutlet NSTextField* _trackTitleField;
+  IBOutlet NSImageView* _gameIcon;
   NSString*             _trackTitle;
   ACMGameIdentifier     _game;
 }
